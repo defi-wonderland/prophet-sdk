@@ -1,0 +1,12 @@
+# General
+yarn-error.log
+node_modules
+
+# Vscode settings
+.vscode 
+
+# Config files
+.env
+
+# Avoid ignoring gitkeep
+!/**/.gitkeep
