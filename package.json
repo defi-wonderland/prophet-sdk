@@ -8,23 +8,29 @@
   "main": "dist/run.js",
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.json",
-    "lint:fix": "sort-package-json && eslint ./src/**/*.ts"
+    "lint:check": "eslint ./src/**/*.ts",
+    "lint:fix": "sort-package-json && eslint ./src/**/*.ts --fix",
+    "test": "cross-env mocha 'test/**/*.spec.ts'"
   },
   "lint-staged": {
     "*.ts": "eslint ./src/**/*.ts",
     "package.json": "sort-package-json"
   },
   "dependencies": {
-    "@pinata/sdk": "^2.1.0",
-    "pinata-upload-cli": "^1.1.0"
+    "@pinata/sdk": "2.1.0",
+    "opoo-core": "^0.0.0-7b3d01d2",
+    "pinata-upload-cli": "1.1.0"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.1",
     "@types/node": "20.2.3",
     "@typescript-eslint/eslint-plugin": "5.59.6",
     "@typescript-eslint/parser": "5.59.6",
+    "cross-env": "7.0.3",
     "eslint": "8.40.0",
     "husky": "8.0.3",
     "lint-staged": "10",
+    "mocha": "10.2.0",
     "prettier": "2.8.8",
     "sort-package-json": "2.4.1",
     "ts-node": "10.9.1",
