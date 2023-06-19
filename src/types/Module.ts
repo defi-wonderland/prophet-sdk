@@ -26,7 +26,7 @@ export interface IModule {
      * Returns the data for the given requestId, the result is bytes represented as a string
      * @param requestId The requestId to get the data for
      */
-    requestData(requestId: string): string;
+    requestData(requestId: string): Promise<string>;
 
     /**
      * Returns the decoded data for the given requestId, this can return multiple vars compared to requestData
@@ -37,7 +37,7 @@ export interface IModule {
     /**
      * Returns the name of the module
      */
-    moduleName(): string;
+    moduleName(): Promise<string>;
 }
 
 /**
