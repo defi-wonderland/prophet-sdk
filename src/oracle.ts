@@ -1,90 +1,195 @@
-import { Address, Request, Dispute, Response, DisputeStatus, Modules, IModule } from './types/Module';
-import { Module } from './module';
-import { Signer } from '@ethersproject/abstract-signer';
-import { Provider } from '@ethersproject/abstract-provider';
+import {
+  Address,
+  Request,
+  Dispute,
+  Response,
+  DisputeStatus,
+  Modules,
+} from "./types/index";
+import { Contract, ethers, Signer } from "ethers";
+import { abi as IAbiOracle } from "opoo-core/abi/IOracle.json";
+import { ORACLE } from "./utils/index";
+import { Provider } from "@ethersproject/abstract-provider";
 
 export class OpooSDK {
-    /**
-     * The addresses of the Modules to use
-     */
-    public whitelistedModules: Modules;
+  /**
+   * The contract of the Oracle to use
+   */
+  public oracle: Contract;
 
-    /**
-     * The signer or provider to use
-     */
-    public signerOrProvider: Signer | Provider;
+  /**
+   * The addresses of the Modules to use
+   */
+  public whitelistedModules: Modules;
 
-    // TODO: add constructor
-    constructor() {return;}
-    
-    // --------- CONTRACT WRAPPED FUNCS --------- //
-    /**
-     * Creates a new request, calls the Oracle's createRequest function
-     * @param request The request to create
-     * @returns The ID of the created request
-     */
-    public async createRequest(request: Request<any>): Promise<string> {
-        return '';
+  /**
+   * The signer or provider to use
+   */
+  public signerOrProvider: Provider | Signer;
+
+  /**
+   * Constructor
+   */
+  constructor(signerOrProvider: Provider | Signer) {
+    this.signerOrProvider = signerOrProvider;
+
+    try {
+      this.oracle = new ethers.Contract(
+        ORACLE,
+        IAbiOracle,
+        this.signerOrProvider
+      );
+    } catch (e) {
+      throw new Error(`Failed to create oracle contract ${e}`);
     }
+  }
 
-    public validModule(requestId: string, module: Address): boolean {
-        return true;
-    }
+  // --------- CONTRACT WRAPPED FUNCS --------- //
+  /**
+   * Creates a new request, calls the Oracle's createRequest function
+   * @param request The request to create
+   * @returns The ID of the created request
+   */
+  public async createRequest() {
+    return;
+  }
 
-    public getDispute(disputeId: string): Dispute {
-        return {} as Dispute;
-    }
+  public validModule(requestId: string, module: Address): boolean {
+    return true;
+  }
 
-    public getResponse(responseId: string): Response {
-        return {} as Response;
-    }
+  /**
+   * Get a specific dispute using dispute id
+   * @param disputeId The dispute id
+   * @returns The dispute object
+   */
+  public async getDispute(disputeId: string): Promise<Dispute> {
+    // Call get dispute using dispute id
+    const tx = await this.oracle.getDispute(disputeId);
 
-    public getRequest(requestId: string): Request<any> {
-        return {} as Request<any>;
-    }
+    // Wait for the transaction to be mined
+    await tx.wait();
 
-    public disputeOf(requestId: string): string {
-        return '';
-    }
+    // Create dispute object
+    const dispute: Dispute = {
+      createdAt: tx.createdAt,
+      disputer: tx.disputer,
+      proposer: tx.proposer,
+      responseId: tx.responseId,
+      requestId: tx.requestId,
+      status: tx.status,
+    };
 
-    public async proposeResponse(requestId: string, responseData: Response): Promise<string> {
-        return '';
-    }
+    // Return dispute
+    return dispute;
+  }
 
-    public async disputeResponse(requestId: string, responseId: string): Promise<string> {
-        return '';
-    }
+  /**
+   * Get a specific response using response id
+   * @param disputeId The response id
+   * @returns The response object
+   */
+  public async getResponse(responseId: string): Promise<Response> {
+    // Call get response using response id
+    const tx = await this.oracle.getResponse(responseId);
 
-    public getFinalizedResponse(requestId: string): Response {
-        return {} as Response;
-    }
+    // Wait for the transaction to be mined
+    await tx.wait();
 
-    public getResponseIds(requestId: string): string[] {
-        return [];
-    }
+    // Create response object
+    const response: Response = {
+      createdAt: tx.createdAt,
+      proposer: tx.proposer,
+      requestId: tx.requestId,
+      disputeId: tx.disputeId,
+      response: tx.response
+    };
 
-    public listRequests(startFrom: number, amount: number): Request<any>[] {
-        return [];
-    }
+    // Return response
+    return response;
+  }
 
-    public finalize(requestId: string, finalizedResponseId: string): void {
-        return;
-    }
+  /**
+   * Get a specific resquest using request id
+   * @param disputeId The request id
+   * @returns The request object
+   */
+  public async getRequest(requestId: string): Promise<Request<any>> {
+    // Call get request using request id
+    const tx = await this.oracle.getResponse(requestId);
 
-    // --------- CUSTOM FUNCS --------- //
-    /**
-     * Adds a module to the list of whitelisted modules
-     * @param module The address of the module to add
-     */
-    public addModule(module: Module): void {
-        return;
-    }
+    // Wait for the transaction to be mined
+    await tx.wait();
 
-    /**
-     * Removes a module from the list of whitelisted modules
-     * @param module The address of the module to remove
-     */
-    public removeModule(module: Module): void {
-        return;
-    }
+    const request: Request<any> = {
+      requestModuleData: tx.requestModuleData,
+      responseModuleData: tx.responseModuleData,
+      disputeModuleData: tx.disputeModuleData,
+      resolutionModuleData: tx.resolutionModuleData,
+      finalityModuleData: tx.finalityModuleData,
+      ipfsHash: tx.ipfsHash,
+      requestModule: tx.requestModule,
+      responseModule: tx.responseModule,
+      disputeModule: tx.disputeModule,
+      resolutionModule: tx.resolutionModule,
+      finalityModule: tx.finalityModule,
+      requester: tx.requester,
+      nonce: tx.nonce,
+      createdAt: tx.createdAt,
+    };
+
+    // Create request object
+    return request;
+  }
+
+  public disputeOf(requestId: string): string {
+    return "";
+  }
+
+  public async proposeResponse(
+    requestId: string,
+    responseData: Response
+  ): Promise<string> {
+    return "";
+  }
+
+  public async disputeResponse(
+    requestId: string,
+    responseId: string
+  ): Promise<string> {
+    return "";
+  }
+
+  public getFinalizedResponse(requestId: string): Response {
+    return {} as Response;
+  }
+
+  public getResponseIds(requestId: string): string[] {
+    return [];
+  }
+
+  public updateDisputeStatus(disputeId: string, status: DisputeStatus): void {
+    return;
+  }
+
+  public listRequests(startFrom: number, amount: number): Request<any>[] {
+    return [];
+  }
+
+  // --------- CUSTOM FUNCS --------- //
+  /**
+   * Adds a module to the list of whitelisted modules
+   * @param module The address of the module to add
+   */
+  public addModule(module: Modules): void {
+    return;
+  }
+
+  /**
+   * Removes a module from the list of whitelisted modules
+   * @param module The address of the module to remove
+   */
+  public removeModule(module: Modules): void {
+    return;
+  }
 }
