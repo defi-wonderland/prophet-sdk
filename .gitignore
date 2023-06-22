@@ -10,3 +10,7 @@ node_modules
 
 # Avoid ignoring gitkeep
 !/**/.gitkeep
+
+# Ignore coverage report
+coverage
+.nyc_output

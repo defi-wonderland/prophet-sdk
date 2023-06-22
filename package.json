@@ -10,7 +10,8 @@
     "build": "rm -rf dist && tsc -p tsconfig.json",
     "lint:check": "eslint ./src/**/*.ts",
     "lint:fix": "sort-package-json && eslint ./src/**/*.ts --fix",
-    "test": "cross-env mocha 'test/**/*.spec.ts'"
+    "test": "cross-env mocha 'test/**/*.spec.ts'",
+    "test:coverage": "nyc --reporter=lcov --reporter=text mocha 'test/**/*.spec.ts'"
   },
   "lint-staged": {
     "*.ts": "eslint ./src/**/*.ts",
@@ -41,6 +42,7 @@
     "husky": "8.0.3",
     "lint-staged": "10",
     "mocha": "10.2.0",
+    "nyc": "15.1.0",
     "prettier": "2.8.8",
     "sort-package-json": "2.4.1",
     "ts-node": "10.9.1",
