@@ -7,6 +7,8 @@ import {
 } from "../../../src/utils/cid";
 
 import { encode, decode } from "bs58";
+import { Buffer } from 'buffer';
+
 describe("Cid", () => {
   describe("cidToBytes32", () => {
     const cid = "QmABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstu";

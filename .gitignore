@@ -11,6 +11,9 @@ node_modules
 # Avoid ignoring gitkeep
 !/**/.gitkeep
 
+# Ignore typechain generated files
+src/types/typechain
+
 # Ignore coverage report
 coverage
 .nyc_output

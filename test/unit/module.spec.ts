@@ -1,9 +1,9 @@
-import { expect } from "chai";
-import { Module } from "../../src/module";
-import { providers, utils } from "ethers";
+import { expect } from 'chai';
+import { Module } from '../../src/module';
+import { providers, utils } from 'ethers';
 import IHttpRequestModule from '../../node_modules/opoo-core/abi/IHttpRequestModule.json'
 import IBondedResponseModule from '../../node_modules/opoo-core/abi/IBondedResponseModule.json'
-import { Provider } from "@ethersproject/abstract-provider";
+import { Provider } from '@ethersproject/abstract-provider';
 import './setup';
 
 describe('Module', () => {

@@ -2,7 +2,8 @@
  * Includes functions to convert between IPFS CID (Base58), and a 32 bytes hex string
  */
 
-import { encode, decode } from "bs58";
+import { encode, decode } from 'bs58';
+import { Buffer } from 'buffer';
 
 /**
  * Converts IPFS content identifier address string to 32 byte hex
@@ -11,7 +12,7 @@ import { encode, decode } from "bs58";
  * @returns bytes32 string
  */
 export const cidToBytes32 = (cid: string): string => {
-  return "0x" + decode(cid).slice(2).toString("hex");
+  return '0x' + decode(cid).slice(2).toString('hex');
 };
 
 /**
@@ -24,19 +25,19 @@ export const bytes32ToCid = (bytes32: string): string => {
   // Add our default ipfs values for first 2 bytes:
   // function:0x12=sha2, size:0x20=256 bits
   // and cut off leading "0x"
-  const hashHex = "1220" + bytes32.slice(2);
-  return encode(Buffer.from(hashHex, "hex"));
+  const hashHex = '1220' + bytes32.slice(2);
+  return encode(Buffer.from(hashHex, 'hex'));
 };
 
 // Determines if a string is a valid IPFS url.
 export const isIpfsUri = (url: string): boolean => {
-  const cid = url.split("://")[1];
-  return url.startsWith("ipfs://") && isIpfsCID(cid);
+  const cid = url.split('://')[1];
+  return url.startsWith('ipfs://') && isIpfsCID(cid);
 };
 
 // Determines if a string is a valid ipfs url.
 export const isIpfsCID = (cid: string): boolean => {
   return (
-    cid.startsWith("Qm") || cid.startsWith("bafy") || cid.startsWith("bafk")
+    cid.startsWith('Qm') || cid.startsWith('bafy') || cid.startsWith('bafk')
   );
 };
