@@ -12,8 +12,8 @@
     "lint:check": "eslint ./src",
     "lint:fix": "sort-package-json && eslint ./src --fix",
     "test": "cross-env mocha 'test/**/*.spec.ts'",
-    "typechain": "typechain --target ethers-v5 --out-dir src/types/typechain './node_modules/opoo-core/abi/*.json'",
-    "test:coverage": "nyc --reporter=lcov --reporter=text mocha 'test/**/*.spec.ts'"
+    "test:coverage": "nyc --reporter=lcov --reporter=text mocha 'test/**/*.spec.ts'",
+    "typechain": "typechain --target ethers-v5 --out-dir src/types/typechain './node_modules/opoo-core/abi/*.json'"
   },
   "lint-staged": {
     "*.ts": "eslint ./src/**/*.ts",
@@ -47,6 +47,7 @@
     "mocha": "10.2.0",
     "nyc": "15.1.0",
     "prettier": "2.8.8",
+    "sinon": "15.2.0",
     "sort-package-json": "2.4.1",
     "ts-node": "10.9.1",
     "tsconfig-paths": "4.2.0",
