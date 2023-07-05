@@ -3,6 +3,7 @@ import { providers } from 'ethers';
 import { Provider } from '@ethersproject/abstract-provider';
 import { OpooSDK } from '../../src/oracle';
 import { ORACLE } from '../../src/utils';
+import config from '../../src/config/config';
 
 describe('OpooSDK', () => {
   let sdk: OpooSDK;
@@ -10,7 +11,7 @@ describe('OpooSDK', () => {
 
   beforeEach(async () => {
     // We want to define the OpooSDK and the provider here
-    provider = new providers.JsonRpcProvider(process.env.TENDERLY_URL);
+    provider = new providers.JsonRpcProvider(config.TENDERLY_URL);
     sdk = new OpooSDK(provider);
   });
 

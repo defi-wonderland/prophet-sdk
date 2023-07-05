@@ -5,6 +5,7 @@ import IHttpRequestModule from '../../node_modules/opoo-core/abi/IHttpRequestMod
 import IBondedResponseModule from '../../node_modules/opoo-core/abi/IBondedResponseModule.json'
 import { Provider } from '@ethersproject/abstract-provider';
 import './setup';
+import config from '../../src/config/config';
 
 describe('Module', () => {
     let module: Module;
@@ -25,7 +26,7 @@ describe('Module', () => {
 
     beforeEach(async () => {
         // We want to define the OpooSDK and the provider here
-        provider = new providers.JsonRpcProvider(process.env.TENDERLY_URL);
+        provider = new providers.JsonRpcProvider(config.TENDERLY_URL);
         
         iface = new utils.Interface(IHttpRequestModule.abi);
         otherIface = new utils.Interface(IBondedResponseModule.abi);

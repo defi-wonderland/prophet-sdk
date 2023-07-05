@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { IpfsApi } from '../../src/ipfsApi';
 import { cidToBytes32 } from '../../src/utils/cid';
+import config from '../../src/config/config';
 import sinon from 'sinon';
-
 
 describe('Ipfssdk', () => {
     let ipfsApi: IpfsApi;
@@ -16,7 +16,7 @@ describe('Ipfssdk', () => {
     }
 
     beforeEach(async () => {
-        ipfsApi = new IpfsApi(process.env.PINATA_API_KEY, process.env.PINATA_SECRET_API_KEY);
+        ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);
 
         // mocking pinata returns
         pinFileToIPFSStub = sinon.stub(ipfsApi.api, 'pinJSONToIPFS');

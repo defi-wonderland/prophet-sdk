@@ -1,10 +1,15 @@
-import { Address, Modules, DisputeStatus } from './types/index';
+import { Modules } from './types/index';
 import { ethers } from 'ethers';
 import { abi as IAbiOracle } from 'opoo-core/abi/IOracle.json';
 import { ORACLE } from './utils/index';
 import { Provider } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
 import { IOracle } from './types/typechain';
+import { Batching } from './batching';
+import { Helpers } from './helpers';
+import { IpfsApi } from './ipfsApi';
+import { Ipfs } from './ipfs';
+import config from './config/config';
 
 export class OpooSDK {
   /**
@@ -22,6 +27,10 @@ export class OpooSDK {
    */
   public signerOrProvider: Provider | Signer;
 
+  public batching: Batching;
+  public helpers: Helpers;
+  public ipfs: Ipfs;
+
   /**
    * Constructor
    */
@@ -35,25 +44,13 @@ export class OpooSDK {
         IAbiOracle,
         this.signerOrProvider
       ) as IOracle;
+
+      this.batching = new Batching(this);
+      const ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);
+      this.helpers = new Helpers(this, ipfsApi);
+      this.ipfs = new Ipfs(this, ipfsApi);
     } catch (e) {
       throw new Error(`Failed to create oracle contract ${e}`);
     }
-  }
-
-  // --------- CUSTOM FUNCS --------- //
-  /**
-   * Adds a module to the list of whitelisted modules
-   * @param module The address of the module to add
-   */
-  public addModule(module: Modules): void {
-    return;
-  }
-
-  /**
-   * Removes a module from the list of whitelisted modules
-   * @param module The address of the module to remove
-   */
-  public removeModule(module: Modules): void {
-    return;
   }
 }
