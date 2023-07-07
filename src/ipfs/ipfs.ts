@@ -1,13 +1,13 @@
-import { OpooSDK } from '../oracle';
 import { IpfsApi } from '../ipfsApi';
+import { IOracle } from '../types/typechain';
 
 export class Ipfs {
 
-    private sdk: OpooSDK;
+    private oracle: IOracle;
     private ipfsApi: IpfsApi;
     
-    constructor(sdk: OpooSDK, ipfsApi: IpfsApi) {
-        this.sdk = sdk;
+    constructor(oracle: IOracle, ipfsApi: IpfsApi) {
+        this.oracle = oracle;
         this.ipfsApi = ipfsApi;
     }
 

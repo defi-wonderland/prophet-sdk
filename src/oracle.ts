@@ -45,10 +45,10 @@ export class OpooSDK {
         this.signerOrProvider
       ) as IOracle;
 
-      this.batching = new Batching(this);
+      this.batching = new Batching(this.oracle);
       const ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);
-      this.helpers = new Helpers(this, ipfsApi);
-      this.ipfs = new Ipfs(this, ipfsApi);
+      this.helpers = new Helpers(this.oracle, ipfsApi);
+      this.ipfs = new Ipfs(this.oracle, ipfsApi);
     } catch (e) {
       throw new Error(`Failed to create oracle contract ${e}`);
     }
