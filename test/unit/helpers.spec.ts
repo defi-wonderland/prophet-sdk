@@ -57,7 +57,7 @@ describe('Helpers', () => {
             uploadMetadata: uploadMetadataStub.resolves({ cidBytes32 })
         };
 
-        helpers = new Helpers(oracleMock as IOracle, mockIpfsApi as IpfsApi);
+        helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi);
     });
 
     describe('createRequest', () => {

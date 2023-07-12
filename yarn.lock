@@ -307,9 +307,9 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@defi-wonderland/isolmate@https://github.com/defi-wonderland/isolmate.git#59e18043c2450fef550f1744b3705ce9ebcaf1c8":
+"@defi-wonderland/isolmate@git+https://github.com/defi-wonderland/isolmate.git#59e18043c2450fef550f1744b3705ce9ebcaf1c8":
   version "6.2.0-beta2"
-  resolved "https://github.com/defi-wonderland/isolmate.git#59e18043c2450fef550f1744b3705ce9ebcaf1c8"
+  resolved "git+https://github.com/defi-wonderland/isolmate.git#59e18043c2450fef550f1744b3705ce9ebcaf1c8"
 
 "@defi-wonderland/keep3r-v2@0.0.0-31de77ed":
   version "0.0.0-31de77ed"
@@ -3198,13 +3198,14 @@ dotenv@16.2.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.2.0.tgz#d0c7110551d39c407f407d1afdce49c501c8e320"
   integrity sha512-jcq2vR1DY1+QA+vH58RIrWLDZOifTGmyQJWzP9arDUbgZcySdzuBb1WvhWZzZtiXgfm+GW2pjBqStqlfpzq7wQ==
 
+"ds-test@git+https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0":
+  version "1.0.0"
+  uid e282159d5170298eb2455a6c05280ab5a73a4ef0
+  resolved "git+https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0"
+
 "ds-test@https://github.com/dapphub/ds-test":
   version "1.0.0"
   resolved "https://github.com/dapphub/ds-test#e282159d5170298eb2455a6c05280ab5a73a4ef0"
-
-"ds-test@https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0":
-  version "1.0.0"
-  resolved "https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0"
 
 electron-fetch@^1.7.2:
   version "1.9.1"
@@ -3743,13 +3744,13 @@ foreground-child@^2.0.0:
     cross-spawn "^7.0.0"
     signal-exit "^3.0.2"
 
+"forge-std@git+https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e":
+  version "1.5.6"
+  resolved "git+https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e"
+
 "forge-std@https://github.com/foundry-rs/forge-std":
   version "1.5.6"
   resolved "https://github.com/foundry-rs/forge-std#5086c7a438a949012c5c6aa353e8f24c47d63237"
-
-"forge-std@https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e":
-  version "1.5.6"
-  resolved "https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e"
 
 form-data@^2.3.3:
   version "2.5.1"
@@ -5923,10 +5924,10 @@ onetime@^5.1.0, onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-opoo-core@0.0.0-0155321b:
-  version "0.0.0-0155321b"
-  resolved "https://registry.yarnpkg.com/opoo-core/-/opoo-core-0.0.0-0155321b.tgz#2a619d39f5a97a17cf0abb2539f6285cc95f6978"
-  integrity sha512-wqBE05XHx54Err4MCRikWZglBRcicwbgvvwHegXCZws3BGKnFo/rSuMEt2c0kZuKjJtNXwxCNABAbFleNI9bwg==
+opoo-core@0.0.0-88e224d8:
+  version "0.0.0-88e224d8"
+  resolved "https://registry.yarnpkg.com/opoo-core/-/opoo-core-0.0.0-88e224d8.tgz#bc36d53fca98eb6bb87caf69f7c6f5b040d09fb5"
+  integrity sha512-SkXu+V5zuq7+jtDlnkiiBMBe1zfXrlPCeo5peaAACNxxEAzhyHISqWRBbdtzv82z+jOZDD5bUtKn3y4kz18ZqA==
   dependencies:
     "@defi-wonderland/isolmate" "https://github.com/defi-wonderland/isolmate.git#59e18043c2450fef550f1744b3705ce9ebcaf1c8"
     "@defi-wonderland/keep3r-v2" "0.0.0-31de77ed"

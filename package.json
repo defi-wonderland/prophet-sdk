@@ -24,7 +24,7 @@
     "cids": "1.1.9",
     "ethers": "5.7.0",
     "ipfs-core": "0.18.1",
-    "opoo-core": "0.0.0-0155321b",
+    "opoo-core": "0.0.0-88e224d8",
     "pinata-upload-cli": "1.1.0"
   },
   "devDependencies": {

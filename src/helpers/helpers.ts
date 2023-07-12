@@ -13,12 +13,12 @@ export class Helpers {
         this.ipfsApi = ipfsApi;
     }
 
-    public createRequest(request: IOracle.RequestStruct): Promise<ContractTransaction> {
+    public createRequest(request: IOracle.NewRequestStruct): Promise<ContractTransaction> {
         return this.oracle.createRequest(request);
     }
 
     public async createRequestWithMetadata(
-        request: IOracle.RequestStruct, 
+        request: IOracle.NewRequestStruct, 
         requestMetadata: RequestMetadata): Promise<ContractTransaction> {
         const ipfsHash = await this.ipfsApi.uploadMetadata(requestMetadata);
         request.ipfsHash = ipfsHash;
@@ -31,7 +31,7 @@ export class Helpers {
 
     public proposeResponse(requestId: BytesLike,
         responseData: BytesLike): Promise<ContractTransaction> {
-        return this.oracle.proposeResponse(requestId, responseData);
+        return this.oracle['proposeResponse'](requestId, responseData);
     }
 
     public getResponse(responseId: BytesLike): Promise<IOracle.ResponseStructOutput> {

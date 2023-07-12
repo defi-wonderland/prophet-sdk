@@ -11,7 +11,7 @@ export class Batching {
 
     public listRequests(
         startFrom: BigNumberish, 
-        amount: BigNumberish): Promise<IOracle.RequestStructOutput[]>{
+        amount: BigNumberish): Promise<IOracle.FullRequestStructOutput[]>{
         return this.oracle.listRequests(startFrom, amount);
     }
 
