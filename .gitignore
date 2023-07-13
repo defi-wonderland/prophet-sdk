@@ -17,3 +17,6 @@ src/types/typechain
 # Ignore coverage report
 coverage
 .nyc_output
+
+#Output
+dist

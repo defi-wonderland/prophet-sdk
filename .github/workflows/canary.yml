@@ -20,6 +20,10 @@ jobs:
 
       - name: Install dependencies
         run: yarn --frozen-lockfile --network-concurrency 1
+
+      - name: Build
+        run: yarn build
+
       - name: Update version
         run: yarn version --new-version "0.0.0-${GITHUB_SHA::8}" --no-git-tag-version
 
