@@ -1,5 +1,6 @@
-import { BigNumberish, BytesLike } from 'ethers';
+import { BytesLike } from 'ethers';
 import { IOracle } from '../types/typechain';
+import { RequestFullData, getBatchRequestData } from '../utils/getBatchRequestData';
 
 export class Batching {
 
@@ -9,22 +10,8 @@ export class Batching {
         this.oracle = oracle;
     }
 
-    public listRequests(
-        startFrom: BigNumberish, 
-        amount: BigNumberish): Promise<IOracle.FullRequestStructOutput[]>{
-        return this.oracle.listRequests(startFrom, amount);
-    }
-
-    public getResponseIds(requestId: BytesLike): Promise<string[]> {
-        return this.oracle.getResponseIds(requestId);
-    }
-
-    public getFinalizedResponse(requestId: BytesLike): Promise<IOracle.ResponseStructOutput> {
-        return this.oracle.getFinalizedResponse(requestId);
-    }
-
     public async listResponses(requestId: BytesLike): Promise<IOracle.ResponseStructOutput[]> {
-        const responseIds: string[] = await this.getResponseIds(requestId);
+        const responseIds: string[] = await this.oracle.getResponseIds(requestId);
         const responses: IOracle.ResponseStructOutput[] = [];
         
         for (const responseId of responseIds) {
@@ -33,5 +20,10 @@ export class Batching {
         }
 
         return responses;
+    }
+
+    public async getFullRequestData(startFrom: number, amount: number): Promise<RequestFullData[]> {
+        const result = await getBatchRequestData(this.oracle.provider, this.oracle.address, startFrom, amount);
+        return result;
     }
 }

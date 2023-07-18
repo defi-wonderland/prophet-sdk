@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
+import sinon, { SinonStub } from 'sinon';
 import { Helpers } from '../../src/helpers';
 import { IOracle } from '../../src/types/typechain';
 import { IpfsApi } from '../../src/ipfsApi';
@@ -12,13 +12,19 @@ describe('Helpers', () => {
     const getRequestResult = 'getRequestResult';
     const proposeResponseResult = 'proposeResponseResult';
     const getResponseResult = 'getResponseResult';
+    const getResponseIdsResult = ['responseId1', 'responseId2'];
+    const getFinalizedResponseResult = 'finalizedResponse';
+    const listRequestsResult = ['request2', 'request2'];
     
+    const createRequestStub: SinonStub = sinon.stub();
+    const getRequestStub: SinonStub = sinon.stub();
+    const proposeResponseStub: SinonStub = sinon.stub();
+    const getResponseStub: SinonStub = sinon.stub();
+    const uploadMetadataStub: SinonStub = sinon.stub();
+    const getResponseIdsStub: SinonStub = sinon.stub();
+    const getFinalizedResponseStub: SinonStub = sinon.stub();
+    const listRequestStub: SinonStub = sinon.stub();
 
-    const createRequestStub: sinon.SinonStub = sinon.stub();
-    const getRequestStub: sinon.SinonStub = sinon.stub();
-    const proposeResponseStub: sinon.SinonStub = sinon.stub();
-    const getResponseStub: sinon.SinonStub = sinon.stub();
-    const uploadMetadataStub: sinon.SinonStub = sinon.stub();
     const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
     const cidBytes32 = cidToBytes32(cid);
     
@@ -49,8 +55,12 @@ describe('Helpers', () => {
         const oracleMock = {
             createRequest: createRequestStub.resolves(createRequestResult),
             getRequest: getRequestStub.resolves(getRequestResult),
-            proposeResponse: proposeResponseStub.resolves(proposeResponseResult),
+            ['proposeResponse(bytes32,bytes)']: proposeResponseStub.resolves(proposeResponseResult),
+            ['proposeResponse(address,bytes32,bytes)']: proposeResponseStub.resolves(proposeResponseResult),
             getResponse: getResponseStub.resolves(getResponseResult),
+            getResponseIds: getResponseIdsStub.resolves(getResponseIdsResult),
+            getFinalizedResponse: getFinalizedResponseStub.resolves(getFinalizedResponseResult),
+            listRequests: listRequestStub.resolves(listRequestsResult),
         };
 
         const mockIpfsApi = {
@@ -93,11 +103,43 @@ describe('Helpers', () => {
         });
     });
 
+    describe('proposeResponseWithProposer', () => {
+        it('call to proposeResponse', async () => {
+            const result = await helpers.proposeResponseWithProposer('0x123', '1', 'responseData');
+            expect(proposeResponseStub.calledWith('0x123', '1', 'responseData')).to.be.true;
+            expect(result).to.equal(proposeResponseResult);
+        });
+    });
+
     describe('getResponse', () => {
         it('call to getResponse', async () => {
             const result = await helpers.getResponse('1');
             expect(getResponseStub.calledWith('1')).to.be.true;
             expect(result).to.equal(getResponseResult);
+        });
+    });
+
+    describe('getResponseIds', () => {
+        it('call to getResponseIds', async () => {
+            const result = await helpers.getResponseIds('1');
+            expect(getResponseIdsStub.calledWith('1')).to.be.true;
+            expect(result).to.be.equal(getResponseIdsResult);
+        });
+    });
+
+    describe('getFinalizedResponse', () => {
+        it('call to getFinalizedResponse', async () => {
+            const result = await helpers.getFinalizedResponse('1');
+            expect(getFinalizedResponseStub.calledWith('1')).to.be.true;
+            expect(result).to.be.equal(getFinalizedResponseResult);
+        });
+    });
+
+    describe('listRequests', () => {
+        it('call to listRequests', async () => {
+            const result = await helpers.listRequests(0, 10);
+            expect(listRequestStub.calledWith(0, 10)).to.be.true;
+            expect(result).to.be.equal(listRequestsResult);
         });
     });
 });

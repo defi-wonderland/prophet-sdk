@@ -1,4 +1,4 @@
-import { BytesLike, ContractTransaction } from 'ethers';
+import { BigNumberish, BytesLike, ContractTransaction } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { RequestMetadata } from '../types/typeoffchain/typeoffchain';
 import { IpfsApi } from '../ipfsApi';
@@ -31,11 +31,30 @@ export class Helpers {
 
     public proposeResponse(requestId: BytesLike,
         responseData: BytesLike): Promise<ContractTransaction> {
-        return this.oracle['proposeResponse'](requestId, responseData);
+        return this.oracle['proposeResponse(bytes32,bytes)'](requestId, responseData);
+    }
+
+    public proposeResponseWithProposer(proposer: string, requestId: BytesLike,
+        responseData: BytesLike): Promise<ContractTransaction> {
+        return this.oracle['proposeResponse(address,bytes32,bytes)'](proposer,requestId,responseData);
     }
 
     public getResponse(responseId: BytesLike): Promise<IOracle.ResponseStructOutput> {
         return this.oracle.getResponse(responseId);
+    }
+
+    public getResponseIds(requestId: BytesLike): Promise<string[]> {
+        return this.oracle.getResponseIds(requestId);
+    }
+
+    public getFinalizedResponse(requestId: BytesLike): Promise<IOracle.ResponseStructOutput> {
+        return this.oracle.getFinalizedResponse(requestId);
+    }
+
+    public listRequests(
+        startFrom: BigNumberish, 
+        amount: BigNumberish): Promise<IOracle.FullRequestStructOutput[]>{
+        return this.oracle.listRequests(startFrom, amount);
     }
 
     public instantiateModule() {

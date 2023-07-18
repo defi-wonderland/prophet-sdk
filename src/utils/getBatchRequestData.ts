@@ -56,7 +56,43 @@ const requestDataAbi: any[] = [
   },
 ];
 
-export const getBatchRequestData = async (provider: Provider, oracleAddress: string, startFrom: number, amount: number) => {
+export interface RequestFullData {
+  _requestId: string;
+  _request: {
+    requestModuleData: string;
+    responseModuleData: string;
+    disputeModuleData: string;
+    resolutionModuleData: string;
+    finalityModuleData: string;
+    ipfsHash: string;
+    requestModule: string;
+    responseModule: string;
+    disputeModule: string;
+    resolutionModule: string;
+    finalityModule: string;
+    requester: string;
+    nonce: string;
+    createdAt: string;
+    requestId: string;
+  };
+  _responses: {
+    createdAt: string;
+    proposer: string;
+    requestId: string;
+    disputeId: string;
+    response: string;
+  }[];
+  _finalizedResponse: {
+    createdAt: string;
+    proposer: string;
+    requestId: string;
+    disputeId: string;
+    response: string;
+  };
+  _disputeStatus: number;
+}
+
+export const getBatchRequestData = async (provider: Provider, oracleAddress: string, startFrom: number, amount: number): Promise<RequestFullData[]> => {
     const inputData = utils.defaultAbiCoder.encode(['address', 'uint256', 'uint256'], [
         oracleAddress,
         startFrom,
@@ -67,5 +103,5 @@ export const getBatchRequestData = async (provider: Provider, oracleAddress: str
     const returnedData = await provider.call({ data: contractCreationCode });
     const decodedData = utils.defaultAbiCoder.decode(requestDataAbi, returnedData);
 
-    return decodedData[0];
+    return decodedData[0] as RequestFullData[];
 };

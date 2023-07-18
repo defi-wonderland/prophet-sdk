@@ -6,6 +6,10 @@
   "license": "MIT",
   "author": "Wonderland",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "yarn typechain && rm -rf dist && tsc -p tsconfig.json",
     "lint:check": "eslint ./src",
@@ -52,9 +56,5 @@
     "tsconfig-paths": "4.2.0",
     "typechain": "8.2.0",
     "typescript": "5.0.4"
-  },
-  "files": [
-    "dist",
-    "README.md"
-  ]
+  }
 }
