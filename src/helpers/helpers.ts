@@ -57,6 +57,12 @@ export class Helpers {
         return this.oracle.listRequests(startFrom, amount);
     }
 
+    public disputeResponse(
+        requestId: BytesLike,
+        responseId: BytesLike): Promise<ContractTransaction> {
+        return this.oracle.disputeResponse(requestId, responseId);
+    }
+
     public instantiateModule() {
         // TODO 
     }

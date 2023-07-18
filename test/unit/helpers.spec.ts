@@ -15,6 +15,7 @@ describe('Helpers', () => {
     const getResponseIdsResult = ['responseId1', 'responseId2'];
     const getFinalizedResponseResult = 'finalizedResponse';
     const listRequestsResult = ['request2', 'request2'];
+    const disputeResponseResult = 'success';
     
     const createRequestStub: SinonStub = sinon.stub();
     const getRequestStub: SinonStub = sinon.stub();
@@ -24,6 +25,7 @@ describe('Helpers', () => {
     const getResponseIdsStub: SinonStub = sinon.stub();
     const getFinalizedResponseStub: SinonStub = sinon.stub();
     const listRequestStub: SinonStub = sinon.stub();
+    const disputeResponseStub: SinonStub = sinon.stub();
 
     const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
     const cidBytes32 = cidToBytes32(cid);
@@ -61,6 +63,7 @@ describe('Helpers', () => {
             getResponseIds: getResponseIdsStub.resolves(getResponseIdsResult),
             getFinalizedResponse: getFinalizedResponseStub.resolves(getFinalizedResponseResult),
             listRequests: listRequestStub.resolves(listRequestsResult),
+            disputeResponse: disputeResponseStub.resolves(disputeResponseResult)
         };
 
         const mockIpfsApi = {
@@ -140,6 +143,14 @@ describe('Helpers', () => {
             const result = await helpers.listRequests(0, 10);
             expect(listRequestStub.calledWith(0, 10)).to.be.true;
             expect(result).to.be.equal(listRequestsResult);
+        });
+    });
+
+    describe('disputeResponse', () => {
+        it('call to disputeResponse', async () => {
+            const result = await helpers.disputeResponse('1', '2');
+            expect(disputeResponseStub.calledWith('1', '2')).to.be.true;
+            expect(result).to.be.equal(disputeResponseResult);
         });
     });
 });
