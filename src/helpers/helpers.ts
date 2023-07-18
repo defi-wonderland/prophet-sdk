@@ -13,11 +13,11 @@ export class Helpers {
         this.ipfsApi = ipfsApi;
     }
 
-    public createRequest(request: IOracle.NewRequestStruct): Promise<ContractTransaction> {
+    public createRequestWithoutMetadata(request: IOracle.NewRequestStruct): Promise<ContractTransaction> {
         return this.oracle.createRequest(request);
     }
 
-    public async createRequestWithMetadata(
+    public async createRequest(
         request: IOracle.NewRequestStruct, 
         requestMetadata: RequestMetadata): Promise<ContractTransaction> {
         const ipfsHash = await this.ipfsApi.uploadMetadata(requestMetadata);

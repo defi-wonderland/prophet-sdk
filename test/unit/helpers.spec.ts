@@ -73,17 +73,17 @@ describe('Helpers', () => {
         helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi);
     });
 
-    describe('createRequest', () => {
+    describe('createRequestWithoutMetadata', () => {
         it('call to createRequest', async () => {
-            const result = await helpers.createRequest(sampleRequest);
+            const result = await helpers.createRequestWithoutMetadata(sampleRequest);
             expect(result).to.equal(createRequestResult);
             expect(createRequestStub.calledWith(sampleRequest)).to.be.true;
         });
     });
 
-    describe('createRequestWithMetadata', () => {
+    describe('createRequest', () => {
         it('call to createRequestWithMetadata', async () => {
-            const result = await helpers.createRequestWithMetadata(sampleRequest, sampleRequestMetadata);
+            const result = await helpers.createRequest(sampleRequest, sampleRequestMetadata);
             expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
             expect(createRequestStub.calledWith(sampleRequest)).to.be.true;
             expect(result).to.equal(createRequestResult);
