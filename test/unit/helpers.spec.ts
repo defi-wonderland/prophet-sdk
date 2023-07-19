@@ -1,12 +1,11 @@
 import { expect } from 'chai';
 import sinon, { SinonStub } from 'sinon';
 import { Helpers } from '../../src/helpers';
-import { IArbitratorModule, IOracle } from '../../src/types/typechain';
+import { IOracle } from '../../src/types/typechain';
 import { IpfsApi } from '../../src/ipfsApi';
 import { cidToBytes32 } from '../../src/utils/cid';
 import { providers } from 'ethers';
 import config from '../../src/config/config';
-import {abi as IAbiArbitratorModule} from 'opoo-core/abi/IArbitratorModule.json';
 
 describe('Helpers', () => {
     let helpers: Helpers;
@@ -52,7 +51,7 @@ describe('Helpers', () => {
     };
 
     let sampleRequestMetadata = {
-        responseType: '',
+        responseType: 'uint',
         description: ''
     };
 
@@ -91,6 +90,19 @@ describe('Helpers', () => {
             expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
             expect(createRequestStub.calledWith(sampleRequest)).to.be.true;
             expect(result).to.equal(createRequestResult);
+        });
+
+        it('throws error if invalid response type', async () => {
+            const invalidRequestMetadata = {
+                responseType: 'uint7',
+                description: ''
+            };
+
+            try {
+                await helpers.createRequest(sampleRequest, invalidRequestMetadata);
+            } catch (e) {
+                expect(e.message).to.equal('Invalid response type: uint7');
+            }
         });
     });
 

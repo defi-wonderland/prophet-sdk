@@ -14,6 +14,7 @@ import { abi as IAbiCallbackModule } from 'opoo-core/abi/ICallbackModule.json';
 import { abi as IAbiContractCallRequestModule } from 'opoo-core/abi/IContractCallRequestModule.json';
 import { abi as IAbiERC20ResolutionModule } from 'opoo-core/abi/IERC20ResolutionModule.json';
 import { abi as IAbiHttpRequestModule } from 'opoo-core/abi/IHttpRequestModule.json';
+import { solidityTypes } from '../types/typeoffchain/solidityTypes';
 
 
 export type ModuleInstance = {
@@ -40,6 +41,7 @@ export class Helpers {
     public async createRequest(
         request: IOracle.NewRequestStruct, 
         requestMetadata: RequestMetadata): Promise<ContractTransaction> {
+        if (!this.validateResponseType(requestMetadata.responseType)) throw new Error(`Invalid response type: ${requestMetadata.responseType}`);
         const ipfsHash = await this.ipfsApi.uploadMetadata(requestMetadata);
         request.ipfsHash = ipfsHash;
         return this.oracle.createRequest(request);
@@ -145,6 +147,14 @@ export class Helpers {
             baseContract: baseContract,
             moduleClass: `I${moduleName}`
         }
+    }
+
+    private validateResponseType(responseType: string): boolean {
+        const validResponseTypes: string[] = [
+            ...solidityTypes,
+            ...solidityTypes.map((type) => `${type}[]`)
+        ];
+        return validResponseTypes.includes(responseType);
     }
 }
 
