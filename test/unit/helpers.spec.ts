@@ -1,9 +1,12 @@
 import { expect } from 'chai';
 import sinon, { SinonStub } from 'sinon';
 import { Helpers } from '../../src/helpers';
-import { IOracle } from '../../src/types/typechain';
+import { IArbitratorModule, IOracle } from '../../src/types/typechain';
 import { IpfsApi } from '../../src/ipfsApi';
 import { cidToBytes32 } from '../../src/utils/cid';
+import { providers } from 'ethers';
+import config from '../../src/config/config';
+import {abi as IAbiArbitratorModule} from 'opoo-core/abi/IArbitratorModule.json';
 
 describe('Helpers', () => {
     let helpers: Helpers;
@@ -70,7 +73,8 @@ describe('Helpers', () => {
             uploadMetadata: uploadMetadataStub.resolves({ cidBytes32 })
         };
 
-        helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi);
+        const provider = new providers.JsonRpcProvider(config.TENDERLY_URL);
+        helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi, provider);
     });
 
     describe('createRequestWithoutMetadata', () => {
@@ -151,6 +155,62 @@ describe('Helpers', () => {
             const result = await helpers.disputeResponse('1', '2');
             expect(disputeResponseStub.calledWith('1', '2')).to.be.true;
             expect(result).to.be.equal(disputeResponseResult);
+        });
+    });
+
+    describe('instantiateModule', () => {
+        it('returns ArbitratorModule', async () => {
+            const result = await helpers.instantiateModule('0x07882Ae1ecB7429a84f1D53048d35c4bB2056877');
+            expect(result.moduleClass).to.be.equal('IArbitratorModule');
+        });
+
+        it('returns BondedDisputeModule', async () => {
+            const result = await helpers.instantiateModule('0x22753E4264FDDc6181dc7cce468904A80a363E44');
+            expect(result.moduleClass).to.be.equal('IBondedDisputeModule');
+        });
+
+        it('returns BondedResponseModule', async () => {
+            const result = await helpers.instantiateModule('0xA7c59f010700930003b33aB25a7a0679C860f29c');
+            expect(result.moduleClass).to.be.equal('IBondedResponseModule');
+        });
+
+        it('returns BondEscalationModule', async () => {
+            const result = await helpers.instantiateModule('0xfaAddC93baf78e89DCf37bA67943E1bE8F37Bb8c');
+            expect(result.moduleClass).to.be.equal('IBondEscalationModule');
+        });
+
+        /* no bond escalation resolution module deployed
+        it('returns BondEscalationResolutionModule', async () => {
+            const result = await helpers.instantiateModule('0xab16A69A5a8c12C732e0DEFF4BE56A70bb64c926');
+            expect(result.moduleClass).to.be.equal('IBondEscalationResolutionModule');
+        });
+        */
+
+        it('returns CallbackModule', async () => {
+            const result = await helpers.instantiateModule('0x276C216D241856199A83bf27b2286659e5b877D3');
+            expect(result.moduleClass).to.be.equal('ICallbackModule');
+        });
+
+        it('returns ContractCallRequestModule', async () => {
+            const result = await helpers.instantiateModule('0x3155755b79aA083bd953911C92705B7aA82a18F9');
+            expect(result.moduleClass).to.be.equal('IContractCallRequestModule');
+        });
+
+        it('returns ERC20ResolutionModule', async () => {
+            const result = await helpers.instantiateModule('0x5bf5b11053e734690269C6B9D438F8C9d48F528A');
+            expect(result.moduleClass).to.be.equal('IERC20ResolutionModule');
+        });
+
+        /* fails
+        it('returns HttpRequestModule', async () => {
+            const result = await helpers.instantiateModule('IHttpRequestModule');
+            expect(result.moduleClass).to.be.equal('0x3347B4d90ebe72BeFb30444C9966B2B990aE9FcB');
+        });
+        */
+
+        it('returns MultipleCallbacksModule', async () => {
+            const result = await helpers.instantiateModule('0xffa7CA1AEEEbBc30C874d32C7e22F052BbEa0429');
+            expect(result.moduleClass).to.be.equal('IMultipleCallbacksModule');
         });
     });
 });
