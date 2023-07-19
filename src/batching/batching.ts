@@ -1,6 +1,7 @@
 import { BytesLike } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { RequestFullData, getBatchRequestData } from '../utils/getBatchRequestData';
+import { ResponseData, getBatchResponseData } from '../utils/getBatchResponseData';
 
 export class Batching {
 
@@ -10,16 +11,9 @@ export class Batching {
         this.oracle = oracle;
     }
 
-    public async listResponses(requestId: BytesLike): Promise<IOracle.ResponseStructOutput[]> {
-        const responseIds: string[] = await this.oracle.getResponseIds(requestId);
-        const responses: IOracle.ResponseStructOutput[] = [];
-        
-        for (const responseId of responseIds) {
-            const response: IOracle.ResponseStructOutput = await this.oracle.getResponse(responseId);
-            responses.push(response);
-        }
-
-        return responses;
+    public async listResponses(requestId: BytesLike): Promise<ResponseData[]> {
+        const result = await getBatchResponseData(this.oracle.provider, this.oracle.address, requestId);
+        return result;
     }
 
     public async getFullRequestData(startFrom: number, amount: number): Promise<RequestFullData[]> {

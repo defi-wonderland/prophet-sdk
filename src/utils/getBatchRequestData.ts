@@ -5,9 +5,9 @@ import {bytecode} from '../abi/BatchRequestsData.json';
 const requestDataAbi: any[] = [
   {
     components: [
-      { name: '_requestId', type: 'bytes32' },
+      { name: 'requestId', type: 'bytes32' },
       {
-        name: '_request',
+        name: 'request',
         type: 'tuple',
         components: [
           { name: 'requestModuleData', type: 'bytes' },
@@ -28,7 +28,7 @@ const requestDataAbi: any[] = [
         ],
       },
       {
-        name: '_responses',
+        name: 'responses',
         type: 'tuple[]',
         components: [
           { name: 'createdAt', type: 'uint256' },
@@ -39,7 +39,7 @@ const requestDataAbi: any[] = [
         ],
       },
       {
-        name: '_finalizedResponse',
+        name: 'finalizedResponse',
         type: 'tuple',
         components: [
           { name: 'createdAt', type: 'uint256' },
@@ -49,7 +49,7 @@ const requestDataAbi: any[] = [
           { name: 'response', type: 'bytes' },
         ],
       },
-      { name: '_disputeStatus', type: 'uint8' },
+      { name: 'disputeStatus', type: 'uint8' },
     ],
     name: 'RequestData',
     type: 'tuple[]',
@@ -57,8 +57,8 @@ const requestDataAbi: any[] = [
 ];
 
 export interface RequestFullData {
-  _requestId: string;
-  _request: {
+  requestId: string;
+  request: {
     requestModuleData: string;
     responseModuleData: string;
     disputeModuleData: string;
@@ -75,21 +75,21 @@ export interface RequestFullData {
     createdAt: string;
     requestId: string;
   };
-  _responses: {
+  responses: {
     createdAt: string;
     proposer: string;
     requestId: string;
     disputeId: string;
     response: string;
   }[];
-  _finalizedResponse: {
+  finalizedResponse: {
     createdAt: string;
     proposer: string;
     requestId: string;
     disputeId: string;
     response: string;
   };
-  _disputeStatus: number;
+  disputeStatus: number;
 }
 
 export const getBatchRequestData = async (provider: Provider, oracleAddress: string, startFrom: number, amount: number): Promise<RequestFullData[]> => {
