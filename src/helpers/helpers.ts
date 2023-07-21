@@ -46,6 +46,56 @@ export class Helpers {
         request.ipfsHash = ipfsHash;
         return this.oracle.createRequest(request);
     }
+    
+    // TODO: Not available because is not implemented yet in the oracle contract, uncomment when it is implemented
+    /** 
+    public async createRequests(requests: IOracle.NewRequestStruct[], requestMetadata: RequestMetadata[]): Promise<ContractTransaction> {
+      
+        if (requests.length !== requestMetadata.length) throw new Error('Requests data and metadata must be the same length');
+
+        const abiCoder = new ethers.utils.AbiCoder();
+
+        const requestsData : BytesLike[] = [];
+        for (let i = 0; i < requests.length; i++) {
+            const metadata = requestMetadata[i];
+            const request = requests[i];
+
+            if (!this.validateResponseType(metadata.responseType)) throw new Error(`Invalid response type: ${metadata.responseType}`);
+
+            const ipfsHash = await this.ipfsApi.uploadMetadata(metadata);
+            request.ipfsHash = ipfsHash;
+
+            requestsData.push(abiCoder.encode([
+                'bytes',
+                'bytes',
+                'bytes',
+                'bytes',
+                'bytes',
+                'bytes32',
+                'address',
+                'address',
+                'address',
+                'address',
+                'address',
+            ],
+            [
+                request.requestModuleData,
+                request.responseModuleData,
+                request.disputeModuleData,
+                request.resolutionModuleData,
+                request.finalityModuleData,
+                request.ipfsHash,
+                request.requestModule,
+                request.responseModule,
+                request.disputeModule,
+                request.resolutionModule,
+                request.finalityModule,
+            ]));
+        }
+
+        return this.oracle.createRequests(requestsData);
+    }
+    **/
 
     public getRequest(requestId: BytesLike): Promise<IOracle.RequestStructOutput> {
         return this.oracle.getRequest(requestId);
@@ -93,6 +143,52 @@ export class Helpers {
 
     public getModules() {
         // TODO 
+    }
+
+    public validModule(
+        requestId: BytesLike,
+        module: string): Promise<boolean> {
+        return this.oracle.validModule(requestId, module);
+    }
+
+    public getDispute(disputeId: BytesLike): Promise<IOracle.DisputeStructOutput> {
+        return this.oracle.getDispute(disputeId);
+    }
+
+    public getFullRequest(requestId: BytesLike): Promise<IOracle.FullRequestStructOutput> {
+        return this.oracle.getFullRequest(requestId);
+    }
+
+    public disputeOf(
+        requestId: BytesLike
+    ): Promise<string> {
+        return this.oracle.disputeOf(requestId);
+    }
+
+    public escalateDispute(
+        _disputeId: BytesLike
+    ): Promise<ContractTransaction> {
+        return this.oracle.escalateDispute(_disputeId);
+    }
+
+    public resolveDispute(
+        disputeId: BytesLike
+    ): Promise<ContractTransaction> {
+        return this.oracle.resolveDispute(disputeId);
+    }
+
+    public listRequestIds(
+        startFrom: BigNumberish,
+        batchSize: BigNumberish
+    ): Promise<string[]> {
+        return this.oracle.listRequestIds(startFrom, batchSize);
+    }
+
+    public finalize(
+        requestId: BytesLike,
+        finalizedResponseId: BytesLike
+    ): Promise<ContractTransaction> {
+        return this.oracle.finalize(requestId, finalizedResponseId);
     }
 
     private async moduleToInterface(module: IModule): Promise<ModuleInstance> {

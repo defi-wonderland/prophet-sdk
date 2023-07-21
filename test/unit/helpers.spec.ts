@@ -4,20 +4,30 @@ import { Helpers } from '../../src/helpers';
 import { IOracle } from '../../src/types/typechain';
 import { IpfsApi } from '../../src/ipfsApi';
 import { cidToBytes32 } from '../../src/utils/cid';
-import { providers } from 'ethers';
+import { BytesLike, ethers, providers } from 'ethers';
 import config from '../../src/config/config';
+import { RequestMetadata } from '../../src/types/typeoffchain/typeoffchain';
 
 describe('Helpers', () => {
     let helpers: Helpers;
 
-    const createRequestResult = 'success';
+    const createRequestResult = 'createRequestResult';
     const getRequestResult = 'getRequestResult';
     const proposeResponseResult = 'proposeResponseResult';
     const getResponseResult = 'getResponseResult';
     const getResponseIdsResult = ['responseId1', 'responseId2'];
     const getFinalizedResponseResult = 'finalizedResponse';
     const listRequestsResult = ['request2', 'request2'];
-    const disputeResponseResult = 'success';
+    const disputeResponseResult = 'disputeResponseResult';
+    const createRequestsResult = 'createRequestsResult';
+    const validModuleResult = 'validModuleResult';
+    const getDisputeResult = 'getDisputeResult';
+    const getFullRequestResult = 'getFullRequestResult';
+    const disputeOfResult = 'disputeOfResult';
+    const escalationDisputeResult = 'escalationDisputeResult';
+    const resolveDisputeResult = 'resolveDisputeResult';
+    const listRequestIdsResult = ['requestId1', 'requestId2'];
+    const finalizeResult = 'finalizeResult';
     
     const createRequestStub: SinonStub = sinon.stub();
     const getRequestStub: SinonStub = sinon.stub();
@@ -28,26 +38,33 @@ describe('Helpers', () => {
     const getFinalizedResponseStub: SinonStub = sinon.stub();
     const listRequestStub: SinonStub = sinon.stub();
     const disputeResponseStub: SinonStub = sinon.stub();
+    const createRequestsStub: SinonStub = sinon.stub();
+    const validModuleStub: SinonStub = sinon.stub();
+    const getDisputeStub: SinonStub = sinon.stub();
+    const getFullRequestStub: SinonStub = sinon.stub();
+    const disputeOfStub: SinonStub = sinon.stub();
+    const escalationDisputeStub: SinonStub = sinon.stub();
+    const resolveDisputeStub: SinonStub = sinon.stub();
+    const listRequestIdsStub: SinonStub = sinon.stub();
+    const finalizeStub: SinonStub = sinon.stub();
 
     const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
     const cidBytes32 = cidToBytes32(cid);
     
+    const sampleBytes32 = '0xb4ff0acb4895c1b00daf9ec45a04d4d0192d5d0000de47e266767a8e20ea5fd8'
 
     let sampleRequest = {
-        requestModuleData: '',
-        responseModuleData: '',
-        disputeModuleData: '',
-        resolutionModuleData: '',
-        finalityModuleData: '',
-        ipfsHash: '',
-        requestModule: '',
-        responseModule: '',
-        disputeModule: '',
-        resolutionModule: '',
-        finalityModule: '',
-        requester: '',
-        nonce: '',
-        createdAt: ''
+        requestModuleData: ethers.utils.formatBytes32String('requestModuleData'),
+        responseModuleData: ethers.utils.formatBytes32String('responseModuleData'),
+        disputeModuleData: ethers.utils.formatBytes32String('disputeModuleData'),
+        resolutionModuleData: ethers.utils.formatBytes32String('resolutionModuleData'),
+        finalityModuleData: ethers.utils.formatBytes32String('finalityModuleData'),
+        ipfsHash: ethers.utils.formatBytes32String('ipfsHash'),
+        requestModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
+        responseModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
+        disputeModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
+        resolutionModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
+        finalityModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A'
     };
 
     let sampleRequestMetadata = {
@@ -65,11 +82,20 @@ describe('Helpers', () => {
             getResponseIds: getResponseIdsStub.resolves(getResponseIdsResult),
             getFinalizedResponse: getFinalizedResponseStub.resolves(getFinalizedResponseResult),
             listRequests: listRequestStub.resolves(listRequestsResult),
-            disputeResponse: disputeResponseStub.resolves(disputeResponseResult)
+            disputeResponse: disputeResponseStub.resolves(disputeResponseResult),
+            createRequests: createRequestsStub.resolves(createRequestsResult),
+            validModule: validModuleStub.resolves(validModuleResult),
+            getDispute: getDisputeStub.resolves(getDisputeResult),
+            getFullRequest: getFullRequestStub.resolves(getFullRequestResult),
+            disputeOf: disputeOfStub.resolves(disputeOfResult),
+            escalateDispute: escalationDisputeStub.resolves(escalationDisputeResult),
+            resolveDispute: resolveDisputeStub.resolves(resolveDisputeResult),
+            listRequestIds: listRequestIdsStub.resolves(listRequestIdsResult),
+            finalize: finalizeStub.resolves(finalizeResult)
         };
 
         const mockIpfsApi = {
-            uploadMetadata: uploadMetadataStub.resolves({ cidBytes32 })
+            uploadMetadata: uploadMetadataStub.resolves(cidBytes32)
         };
 
         const provider = new providers.JsonRpcProvider(config.TENDERLY_URL);
@@ -225,4 +251,131 @@ describe('Helpers', () => {
             expect(result.moduleClass).to.be.equal('IMultipleCallbacksModule');
         });
     });
+
+    // TODO: Not available because is not implemented yet in the oracle contract, uncomment when it is implemented
+    /*
+    describe('createRequests', () => {
+        it('call to createRequests', async () => {
+            const encodedRequest = getEncodedFunctionData([sampleRequest], [sampleRequestMetadata]);
+            const result = await helpers.createRequests([sampleRequest], [sampleRequestMetadata]);
+            expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
+            expect(createRequestsStub.calledWith(encodedRequest)).to.be.true;
+            expect(result).to.equal(createRequestsResult);
+        });
+
+        it('throws error if requests and metadata length mismatch', async () => {
+            try {
+                await helpers.createRequests([sampleRequest], [sampleRequestMetadata, sampleRequestMetadata]);
+            } catch (e) {
+                expect(e.message).to.equal('Requests data and metadata must be the same length');
+            }
+        });
+    });
+    */
+
+    describe('validModule', () => {
+        it('calls to validModule', async () => {
+            const result = await helpers.validModule(sampleBytes32, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A');
+            expect(validModuleStub.calledWith(sampleBytes32, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A')).to.be.true;
+            expect(result).to.equal(validModuleResult);
+        });
+    });
+
+    describe('getDispute', () => {
+        it('calls to getDispute', async () => {
+            const result = await helpers.getDispute(sampleBytes32);
+            expect(getDisputeStub.calledWith(sampleBytes32)).to.be.true;
+            expect(result).to.equal(getDisputeResult);
+        });
+    });
+
+    describe('getFullRequest', () => {
+        it('calls to getFullRequest', async () => {
+            const result = await helpers.getFullRequest(sampleBytes32);
+            expect(getFullRequestStub.calledWith(sampleBytes32)).to.be.true;
+            expect(result).to.equal(getFullRequestResult);
+        });
+    });
+
+    describe('disputeOf', () => {
+        it('calls to disputeOf', async () => {
+            const result = await helpers.disputeOf(sampleBytes32);
+            expect(disputeOfStub.calledWith(sampleBytes32)).to.be.true;
+            expect(result).to.equal(disputeOfResult);
+        });
+    });
+
+    describe('escalateDispute', () => {
+        it('calls to escalateDispute', async () => {
+            const result = await helpers.escalateDispute(sampleBytes32);
+            expect(escalationDisputeStub.calledWith(sampleBytes32)).to.be.true;
+            expect(result).to.equal(escalationDisputeResult);
+        });
+    });
+
+    describe('resolveDispute', () => {
+        it('calls to resolveDispute', async () => {
+            const result = await helpers.resolveDispute(sampleBytes32);
+            expect(resolveDisputeStub.calledWith(sampleBytes32)).to.be.true;
+            expect(result).to.equal(resolveDisputeResult);
+        });
+    });
+
+    describe('listRequestIds', () => {
+        it('calls to listRequestIds', async () => {
+            const result = await helpers.listRequestIds(0, 10);
+            expect(listRequestIdsStub.calledWith(0, 10)).to.be.true;
+            expect(result).to.equal(listRequestIdsResult);
+        });
+    });
+
+    describe('finalize', () => {
+        it('calls to finalize', async () => {
+            const result = await helpers.finalize(sampleBytes32, '0xc5ff0acb4895c1b00daf9ec45a04d4d0192d5d0000de47e266767a8e20ea5fd7');
+            expect(finalizeStub.calledWith(sampleBytes32, '0xc5ff0acb4895c1b00daf9ec45a04d4d0192d5d0000de47e266767a8e20ea5fd7')).to.be.true;
+            expect(result).to.equal(finalizeResult);
+        });
+    });
 });
+
+const getEncodedFunctionData = (requests: IOracle.NewRequestStruct[], requestMetadata: RequestMetadata[]) => {
+    const abiCoder = new ethers.utils.AbiCoder();
+    
+    const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
+    const cidBytes32 = cidToBytes32(cid);
+
+    let requestsData : BytesLike[] = [];
+    for (let i = 0; i < requests.length; i++) {
+        const request = requests[i];
+        request.ipfsHash = cidBytes32;
+        requestsData.push(abiCoder.encode([
+            'bytes',
+            'bytes',
+            'bytes',
+            'bytes',
+            'bytes',
+            'bytes32',
+            'address',
+            'address',
+            'address',
+            'address',
+            'address',
+        ],
+        [
+            request.requestModuleData,
+            request.responseModuleData,
+            request.disputeModuleData,
+            request.resolutionModuleData,
+            request.finalityModuleData,
+            request.ipfsHash,
+            request.requestModule,
+            request.responseModule,
+            request.disputeModule,
+            request.resolutionModule,
+            request.finalityModule,
+        ]));
+    }
+
+    return requestsData;
+}
+
