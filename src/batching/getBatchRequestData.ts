@@ -1,6 +1,6 @@
 import { Provider } from '@ethersproject/providers';
 import { utils } from 'ethers';
-import {bytecode} from '../abi/BatchRequestsData.json';
+import {bytecode} from './abi/BatchRequestsData.json';
 
 const requestDataAbi: any[] = [
   {

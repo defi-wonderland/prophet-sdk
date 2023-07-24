@@ -1,4 +1,4 @@
-import { getBatchResponseData } from '../../src/utils/getBatchResponseData';
+import { getBatchResponseData } from '../../src/batching/getBatchResponseData';
 import { expect } from 'chai';
 import config from '../../src/config/config';
 import { providers } from 'ethers';

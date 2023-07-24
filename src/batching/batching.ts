@@ -1,7 +1,7 @@
 import { BytesLike } from 'ethers';
 import { IOracle } from '../types/typechain';
-import { RequestFullData, getBatchRequestData } from '../utils/getBatchRequestData';
-import { ResponseData, getBatchResponseData } from '../utils/getBatchResponseData';
+import { RequestFullData, getBatchRequestData } from './getBatchRequestData';
+import { ResponseData, getBatchResponseData } from './getBatchResponseData';
 
 export class Batching {
 
