@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import { providers } from 'ethers';
 import { Provider } from '@ethersproject/abstract-provider';
 import { OpooSDK } from '../../src/oracle';
-import { ORACLE } from '../../src/utils';
 import config from '../../src/config/config';
+import { CONSTANTS } from '../../src/utils/constants';
 
 describe('OpooSDK', () => {
   let sdk: OpooSDK;
@@ -26,7 +26,7 @@ describe('OpooSDK', () => {
     });
 
     it('should initialize oracle correctly', () => {
-      expect(sdk.oracle.address).to.equal(ORACLE);
+      expect(sdk.oracle.address).to.equal(CONSTANTS.ORACLE);
       expect(sdk.signerOrProvider).to.be.an.instanceOf(
         providers.JsonRpcProvider
       );

@@ -1,8 +1,9 @@
 import { expect } from 'chai';
+import sinon from 'sinon';
 import { IpfsApi } from '../../src/ipfsApi';
 import { cidToBytes32 } from '../../src/utils/cid';
 import config from '../../src/config/config';
-import sinon from 'sinon';
+import { CONSTANTS } from '../../src/utils';
 
 describe('Ipfssdk', () => {
     let ipfsApi: IpfsApi;
@@ -11,8 +12,18 @@ describe('Ipfssdk', () => {
     const cidBytes32 = cidToBytes32(cid);
 
     const metadata = {
-        responseType: "application/json",
-        description: "Greetings, from typescript"
+        responseType: "int256",
+        description: "Integer"
+    }
+
+    const pinataPayload = {
+        pinataOptions: {
+            cidVersion: CONSTANTS.CID_VERSION 
+        },
+        pinataMetadata: {
+            name: `${metadata.responseType}_${metadata.description}`,
+        },
+        pinataContent: metadata
     }
 
     beforeEach(async () => {
@@ -20,13 +31,13 @@ describe('Ipfssdk', () => {
 
         // mocking pinata returns
         pinFileToIPFSStub = sinon.stub(ipfsApi.api, 'pinJSONToIPFS');
-        pinFileToIPFSStub.withArgs(metadata).resolves({ IpfsHash: cid });
+        pinFileToIPFSStub.withArgs(pinataPayload).resolves({ IpfsHash: cid });
     });
 
     describe('uploadMetadata', () => {
         it('call to pinJSONToIPFS pinata sdk method', async () => {
             const result = await ipfsApi.uploadMetadata(metadata);
-            expect(pinFileToIPFSStub.calledWith(metadata)).to.be.true;
+            expect(pinFileToIPFSStub.calledWith(pinataPayload)).to.be.true;
         });
 
 

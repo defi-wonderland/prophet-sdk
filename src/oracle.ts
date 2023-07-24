@@ -1,7 +1,6 @@
 import { Modules } from './types/index';
 import { ethers } from 'ethers';
 import { abi as IAbiOracle } from 'opoo-core/abi/IOracle.json';
-import { ORACLE } from './utils/index';
 import { Provider } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
 import { IOracle } from './types/typechain';
@@ -10,6 +9,7 @@ import { Helpers } from './helpers';
 import { IpfsApi } from './ipfsApi';
 import { Ipfs } from './ipfs';
 import config from './config/config';
+import { CONSTANTS } from './utils';
 
 export class OpooSDK {
   /**
@@ -36,7 +36,7 @@ export class OpooSDK {
    */
   constructor(signerOrProvider: Provider | Signer, oracleAddress?: string) {
     this.signerOrProvider = signerOrProvider;
-    oracleAddress = oracleAddress ? oracleAddress : ORACLE;
+    oracleAddress = oracleAddress ? oracleAddress : CONSTANTS.ORACLE;
 
     try {
       this.oracle = new ethers.Contract(

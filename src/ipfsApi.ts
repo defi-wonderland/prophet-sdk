@@ -2,6 +2,7 @@ import PinataClient from '@pinata/sdk';
 import './utils/cid';
 import { cidToBytes32, isIpfsCID } from './utils/cid';
 import { RequestMetadata } from './types/typeoffchain/typeoffchain';
+import { CONSTANTS } from './utils';
 
 /**
  * @Draft
@@ -23,8 +24,16 @@ export class IpfsApi {
      * @return CID as bytes32
      */
     public async uploadMetadata(metadata: RequestMetadata): Promise<string> {
-        const result = await this.api.pinJSONToIPFS(metadata);
-        // TODO: check pinata metadata name and keys and also pinata options
+        const pinataPayload = {
+            pinataOptions: {
+                cidVersion: CONSTANTS.CID_VERSION // Since we are using base58 encoding, CID version must be 0
+            },
+            pinataMetadata: {
+                name: `${metadata.responseType}_${metadata.description}`,
+            },
+            pinataContent: metadata
+        }
+        const result = await this.api.pinJSONToIPFS(pinataPayload);
         if (!isIpfsCID(result.IpfsHash)) throw new Error(`Invalid IPFS CID: ${result.IpfsHash}`);
         return cidToBytes32(result.IpfsHash);
     }
