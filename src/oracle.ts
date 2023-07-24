@@ -39,11 +39,7 @@ export class OpooSDK {
     oracleAddress = oracleAddress ? oracleAddress : CONSTANTS.ORACLE;
 
     try {
-      this.oracle = new ethers.Contract(
-        oracleAddress,
-        IAbiOracle,
-        this.signerOrProvider
-      ) as IOracle;
+      this.oracle = new ethers.Contract(oracleAddress, IAbiOracle, this.signerOrProvider) as IOracle;
 
       this.batching = new Batching(this.oracle);
       const ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);

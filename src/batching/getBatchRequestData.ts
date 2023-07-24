@@ -1,6 +1,6 @@
 import { Provider } from '@ethersproject/providers';
 import { utils } from 'ethers';
-import {bytecode} from './abi/BatchRequestsData.json';
+import { bytecode } from './abi/BatchRequestsData.json';
 
 const requestDataAbi: any[] = [
   {
@@ -92,16 +92,17 @@ export interface RequestFullData {
   disputeStatus: number;
 }
 
-export const getBatchRequestData = async (provider: Provider, oracleAddress: string, startFrom: number, amount: number): Promise<RequestFullData[]> => {
-    const inputData = utils.defaultAbiCoder.encode(['address', 'uint256', 'uint256'], [
-        oracleAddress,
-        startFrom,
-        amount,
-    ]);
-    
-    const contractCreationCode = bytecode.concat(inputData.slice(2));
-    const returnedData = await provider.call({ data: contractCreationCode });
-    const decodedData = utils.defaultAbiCoder.decode(requestDataAbi, returnedData);
+export const getBatchRequestData = async (
+  provider: Provider,
+  oracleAddress: string,
+  startFrom: number,
+  amount: number
+): Promise<RequestFullData[]> => {
+  const inputData = utils.defaultAbiCoder.encode(['address', 'uint256', 'uint256'], [oracleAddress, startFrom, amount]);
 
-    return decodedData[0] as RequestFullData[];
+  const contractCreationCode = bytecode.concat(inputData.slice(2));
+  const returnedData = await provider.call({ data: contractCreationCode });
+  const decodedData = utils.defaultAbiCoder.decode(requestDataAbi, returnedData);
+
+  return decodedData[0] as RequestFullData[];
 };

@@ -8,4 +8,4 @@ chai.use(chaiAsPromised);
 const should = chai.should();
 const expect = chai.expect;
 
-export { should, expect, Mocha }
+export { should, expect, Mocha };

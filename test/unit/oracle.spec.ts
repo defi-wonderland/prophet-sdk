@@ -27,9 +27,7 @@ describe('OpooSDK', () => {
 
     it('should initialize oracle correctly', () => {
       expect(sdk.oracle.address).to.equal(CONSTANTS.ORACLE);
-      expect(sdk.signerOrProvider).to.be.an.instanceOf(
-        providers.JsonRpcProvider
-      );
+      expect(sdk.signerOrProvider).to.be.an.instanceOf(providers.JsonRpcProvider);
     });
   });
 });

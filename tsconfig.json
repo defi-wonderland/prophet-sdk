@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "removeComments": true,
     "outDir": "dist",
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]

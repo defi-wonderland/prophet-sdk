@@ -37,7 +37,5 @@ export const isIpfsUri = (url: string): boolean => {
 
 // Determines if a string is a valid ipfs url.
 export const isIpfsCID = (cid: string): boolean => {
-  return (
-    cid.startsWith('Qm') || cid.startsWith('bafy') || cid.startsWith('bafk')
-  );
+  return cid.startsWith('Qm') || cid.startsWith('bafy') || cid.startsWith('bafk');
 };
