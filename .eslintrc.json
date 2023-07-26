@@ -16,7 +16,8 @@
         "tabWidth": 2
       }
     ],
-    "no-unused-vars": "warn", // Warn about unused variables
+    "no-unused-vars": "off", // Warn about unused variables
+    "@typescript-eslint/no-unused-vars": "warn", // Warn about unused variables
     "no-undef": "error", // Warn about undeclared variables
     "eol-last": ["error", "always"] // Require a new line at the end of every file
   }
