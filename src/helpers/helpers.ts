@@ -25,8 +25,9 @@ import { abi as IAbiCallbackModule } from 'opoo-core/abi/ICallbackModule.json';
 import { abi as IAbiContractCallRequestModule } from 'opoo-core/abi/IContractCallRequestModule.json';
 import { abi as IAbiERC20ResolutionModule } from 'opoo-core/abi/IERC20ResolutionModule.json';
 import { abi as IAbiHttpRequestModule } from 'opoo-core/abi/IHttpRequestModule.json';
-import { ModuleInstance, RequestMetadata } from '../types/types';
+import { FullRequestWithMetadata, ModuleInstance, RequestMetadata } from '../types/types';
 import { CONSTANTS } from '../utils/constants';
+import { bytes32ToCid } from '../utils/cid';
 
 export class Helpers {
   private oracle: IOracle;
@@ -187,6 +188,20 @@ export class Helpers {
 
   public finalize(requestId: BytesLike, finalizedResponseId: BytesLike): Promise<ContractTransaction> {
     return this.oracle.finalize(requestId, finalizedResponseId);
+  }
+
+  public getRequestMetadata(ipfsHash: string): Promise<RequestMetadata> {
+    const cid = bytes32ToCid(ipfsHash);
+    return this.ipfsApi.getMetadata(cid);
+  }
+
+  public async getFullRequestWithMetadata(requestId: BytesLike): Promise<FullRequestWithMetadata> {
+    const fullRequest = await this.getFullRequest(requestId);
+    const metadata = await this.getRequestMetadata(fullRequest.ipfsHash);
+    return {
+      fullRequest: fullRequest,
+      metadata: metadata,
+    };
   }
 
   private async moduleToInterface(module: IModule): Promise<ModuleInstance> {

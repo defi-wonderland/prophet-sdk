@@ -1,4 +1,5 @@
 import PinataClient from '@pinata/sdk';
+import axios from 'axios';
 import './utils/cid';
 import { cidToBytes32, isIpfsCID } from './utils/cid';
 import { RequestMetadata } from './types/types';
@@ -14,6 +15,7 @@ export class IpfsApi {
 
   constructor(apiKey: string, secretApiKey: string) {
     this.api = new PinataClient(apiKey, secretApiKey);
+    axios.defaults.timeout = CONSTANTS.AXIOS_TIMEOUT;
   }
 
   /**
@@ -35,5 +37,10 @@ export class IpfsApi {
     const result = await this.api.pinJSONToIPFS(pinataPayload);
     if (!isIpfsCID(result.IpfsHash)) throw new Error(`Invalid IPFS CID: ${result.IpfsHash}`);
     return cidToBytes32(result.IpfsHash);
+  }
+
+  public async getMetadata(cid: string): Promise<RequestMetadata> {
+    const response = await axios.get<RequestMetadata>(`${CONSTANTS.IPFS_BASE_URL}/${cid}`);
+    return response.data;
   }
 }

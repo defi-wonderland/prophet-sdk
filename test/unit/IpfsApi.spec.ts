@@ -45,4 +45,16 @@ describe('Ipfssdk', () => {
       expect(result).to.equal(cidBytes32);
     });
   });
+
+  describe('getMetadata', () => {
+    it('should return metadata cid v0', async () => {
+      const result = await ipfsApi.getMetadata('QmU9AyVWBW8QXtSwDjxtGXzgMGeLHQ9XD3ierkhNXreV7s');
+      expect(result).to.deep.equal({ responseType: 'uint256', description: 'Unsigned integer' });
+    });
+
+    it('should return metadata cid v1', async () => {
+      const result = await ipfsApi.getMetadata('bafkreiglmmzhh6fabimxokntzgb62v2cvmytfnazuyceav5nslx5r6jo2e');
+      expect(result).to.deep.equal({ responseType: 'int256', description: 'Greetings, from typescript' });
+    });
+  });
 });

@@ -28,6 +28,7 @@ describe('Helpers', () => {
   const resolveDisputeResult = 'resolveDisputeResult';
   const listRequestIdsResult = ['requestId1', 'requestId2'];
   const finalizeResult = 'finalizeResult';
+  const getRequestMetadataResult = 'getRequestMetadataResult';
 
   const createRequestStub: SinonStub = sinon.stub();
   const getRequestStub: SinonStub = sinon.stub();
@@ -47,6 +48,7 @@ describe('Helpers', () => {
   const resolveDisputeStub: SinonStub = sinon.stub();
   const listRequestIdsStub: SinonStub = sinon.stub();
   const finalizeStub: SinonStub = sinon.stub();
+  const getRequestMetadataStub: SinonStub = sinon.stub();
 
   const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
   const cidBytes32 = cidToBytes32(cid);
@@ -96,6 +98,7 @@ describe('Helpers', () => {
 
     const mockIpfsApi = {
       uploadMetadata: uploadMetadataStub.resolves(cidBytes32),
+      getMetadata: getRequestMetadataStub.resolves(getRequestMetadataResult),
     };
 
     const provider = new providers.JsonRpcProvider(config.TENDERLY_URL);
@@ -339,6 +342,37 @@ describe('Helpers', () => {
         finalizeStub.calledWith(sampleBytes32, '0xc5ff0acb4895c1b00daf9ec45a04d4d0192d5d0000de47e266767a8e20ea5fd7')
       ).to.be.true;
       expect(result).to.equal(finalizeResult);
+    });
+  });
+
+  describe('getRequestMetadata', () => {
+    it('calls to ipfsApi getRequestMetadata', async () => {
+      const result = await helpers.getRequestMetadata(cidBytes32);
+      expect(getRequestMetadataStub.calledWith(cid)).to.be.true;
+      expect(result).to.equal(getRequestMetadataResult);
+    });
+  });
+
+  describe('getFullRequestWithMetadata', () => {
+    it('calls to getFullRequest and getRequestMetadata', async () => {
+      const fullRequestSample = { ipfsHash: cidBytes32 }; // we just care about ipfs hash here
+      const requestMetadataSample = { responseType: 'uint', description: 'uint' };
+
+      const helpersGetFullRequestStub = sinon.stub(helpers, 'getFullRequest');
+      helpersGetFullRequestStub.withArgs(sampleBytes32).resolves(fullRequestSample);
+
+      const helpersGetRequestMetadataStub = sinon.stub(helpers, 'getRequestMetadata');
+      helpersGetRequestMetadataStub.withArgs(cidBytes32).resolves(requestMetadataSample);
+
+      const result = await helpers.getFullRequestWithMetadata(sampleBytes32);
+
+      expect(helpersGetFullRequestStub.calledWith(sampleBytes32)).to.be.true;
+      expect(helpersGetRequestMetadataStub.calledWith(cidBytes32)).to.be.true;
+
+      expect(result).to.deep.equal({
+        fullRequest: fullRequestSample,
+        metadata: requestMetadataSample,
+      });
     });
   });
 });

@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@pinata/sdk": "2.1.0",
+    "axios": "1.4.0",
     "cids": "1.1.9",
     "ethers": "5.7.0",
     "ipfs-core": "0.18.1",
