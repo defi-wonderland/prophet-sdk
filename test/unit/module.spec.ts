@@ -1,19 +1,21 @@
 import { expect } from 'chai';
 import { Module } from '../../src/module';
 import { providers, utils } from 'ethers';
+import { OpooSDK } from '../../src/oracle';
+import { Provider } from '@ethersproject/abstract-provider';
 import IHttpRequestModule from '../../node_modules/opoo-core/abi/IHttpRequestModule.json';
 import IBondedResponseModule from '../../node_modules/opoo-core/abi/IBondedResponseModule.json';
-import { Provider } from '@ethersproject/abstract-provider';
 import './setup';
 import config from '../../src/config/config';
 
 describe('Module', () => {
   let module: Module;
   let otherModule: Module;
+  let sdk: OpooSDK;
+  let provider: Provider;
 
   let iface: utils.Interface;
   let otherIface: utils.Interface;
-  let provider: Provider;
 
   // TODO: move the constants to a constants file
   const moduleName = 'HttpRequestModule';
@@ -27,25 +29,23 @@ describe('Module', () => {
     '0x0000000000000000000000007bc06c482dead17c0e297afbc32f6e63d38466500000000000000000000000007f5c764cbc14f9669b88837ca1490cca17c31607000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000648c3819';
 
   beforeEach(async () => {
-    // We want to define the OpooSDK and the provider here
     provider = new providers.JsonRpcProvider(config.TENDERLY_URL);
-
+    sdk = new OpooSDK(provider);
     iface = new utils.Interface(IHttpRequestModule.abi);
     otherIface = new utils.Interface(IBondedResponseModule.abi);
 
-    module = new Module(moduleAddress, iface, provider);
-    otherModule = new Module(otherModuleAddress, otherIface, provider);
+    module = new Module(moduleAddress, iface, sdk);
+    otherModule = new Module(otherModuleAddress, otherIface, sdk);
   });
 
   describe('constructor', () => {
     it('should throw an error if the module address is invalid', () => {
-      expect(new Module('0x0', iface, provider)).to.throw;
+      expect(new Module('0x0', iface, sdk)).to.throw;
     });
 
     it('should initialize a module correctly', () => {
       expect(module.moduleAddress).to.equal(moduleAddress);
       expect(module.moduleContract.address).to.equal(moduleAddress);
-      expect(module.provider).to.be.an.instanceOf(providers.JsonRpcProvider);
     });
   });
 
