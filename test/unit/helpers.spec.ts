@@ -151,14 +151,6 @@ describe('Helpers', () => {
     });
   });
 
-  describe('proposeResponseWithProposer', () => {
-    it('call to proposeResponse', async () => {
-      const result = await helpers.proposeResponseWithProposer('0x123', '1', 'responseData');
-      expect(proposeResponseStub.calledWith('0x123', '1', 'responseData')).to.be.true;
-      expect(result).to.equal(proposeResponseResult);
-    });
-  });
-
   describe('getResponse', () => {
     it('call to getResponse', async () => {
       const result = await helpers.getResponse('1');

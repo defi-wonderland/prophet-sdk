@@ -40,10 +40,25 @@ export class Helpers {
     this.signerOrProvider = signerOrProvider;
   }
 
+  /**
+   * Creates a new request without uploading the metadata to IPFS
+   * @dev This function is useful when the metadata is already uploaded to IPFS and the
+   *        IPFS hash is set in the request data
+   * @param request - the request to be created
+   * @returns the contract transaction
+   */
   public createRequestWithoutMetadata(request: IOracle.NewRequestStruct): Promise<ContractTransaction> {
     return this.oracle.createRequest(request);
   }
 
+  /**
+   * Creates a new request with the given request data and metadata
+   * @dev This function uploads the metadata to IPFS using the RequestMetadata
+   *        and sets the IPFS hash in the request data
+   * @param request - the request to be created
+   * @param requestMetadata - the metadata of the request, such as response type and description
+   * @returns the contract transaction
+   */
   public async createRequest(
     request: IOracle.NewRequestStruct,
     requestMetadata: RequestMetadata
@@ -113,42 +128,76 @@ export class Helpers {
   }
   */
 
+  /**
+   * Gets the request for the given request id
+   * @param requestId - the request id
+   * @returns the request for the given requestId
+   */
   public getRequest(requestId: BytesLike): Promise<IOracle.RequestStructOutput> {
     return this.oracle.getRequest(requestId);
   }
 
+  /**
+   * Proposes a response for the given request id
+   * @param requestId - the request id
+   * @param responseData - the response data
+   * @returns the contract transaction
+   */
   public proposeResponse(requestId: BytesLike, responseData: BytesLike): Promise<ContractTransaction> {
     return this.oracle['proposeResponse(bytes32,bytes)'](requestId, responseData);
   }
 
-  public proposeResponseWithProposer(
-    proposer: string,
-    requestId: BytesLike,
-    responseData: BytesLike
-  ): Promise<ContractTransaction> {
-    return this.oracle['proposeResponse(address,bytes32,bytes)'](proposer, requestId, responseData);
-  }
-
+  /**
+   * Gets a response for the given response id
+   * @param responseId - the response id
+   * @returns the response for the given response id
+   **/
   public getResponse(responseId: BytesLike): Promise<IOracle.ResponseStructOutput> {
     return this.oracle.getResponse(responseId);
   }
 
+  /**
+   * Gets the ids of the responses for the given request id
+   * @param requestId - the request id
+   * @returns the ids of the responses for the given request id
+   **/
   public getResponseIds(requestId: BytesLike): Promise<string[]> {
     return this.oracle.getResponseIds(requestId);
   }
 
+  /**
+   * Gets the finalized response for the given request id
+   * @param requestId - the request id
+   * @returns the finalized response for the given request id
+   **/
   public getFinalizedResponse(requestId: BytesLike): Promise<IOracle.ResponseStructOutput> {
     return this.oracle.getFinalizedResponse(requestId);
   }
 
+  /**
+   * Gets the list of full requests for the given startFrom and amount
+   * @param startFrom - the start index
+   * @param amount - the amount of requests to get
+   * @returns the list of full requests for the given startFrom and amount
+   **/
   public listRequests(startFrom: BigNumberish, amount: BigNumberish): Promise<IOracle.FullRequestStructOutput[]> {
     return this.oracle.listRequests(startFrom, amount);
   }
 
+  /**
+   * Disputes the given request id
+   * @param requestId - the request id
+   * @returns the contract transaction
+   **/
   public disputeResponse(requestId: BytesLike, responseId: BytesLike): Promise<ContractTransaction> {
     return this.oracle.disputeResponse(requestId, responseId);
   }
 
+  /**
+   * Instantiates a module instance for the given module address
+   * @param moduleAddress - the module address
+   * @returns the module instance
+   **/
   public async instantiateModule(moduleAddress: string): Promise<ModuleInstance> {
     const module = new ethers.Contract(moduleAddress, IAbiModule, this.signerOrProvider) as IModule;
     return this.moduleToInterface(module);
@@ -158,43 +207,96 @@ export class Helpers {
     // TODO
   }
 
+  /**
+   * Returns true or false whether the request is configured to use the given module
+   * @param requestId - the request id
+   * @param module - the module address
+   * @returns true or false depending on if the module is valid
+   **/
   public validModule(requestId: BytesLike, module: string): Promise<boolean> {
     return this.oracle.validModule(requestId, module);
   }
 
+  /**
+   * Gets the dispute for the given dispute id
+   * @param disputeId - the dispute id
+   * @returns the dispute for the given dispute id
+   **/
   public getDispute(disputeId: BytesLike): Promise<IOracle.DisputeStructOutput> {
     return this.oracle.getDispute(disputeId);
   }
 
+  /**
+   * Gets the full request for the given request id
+   * @param requestId - the request id
+   * @returns the full request for the given request id
+   **/
   public getFullRequest(requestId: BytesLike): Promise<IOracle.FullRequestStructOutput> {
     return this.oracle.getFullRequest(requestId);
   }
 
+  /**
+   * Gets the dispute id for the given request id
+   * @param requestId - the request id
+   * @returns the dispute id for the given request id
+   **/
   public disputeOf(requestId: BytesLike): Promise<string> {
     return this.oracle.disputeOf(requestId);
   }
 
+  /**
+   * Escalates the given dispute
+   * @param disputeId - the dispute id
+   * @returns the contract transaction
+   **/
   public escalateDispute(_disputeId: BytesLike): Promise<ContractTransaction> {
     return this.oracle.escalateDispute(_disputeId);
   }
 
+  /**
+   * Resolves the given dispute
+   * @param disputeId - the dispute id
+   * @returns the contract transaction
+   **/
   public resolveDispute(disputeId: BytesLike): Promise<ContractTransaction> {
     return this.oracle.resolveDispute(disputeId);
   }
 
+  /**
+   * Gets the list of request ids for the given startFrom and batchSize
+   * @param startFrom - the start index
+   * @param batchSize - the amount of requests to get
+   * @returns the list of request ids for the given startFrom and batchSize
+   **/
   public listRequestIds(startFrom: BigNumberish, batchSize: BigNumberish): Promise<string[]> {
     return this.oracle.listRequestIds(startFrom, batchSize);
   }
 
+  /**
+   * Finalizes the given request
+   * @param requestId - the request id
+   * @param finalizedResponseId - the finalized response id
+   * @returns the contract transaction
+   **/
   public finalize(requestId: BytesLike, finalizedResponseId: BytesLike): Promise<ContractTransaction> {
     return this.oracle.finalize(requestId, finalizedResponseId);
   }
 
+  /**
+   * Queries ipfs for the given ipfs hash converting it first to a valid cid
+   * @param ipfsHash - the IPFS hash
+   * @returns the request metadata
+   **/
   public getRequestMetadata(ipfsHash: string): Promise<RequestMetadata> {
     const cid = bytes32ToCid(ipfsHash);
     return this.ipfsApi.getMetadata(cid);
   }
 
+  /**
+   * Gets the full request and metadata for the given request id
+   * @param requestId - the request id
+   * @returns the full request and metadata for the given request id
+   **/
   public async getFullRequestWithMetadata(requestId: BytesLike): Promise<FullRequestWithMetadata> {
     const fullRequest = await this.getFullRequest(requestId);
     const metadata = await this.getRequestMetadata(fullRequest.ipfsHash);

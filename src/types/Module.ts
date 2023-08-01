@@ -22,7 +22,7 @@ export interface IModuleBase extends IModule {
 
   /**
    * Returns the decoded data for the given requestId, this can return multiple vars compared to requestData
-   * @param requestId The requestId to get the data for
+   * @param requestId - The requestId to get the data for
    */
   decodeRequestData<T>(requestId: string): Promise<T>;
 }

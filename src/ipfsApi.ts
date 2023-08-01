@@ -21,7 +21,7 @@ export class IpfsApi {
   /**
    * Uploads metadata to IPFS and returns the CID as bytes32 which will be saved on-chain
    * @dev pinata will detect if a json metadata was uploaded before and will return the already uploaded CID
-   * @param metadata Contains the request response type and description
+   * @param metadata - Contains the request response type and description
    * @return CID as bytes32
    */
   public async uploadMetadata(metadata: RequestMetadata): Promise<string> {
