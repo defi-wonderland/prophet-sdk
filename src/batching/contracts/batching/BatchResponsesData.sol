@@ -3,7 +3,12 @@ pragma solidity ^0.8.19;
 
 import 'opoo-core/contracts/IOracle.sol';
 
-contract BatchResponses {
+/**
+  * @title BatchResponsesData contract
+  * @notice This contract is used to get batch responses data from the oracle contract
+ */
+contract BatchResponsesData {
+
   constructor(IOracle _oracle, bytes32 _requestId) {
     bytes32[] memory _responseIds = _oracle.getResponseIds(_requestId);
     IOracle.Response[] memory _returnData = new IOracle.Response[](_responseIds.length);

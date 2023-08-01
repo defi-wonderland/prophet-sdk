@@ -2,6 +2,9 @@ import { Provider } from '@ethersproject/providers';
 import { utils } from 'ethers';
 import { bytecode } from './abi/BatchRequestsData.json';
 
+/**
+ * Represents the data returned from the BatchRequestsData contract
+ */
 const requestDataAbi: any[] = [
   {
     components: [
@@ -92,6 +95,15 @@ export interface RequestFullData {
   disputeStatus: number;
 }
 
+/**
+ * Gets request data for a given oracle address, startFrom and amount
+ * @dev uses the BatchRequestsData contract
+ * @param provider - the RPC provider
+ * @param oracleAddress - the address of the oracle
+ * @param startFrom - index to start from
+ * @param amount - amount of requests to get
+ * @returns array of RequestFullData objects
+ **/
 export const getBatchRequestData = async (
   provider: Provider,
   oracleAddress: string,

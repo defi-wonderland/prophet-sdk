@@ -2,6 +2,9 @@ import { Provider } from '@ethersproject/providers';
 import { BytesLike, utils } from 'ethers';
 import { bytecode } from './abi/BatchResponseData.json';
 
+/**
+ * Represents the data returned from the BatchResponsesData contract
+ **/
 const responseAbi: any[] = [
   {
     components: [
@@ -24,6 +27,14 @@ export interface ResponseData {
   response: string;
 }
 
+/**
+ * Gets responses for a given request id
+ * @dev uses the BatchResponsesData contract
+ * @param provider - the RPC provider
+ * @param oracleAddress - address of the oracle contract
+ * @param requestId - request id to get responses for
+ * @returns array of ResponseData objects
+ **/
 export const getBatchResponseData = async (
   provider: Provider,
   oracleAddress: string,

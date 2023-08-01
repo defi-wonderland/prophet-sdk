@@ -3,6 +3,10 @@ pragma solidity ^0.8.19;
 
 import 'opoo-core/contracts/IOracle.sol';
 
+/**
+  * @title BatchRequestsData contract
+  * @notice This contract is used to get batch requests data from the oracle contract
+  */
 contract BatchRequestsData {
   
   struct RequestData {
