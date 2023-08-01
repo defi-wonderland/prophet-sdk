@@ -29,13 +29,21 @@ export const bytes32ToCid = (bytes32: string): string => {
   return encode(Buffer.from(hashHex, 'hex'));
 };
 
-// Determines if a string is a valid IPFS url.
+/**
+ * Determines if a string is a valid IPFS url
+ * @param url - The url to check
+ * @returns true if the url is a valid IPFS url
+ */
 export const isIpfsUri = (url: string): boolean => {
   const cid = url.split('://')[1];
   return url.startsWith('ipfs://') && isIpfsCID(cid);
 };
 
-// Determines if a string is a valid ipfs url.
+/**
+ * Determines if a string is a valid IPFS CID
+ * @param cid - The CID to check
+ * @returns true if the string is a valid IPFS CID
+ */
 export const isIpfsCID = (cid: string): boolean => {
   return cid.startsWith('Qm') || cid.startsWith('bafy') || cid.startsWith('bafk');
 };
