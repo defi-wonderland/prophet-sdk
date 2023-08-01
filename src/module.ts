@@ -2,6 +2,10 @@ import { Contract, utils } from 'ethers';
 import { OpooSDK } from './oracle';
 import { IModuleBase } from './types/Module';
 
+/**
+ * @title Module
+ * @notice Wrapper for module contract
+ */
 export class Module {
   public moduleAddress: string;
   public moduleContract: IModuleBase;
@@ -17,6 +21,11 @@ export class Module {
     }
   }
 
+  /**
+   * Returns the raw data for a request
+   * @param requestId - The request id to get the data for
+   * @returns the raw data for the request
+   */
   public async requestData(requestId: string): Promise<string> {
     let data: string;
     try {
@@ -27,6 +36,11 @@ export class Module {
     return data;
   }
 
+  /**
+   * Returns decoded the data for a request
+   * @param requestId - The request id to get the data for
+   * @returns the decoded data for the request
+   **/
   public async decodeRequestData<T>(requestId: string): Promise<T> {
     let data: T;
     try {
@@ -37,6 +51,10 @@ export class Module {
     return data;
   }
 
+  /**
+   * Returns a module's name
+   * @returns the module's name
+   **/
   public async moduleName(): Promise<string> {
     return await this.moduleContract.moduleName();
   }
