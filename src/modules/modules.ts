@@ -1,3 +1,4 @@
+import { FunctionFragment } from 'ethers';
 import { Module } from '../module';
 import { ModulesMap } from '../types/Module';
 
@@ -30,9 +31,10 @@ export class Modules {
    */
   public async getDecodeRequestReturnTypes(moduleAddress: string): Promise<string> {
     const module = this.getModule(moduleAddress);
-    const types = await module.moduleContract.interface.functions['decodeRequestData(bytes32)'].outputs
-      .map((output) => output.type)
-      .join(',');
+    const functionFragment = module.moduleContract.interface['fragments'].find(
+      (f: FunctionFragment) => f.name === 'decodeRequestData' && f.type === 'function'
+    );
+    const types = await functionFragment['outputs'].map((output) => output.type).join(',');
     return `(${types})`;
   }
 
@@ -43,9 +45,10 @@ export class Modules {
    */
   public async getNamedDecodeRequestReturnTypes(moduleAddress: string): Promise<string> {
     const module = this.getModule(moduleAddress);
-    const types = await module.moduleContract.interface.functions['decodeRequestData(bytes32)'].outputs
-      .map((output) => `${output.type} ${output.name}`)
-      .join(',');
+    const functionFragment = module.moduleContract.interface['fragments'].find(
+      (f: FunctionFragment) => f.name === 'decodeRequestData' && f.type === 'function'
+    );
+    const types = await functionFragment['outputs'].map((output) => `${output.type} ${output.name}`).join(',');
     return `(${types})`;
   }
 

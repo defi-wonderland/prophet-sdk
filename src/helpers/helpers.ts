@@ -1,8 +1,6 @@
-import { BigNumberish, BytesLike, ContractTransaction } from 'ethers';
+import { BigNumberish, BytesLike, ContractRunner, ContractTransaction } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { IpfsApi } from '../ipfsApi';
-import { Provider } from '@ethersproject/abstract-provider';
-import { Signer } from '@ethersproject/abstract-signer';
 import { FullRequestWithMetadata, RequestMetadata } from '../types/types';
 import { CONSTANTS } from '../utils/constants';
 import { bytes32ToCid } from '../utils/cid';
@@ -12,12 +10,13 @@ export class Helpers {
   private oracle: IOracle;
   private ipfsApi: IpfsApi;
   private modules: Modules;
-  public signerOrProvider: Provider | Signer;
 
-  constructor(oracle: IOracle, ipfsApi: IpfsApi, signerOrProvider: Provider | Signer, modules?: Modules) {
+  public runner: ContractRunner;
+
+  constructor(oracle: IOracle, ipfsApi: IpfsApi, runner: ContractRunner, modules?: Modules) {
     this.oracle = oracle;
     this.ipfsApi = ipfsApi;
-    this.signerOrProvider = signerOrProvider;
+    this.runner = runner;
     this.modules = modules;
   }
 
@@ -58,11 +57,21 @@ export class Helpers {
     // If the user didn't set the known modules we just skip it, or should we throw an error?
     if (this.modules) {
       requestMetadata['returnedTypes'] = {
-        [request.requestModule]: await this.modules.getNamedDecodeRequestReturnTypes(request.requestModule),
-        [request.responseModule]: await this.modules.getNamedDecodeRequestReturnTypes(request.responseModule),
-        [request.disputeModule]: await this.modules.getNamedDecodeRequestReturnTypes(request.disputeModule),
-        [request.resolutionModule]: await this.modules.getNamedDecodeRequestReturnTypes(request.resolutionModule),
-        [request.finalityModule]: await this.modules.getNamedDecodeRequestReturnTypes(request.finalityModule),
+        [request.requestModule as string]: await this.modules.getNamedDecodeRequestReturnTypes(
+          request.requestModule as string
+        ),
+        [request.responseModule as string]: await this.modules.getNamedDecodeRequestReturnTypes(
+          request.responseModule as string
+        ),
+        [request.disputeModule as string]: await this.modules.getNamedDecodeRequestReturnTypes(
+          request.disputeModule as string
+        ),
+        [request.resolutionModule as string]: await this.modules.getNamedDecodeRequestReturnTypes(
+          request.resolutionModule as string
+        ),
+        [request.finalityModule as string]: await this.modules.getNamedDecodeRequestReturnTypes(
+          request.finalityModule as string
+        ),
       };
     }
 

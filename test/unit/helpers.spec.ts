@@ -4,7 +4,7 @@ import { Helpers } from '../../src/helpers';
 import { IOracle } from '../../src/types/typechain';
 import { IpfsApi } from '../../src/ipfsApi';
 import { cidToBytes32 } from '../../src/utils/cid';
-import { BytesLike, ethers, providers } from 'ethers';
+import { AbiCoder, BytesLike, ethers } from 'ethers';
 import config from '../../src/config/config';
 import { RequestMetadata } from '../../src/types/types';
 
@@ -56,12 +56,12 @@ describe('Helpers', () => {
   const sampleBytes32 = '0xb4ff0acb4895c1b00daf9ec45a04d4d0192d5d0000de47e266767a8e20ea5fd8';
 
   let sampleRequest = {
-    requestModuleData: ethers.utils.formatBytes32String('requestModuleData'),
-    responseModuleData: ethers.utils.formatBytes32String('responseModuleData'),
-    disputeModuleData: ethers.utils.formatBytes32String('disputeModuleData'),
-    resolutionModuleData: ethers.utils.formatBytes32String('resolutionModuleData'),
-    finalityModuleData: ethers.utils.formatBytes32String('finalityModuleData'),
-    ipfsHash: ethers.utils.formatBytes32String('ipfsHash'),
+    requestModuleData: ethers.encodeBytes32String('requestModuleData'),
+    responseModuleData: ethers.encodeBytes32String('responseModuleData'),
+    disputeModuleData: ethers.encodeBytes32String('disputeModuleData'),
+    resolutionModuleData: ethers.encodeBytes32String('resolutionModuleData'),
+    finalityModuleData: ethers.encodeBytes32String('finalityModuleData'),
+    ipfsHash: ethers.encodeBytes32String('ipfsHash'),
     requestModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
     responseModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
     disputeModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
@@ -101,7 +101,7 @@ describe('Helpers', () => {
       getMetadata: getRequestMetadataStub.resolves(getRequestMetadataResult),
     };
 
-    const provider = new providers.JsonRpcProvider(config.RPC_URL);
+    const provider = new ethers.JsonRpcProvider(config.RPC_URL);
     helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi, provider);
   });
 
@@ -213,6 +213,27 @@ describe('Helpers', () => {
     });
   });
 
+  // TODO: Not available because is not implemented yet in the oracle contract, uncomment when it is implemented
+  /*
+    describe('createRequests', () => {
+        it('call to createRequests', async () => {
+            const encodedRequest = getEncodedFunctionData([sampleRequest], [sampleRequestMetadata]);
+            const result = await helpers.createRequests([sampleRequest], [sampleRequestMetadata]);
+            expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
+            expect(createRequestsStub.calledWith(encodedRequest)).to.be.true;
+            expect(result).to.equal(createRequestsResult);
+        });
+
+        it('throws error if requests and metadata length mismatch', async () => {
+            try {
+                await helpers.createRequests([sampleRequest], [sampleRequestMetadata, sampleRequestMetadata]);
+            } catch (e) {
+                expect(e.message).to.equal('Requests data and metadata must be the same length');
+            }
+        });
+    });
+    */
+
   describe('validModule', () => {
     it('calls to validModule', async () => {
       const result = await helpers.validModule(sampleBytes32, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A');
@@ -315,7 +336,7 @@ describe('Helpers', () => {
 });
 
 const getEncodedFunctionData = (requests: IOracle.NewRequestStruct[], requestMetadata: RequestMetadata[]) => {
-  const abiCoder = new ethers.utils.AbiCoder();
+  const abiCoder = AbiCoder.defaultAbiCoder();
 
   const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
   const cidBytes32 = cidToBytes32(cid);

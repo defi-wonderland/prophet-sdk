@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { providers } from 'ethers';
-import { Provider } from '@ethersproject/abstract-provider';
+import { ethers, Provider } from 'ethers';
 import { OpooSDK } from '../../src/oracle';
 import config from '../../src/config/config';
 import { CONSTANTS } from '../../src/utils/constants';
@@ -11,13 +10,13 @@ describe('OpooSDK', () => {
 
   beforeEach(async () => {
     // We want to define the OpooSDK and the provider here
-    provider = new providers.JsonRpcProvider(config.RPC_URL);
+    provider = new ethers.JsonRpcProvider(config.RPC_URL);
     sdk = new OpooSDK(provider);
   });
 
   describe('constructor', () => {
     it('should throw an error if the rpc is invalid', () => {
-      const provider = new providers.JsonRpcProvider('0xBAD');
+      const provider = new ethers.JsonRpcProvider('0xBAD');
       expect(new OpooSDK(provider)).to.throw;
     });
 
@@ -25,9 +24,9 @@ describe('OpooSDK', () => {
       expect(new OpooSDK(provider, '0x00')).to.throw;
     });
 
-    it('should initialize oracle correctly', () => {
-      expect(sdk.oracle.address).to.equal(CONSTANTS.ORACLE);
-      expect(sdk.signerOrProvider).to.be.an.instanceOf(providers.JsonRpcProvider);
+    it('should initialize oracle correctly', async () => {
+      expect(await sdk.oracle.getAddress()).to.equal(CONSTANTS.ORACLE);
+      expect(sdk.runner).to.be.an.instanceOf(ethers.JsonRpcProvider);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { BytesLike } from 'ethers/lib/ethers';
+import { BytesLike } from 'ethers';
 import { IpfsApi } from '../ipfsApi';
 import { IOracle } from '../types/typechain';
 import { bytes32ToCid } from '../utils/cid';

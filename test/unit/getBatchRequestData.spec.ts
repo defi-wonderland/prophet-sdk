@@ -1,10 +1,10 @@
 import { getBatchRequestData } from '../../src/batching/getBatchRequestData';
 import { expect } from 'chai';
 import config from '../../src/config/config';
-import { providers } from 'ethers';
+import { ethers } from 'ethers';
 
 describe('getBatchRequestData', () => {
-  const provider = new providers.JsonRpcProvider(config.RPC_URL);
+  const provider = new ethers.JsonRpcProvider(config.RPC_URL);
   it('returns the correct requestId', async () => {
     const result = await getBatchRequestData(provider, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A', 0, 5);
 

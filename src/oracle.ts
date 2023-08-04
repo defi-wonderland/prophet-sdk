@@ -1,8 +1,5 @@
-import { ModulesMap } from './types/index';
-import { ethers } from 'ethers';
+import { ContractRunner, ethers } from 'ethers';
 import { abi as IAbiOracle } from 'opoo-core/abi/IOracle.json';
-import { Provider } from '@ethersproject/abstract-provider';
-import { Signer } from '@ethersproject/abstract-signer';
 import { IOracle } from './types/typechain';
 import { Batching } from './batching';
 import { Helpers } from './helpers';
@@ -10,6 +7,7 @@ import { IpfsApi } from './ipfsApi';
 import { Ipfs } from './ipfs';
 import config from './config/config';
 import { CONSTANTS } from './utils';
+import { ModulesMap } from './types/Module';
 import { Modules } from './modules/modules';
 
 export class OpooSDK {
@@ -19,9 +17,9 @@ export class OpooSDK {
   public oracle: IOracle;
 
   /**
-   * The signer or provider to use
+   * The runner to use
    */
-  public signerOrProvider: Provider | Signer;
+  public runner: ContractRunner;
 
   public batching: Batching;
   public helpers: Helpers;
@@ -31,18 +29,19 @@ export class OpooSDK {
   /**
    * Constructor
    */
-  constructor(signerOrProvider: Provider | Signer, oracleAddress?: string, knownModules?: ModulesMap) {
-    this.signerOrProvider = signerOrProvider;
+  constructor(runner: ContractRunner, oracleAddress?: string, knownModules?: ModulesMap) {
+    this.runner = runner;
     oracleAddress = oracleAddress ? oracleAddress : CONSTANTS.ORACLE;
 
     try {
-      this.oracle = new ethers.Contract(oracleAddress, IAbiOracle, this.signerOrProvider) as IOracle;
+      this.oracle = new ethers.Contract(oracleAddress, IAbiOracle, this.runner) as unknown as IOracle;
 
       this.batching = new Batching(this.oracle);
       const ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);
       this.modules = new Modules(knownModules);
-      this.helpers = new Helpers(this.oracle, ipfsApi, signerOrProvider, this.modules);
+      this.helpers = new Helpers(this.oracle, ipfsApi, runner, this.modules);
       this.ipfs = new Ipfs(this.oracle, ipfsApi);
+      this.modules = new Modules(knownModules);
     } catch (e) {
       throw new Error(`Failed to create oracle contract ${e}`);
     }

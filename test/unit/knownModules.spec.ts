@@ -1,8 +1,7 @@
 import { expect } from 'chai';
 import { Module } from '../../src/module';
-import { providers, utils } from 'ethers';
+import { Provider, ethers } from 'ethers';
 import { OpooSDK } from '../../src/oracle';
-import { Provider } from '@ethersproject/abstract-provider';
 import IHttpRequestModule from '../../node_modules/opoo-core/abi/IHttpRequestModule.json';
 import IBondedResponseModule from '../../node_modules/opoo-core/abi/IBondedResponseModule.json';
 import './setup';
@@ -15,16 +14,16 @@ describe('Known modules', () => {
   let sdk: OpooSDK;
   let provider: Provider;
 
-  let iface: utils.Interface;
-  let otherIface: utils.Interface;
+  let iface: ethers.Interface;
+  let otherIface: ethers.Interface;
 
   const moduleAddress = '0x7969c5eD335650692Bc04293B07F5BF2e7A673C0';
   const otherModuleAddress = '0xCD8a1C3ba11CF5ECfa6267617243239504a98d90';
 
-  provider = new providers.JsonRpcProvider(config.TENDERLY_URL);
+  provider = new ethers.JsonRpcProvider(config.RPC_URL);
   sdk = new OpooSDK(provider);
-  iface = new utils.Interface(IHttpRequestModule.abi);
-  otherIface = new utils.Interface(IBondedResponseModule.abi);
+  iface = new ethers.Interface(IHttpRequestModule.abi);
+  otherIface = new ethers.Interface(IBondedResponseModule.abi);
 
   module = new Module(moduleAddress, iface, sdk);
   otherModule = new Module(otherModuleAddress, otherIface, sdk);

@@ -1,6 +1,5 @@
-import { Provider } from '@ethersproject/providers';
-import { utils } from 'ethers';
 import { bytecode } from './abi/BatchRequestsData.json';
+import { AbiCoder, ContractRunner } from 'ethers';
 
 /**
  * Represents the data returned from the BatchRequestsData contract
@@ -105,16 +104,19 @@ export interface RequestFullData {
  * @returns array of RequestFullData objects
  **/
 export const getBatchRequestData = async (
-  provider: Provider,
+  provider: ContractRunner,
   oracleAddress: string,
   startFrom: number,
   amount: number
 ): Promise<RequestFullData[]> => {
-  const inputData = utils.defaultAbiCoder.encode(['address', 'uint256', 'uint256'], [oracleAddress, startFrom, amount]);
+  const inputData = AbiCoder.defaultAbiCoder().encode(
+    ['address', 'uint256', 'uint256'],
+    [oracleAddress, startFrom, amount]
+  );
 
   const contractCreationCode = bytecode.concat(inputData.slice(2));
   const returnedData = await provider.call({ data: contractCreationCode });
-  const decodedData = utils.defaultAbiCoder.decode(requestDataAbi, returnedData);
+  const decodedData = AbiCoder.defaultAbiCoder().decode(requestDataAbi, returnedData);
 
   return decodedData[0] as RequestFullData[];
 };

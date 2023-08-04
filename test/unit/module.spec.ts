@@ -1,8 +1,7 @@
 import { expect } from 'chai';
 import { Module } from '../../src/module';
-import { providers, utils } from 'ethers';
+import { ethers, Provider } from 'ethers';
 import { OpooSDK } from '../../src/oracle';
-import { Provider } from '@ethersproject/abstract-provider';
 import IHttpRequestModule from '../../node_modules/opoo-core/abi/IHttpRequestModule.json';
 import IBondedResponseModule from '../../node_modules/opoo-core/abi/IBondedResponseModule.json';
 import './setup';
@@ -14,8 +13,8 @@ describe('Module', () => {
   let sdk: OpooSDK;
   let provider: Provider;
 
-  let iface: utils.Interface;
-  let otherIface: utils.Interface;
+  let iface: ethers.Interface;
+  let otherIface: ethers.Interface;
 
   // TODO: move the constants to a constants file
   const moduleName = 'HttpRequestModule';
@@ -29,10 +28,10 @@ describe('Module', () => {
     '0x0000000000000000000000007bc06c482dead17c0e297afbc32f6e63d38466500000000000000000000000007f5c764cbc14f9669b88837ca1490cca17c31607000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000648c3819';
 
   beforeEach(async () => {
-    provider = new providers.JsonRpcProvider(config.RPC_URL);
+    provider = new ethers.JsonRpcProvider(config.RPC_URL);
     sdk = new OpooSDK(provider);
-    iface = new utils.Interface(IHttpRequestModule.abi);
-    otherIface = new utils.Interface(IBondedResponseModule.abi);
+    iface = new ethers.Interface(IHttpRequestModule.abi);
+    otherIface = new ethers.Interface(IBondedResponseModule.abi);
 
     module = new Module(moduleAddress, iface, sdk);
     otherModule = new Module(otherModuleAddress, otherIface, sdk);
@@ -43,9 +42,9 @@ describe('Module', () => {
       expect(new Module('0x0', iface, sdk)).to.throw;
     });
 
-    it('should initialize a module correctly', () => {
+    it('should initialize a module correctly', async () => {
       expect(module.moduleAddress).to.equal(moduleAddress);
-      expect(module.moduleContract.address).to.equal(moduleAddress);
+      expect(await module.moduleContract.getAddress()).to.equal(moduleAddress);
     });
   });
 
@@ -79,7 +78,7 @@ describe('Module', () => {
 
     it('should return the decoded request data for the HttpRequestModule', async () => {
       const data = await module.decodeRequestData(requestId);
-      const expectedData = utils.defaultAbiCoder.decode(
+      const expectedData = ethers.AbiCoder.defaultAbiCoder().decode(
         ['string', 'string', 'string', 'address', 'address', 'uint256'],
         requestData
       );
@@ -88,7 +87,10 @@ describe('Module', () => {
 
     it('should return the decoded request data for the BondedResponseModule', async () => {
       const data = await otherModule.decodeRequestData(requestId);
-      const expectedData = utils.defaultAbiCoder.decode(['address', 'address', 'uint256', 'uint256'], otherRequestData);
+      const expectedData = ethers.AbiCoder.defaultAbiCoder().decode(
+        ['address', 'address', 'uint256', 'uint256'],
+        otherRequestData
+      );
       expect(data).to.deep.equal(expectedData);
     });
   });

@@ -22,7 +22,7 @@ export class Batching {
    * @returns array of responses
    **/
   public async listResponses(requestId: BytesLike): Promise<ResponseData[]> {
-    const result = await getBatchResponseData(this.oracle.provider, this.oracle.address, requestId);
+    const result = await getBatchResponseData(this.oracle.runner, await this.oracle.getAddress(), requestId);
     return result;
   }
 
@@ -33,7 +33,7 @@ export class Batching {
    * @returns array of RequestFullData objects that include the request, its responses, and dispute status
    **/
   public async getFullRequestData(startFrom: number, amount: number): Promise<RequestFullData[]> {
-    const result = await getBatchRequestData(this.oracle.provider, this.oracle.address, startFrom, amount);
+    const result = await getBatchRequestData(this.oracle.runner, await this.oracle.getAddress(), startFrom, amount);
     return result;
   }
 }
