@@ -6,16 +6,27 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { FullRequestWithMetadata, RequestMetadata } from '../types/types';
 import { CONSTANTS } from '../utils/constants';
 import { bytes32ToCid } from '../utils/cid';
+import { Modules } from '../modules/modules';
 
 export class Helpers {
   private oracle: IOracle;
   private ipfsApi: IpfsApi;
+  private modules: Modules;
   public signerOrProvider: Provider | Signer;
 
-  constructor(oracle: IOracle, ipfsApi: IpfsApi, signerOrProvider: Provider | Signer) {
+  constructor(oracle: IOracle, ipfsApi: IpfsApi, signerOrProvider: Provider | Signer, modules?: Modules) {
     this.oracle = oracle;
     this.ipfsApi = ipfsApi;
     this.signerOrProvider = signerOrProvider;
+    this.modules = modules;
+  }
+
+  /**
+   * Set the modules helper
+   * @param modules - The modules helper
+   */
+  public setModules(modules: Modules) {
+    this.modules = modules;
   }
 
   /**
@@ -43,6 +54,18 @@ export class Helpers {
   ): Promise<ContractTransaction> {
     if (!this.validateResponseType(requestMetadata.responseType))
       throw new Error(`Invalid response type: ${requestMetadata.responseType}`);
+
+    // If the user didn't set the known modules we just skip it, or should we throw an error?
+    if (this.modules) {
+      requestMetadata['returnedTypes'] = {
+        [request.requestModule]: await this.modules.getNamedDecodeRequestReturnTypes(request.requestModule),
+        [request.responseModule]: await this.modules.getNamedDecodeRequestReturnTypes(request.responseModule),
+        [request.disputeModule]: await this.modules.getNamedDecodeRequestReturnTypes(request.disputeModule),
+        [request.resolutionModule]: await this.modules.getNamedDecodeRequestReturnTypes(request.resolutionModule),
+        [request.finalityModule]: await this.modules.getNamedDecodeRequestReturnTypes(request.finalityModule),
+      };
+    }
+
     const ipfsHash = await this.ipfsApi.uploadMetadata(requestMetadata);
     request.ipfsHash = ipfsHash;
     return this.oracle.createRequest(request);

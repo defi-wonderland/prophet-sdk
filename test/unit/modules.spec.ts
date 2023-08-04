@@ -48,9 +48,20 @@ describe('Modules', () => {
   });
 
   it('should return the correct return types for a module', async () => {
-    expect(modules.getDecodeRequestReturnTypes(moduleAddress)).to.be.equal(
+    expect(await modules.getDecodeRequestReturnTypes(moduleAddress)).to.be.equal(
       '(string,string,string,address,address,uint256)'
     );
-    expect(modules.getDecodeRequestReturnTypes(otherModuleAddress)).to.be.equal('(address,address,uint256,uint256)');
+    expect(await modules.getDecodeRequestReturnTypes(otherModuleAddress)).to.be.equal(
+      '(address,address,uint256,uint256)'
+    );
+  });
+
+  it('should return the correct named return types for a module', async () => {
+    expect(await modules.getNamedDecodeRequestReturnTypes(moduleAddress)).to.be.equal(
+      '(string _url,string _method,string _body,address _accountingExtension,address _paymentToken,uint256 _paymentAmount)'
+    );
+    expect(await modules.getNamedDecodeRequestReturnTypes(otherModuleAddress)).to.be.equal(
+      '(address _accounting,address _bondToken,uint256 _bondSize,uint256 _deadline)'
+    );
   });
 });

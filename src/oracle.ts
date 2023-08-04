@@ -40,9 +40,9 @@ export class OpooSDK {
 
       this.batching = new Batching(this.oracle);
       const ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);
-      this.helpers = new Helpers(this.oracle, ipfsApi, signerOrProvider);
-      this.ipfs = new Ipfs(this.oracle, ipfsApi);
       this.modules = new Modules(knownModules);
+      this.helpers = new Helpers(this.oracle, ipfsApi, signerOrProvider, this.modules);
+      this.ipfs = new Ipfs(this.oracle, ipfsApi);
     } catch (e) {
       throw new Error(`Failed to create oracle contract ${e}`);
     }
@@ -53,6 +53,7 @@ export class OpooSDK {
    * @param knownModules - A list of custom modules that can be added to the oracle
    */
   public setKnownModules(knownModules: ModulesMap) {
-    this.modules = new Modules(knownModules);
+    this.modules.setKnownModules(knownModules);
+    this.helpers.setModules(this.modules);
   }
 }

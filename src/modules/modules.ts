@@ -28,11 +28,28 @@ export class Modules {
    * @param moduleAddress - The address of the module to get the decode request method return types for
    * @returns The return types of the decode request method
    */
-  public getDecodeRequestReturnTypes(moduleAddress: string): string {
+  public async getDecodeRequestReturnTypes(moduleAddress: string): Promise<string> {
     const module = this.getModule(moduleAddress);
-    const types = module.moduleContract.interface.functions['decodeRequestData(bytes32)'].outputs
+    const types = await module.moduleContract.interface.functions['decodeRequestData(bytes32)'].outputs
       .map((output) => output.type)
       .join(',');
     return `(${types})`;
+  }
+
+  /**
+   * Get the named return types from the decode request method of a module
+   * @param moduleAddress - The address of the module to get the decode request method named return types for
+   * @returns The named return types of the decode request method
+   */
+  public async getNamedDecodeRequestReturnTypes(moduleAddress: string): Promise<string> {
+    const module = this.getModule(moduleAddress);
+    const types = await module.moduleContract.interface.functions['decodeRequestData(bytes32)'].outputs
+      .map((output) => `${output.type} ${output.name}`)
+      .join(',');
+    return `(${types})`;
+  }
+
+  public setKnownModules(knownModules: ModulesMap) {
+    this.knownModules = knownModules;
   }
 }

@@ -114,7 +114,7 @@ describe('Helpers', () => {
   });
 
   describe('createRequest', () => {
-    it('call to createRequestWithMetadata', async () => {
+    it('call to createRequest', async () => {
       const result = await helpers.createRequest(sampleRequest, sampleRequestMetadata);
       expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
       expect(createRequestStub.calledWith(sampleRequest)).to.be.true;
@@ -132,6 +132,28 @@ describe('Helpers', () => {
       } catch (e) {
         expect(e.message).to.equal('Invalid response type: uint7');
       }
+    });
+
+    it('call upload metadata with the decodeRequest return types', async () => {
+      const getNamedDecodeRequestReturnTypesStub: SinonStub = sinon.stub();
+      const mockModules = {
+        getNamedDecodeRequestReturnTypes: getNamedDecodeRequestReturnTypesStub.resolves(
+          '(string _url,uint256 _bondSize,address _bondToken)'
+        ),
+      };
+
+      helpers.setModules(mockModules as any);
+      await helpers.createRequest(sampleRequest, sampleRequestMetadata);
+      expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
+
+      // Checking that the request metadata is updated with the decodeRequest return types
+      expect(sampleRequestMetadata).to.deep.equal({
+        responseType: 'uint',
+        description: '',
+        returnedTypes: {
+          '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A': '(string _url,uint256 _bondSize,address _bondToken)',
+        },
+      });
     });
   });
 
