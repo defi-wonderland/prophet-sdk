@@ -1,4 +1,4 @@
-import { Modules } from './types/index';
+import { ModulesMap } from './types/index';
 import { ethers } from 'ethers';
 import { abi as IAbiOracle } from 'opoo-core/abi/IOracle.json';
 import { Provider } from '@ethersproject/abstract-provider';
@@ -10,17 +10,13 @@ import { IpfsApi } from './ipfsApi';
 import { Ipfs } from './ipfs';
 import config from './config/config';
 import { CONSTANTS } from './utils';
+import { Modules } from './modules/modules';
 
 export class OpooSDK {
   /**
    * The contract of the Oracle to use
    */
   public oracle: IOracle;
-
-  /**
-   * The addresses of the Modules to use
-   */
-  public whitelistedModules: Modules;
 
   /**
    * The signer or provider to use
@@ -30,11 +26,12 @@ export class OpooSDK {
   public batching: Batching;
   public helpers: Helpers;
   public ipfs: Ipfs;
+  public modules: Modules;
 
   /**
    * Constructor
    */
-  constructor(signerOrProvider: Provider | Signer, oracleAddress?: string) {
+  constructor(signerOrProvider: Provider | Signer, oracleAddress?: string, knownModules?: ModulesMap) {
     this.signerOrProvider = signerOrProvider;
     oracleAddress = oracleAddress ? oracleAddress : CONSTANTS.ORACLE;
 
@@ -45,8 +42,17 @@ export class OpooSDK {
       const ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);
       this.helpers = new Helpers(this.oracle, ipfsApi, signerOrProvider);
       this.ipfs = new Ipfs(this.oracle, ipfsApi);
+      this.modules = new Modules(knownModules);
     } catch (e) {
       throw new Error(`Failed to create oracle contract ${e}`);
     }
+  }
+
+  /**
+   * Set the known modules
+   * @param knownModules - A list of custom modules that can be added to the oracle
+   */
+  public setKnownModules(knownModules: ModulesMap) {
+    this.modules = new Modules(knownModules);
   }
 }

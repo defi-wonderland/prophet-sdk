@@ -1,8 +1,10 @@
+import { Module } from '../module';
 import { OpooSDK } from '../oracle';
 import { IModule } from '../types/typechain/IModule';
 
 /**
  * Module interface
+ * TODO: deprecate?
  */
 export interface IModuleBase extends IModule {
   /**
@@ -30,8 +32,8 @@ export interface IModuleBase extends IModule {
 /**
  * A list of custom modules that can be added to the oracle
  */
-export interface Modules {
-  [name: string]: IModuleBase;
+export interface ModulesMap {
+  [address: string]: Module;
 }
 
 export enum DisputeStatus {
