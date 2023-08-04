@@ -4,7 +4,7 @@ import config from '../../src/config/config';
 import { providers } from 'ethers';
 
 describe('getBatchRequestData', () => {
-  const provider = new providers.JsonRpcProvider(config.TENDERLY_URL);
+  const provider = new providers.JsonRpcProvider(config.RPC_URL);
   it('returns the correct requestId', async () => {
     const result = await getBatchResponseData(
       provider,

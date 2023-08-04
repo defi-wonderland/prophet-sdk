@@ -29,7 +29,7 @@ describe('Module', () => {
     '0x0000000000000000000000007bc06c482dead17c0e297afbc32f6e63d38466500000000000000000000000007f5c764cbc14f9669b88837ca1490cca17c31607000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000648c3819';
 
   beforeEach(async () => {
-    provider = new providers.JsonRpcProvider(config.TENDERLY_URL);
+    provider = new providers.JsonRpcProvider(config.RPC_URL);
     sdk = new OpooSDK(provider);
     iface = new utils.Interface(IHttpRequestModule.abi);
     otherIface = new utils.Interface(IBondedResponseModule.abi);

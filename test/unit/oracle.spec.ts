@@ -11,7 +11,7 @@ describe('OpooSDK', () => {
 
   beforeEach(async () => {
     // We want to define the OpooSDK and the provider here
-    provider = new providers.JsonRpcProvider(config.TENDERLY_URL);
+    provider = new providers.JsonRpcProvider(config.RPC_URL);
     sdk = new OpooSDK(provider);
   });
 

@@ -5,7 +5,7 @@ dotenv.config();
 interface Config {
   PINATA_API_KEY: string;
   PINATA_SECRET_API_KEY: string;
-  TENDERLY_URL: string;
+  RPC_URL: string;
 }
 
 const config: Config = {
@@ -14,7 +14,7 @@ const config: Config = {
   // eslint-disable-next-line no-undef
   PINATA_SECRET_API_KEY: process.env.PINATA_SECRET_API_KEY || '',
   // eslint-disable-next-line no-undef
-  TENDERLY_URL: process.env.TENDERLY_URL || '',
+  RPC_URL: process.env.RPC_URL || '',
 };
 
 export default config;

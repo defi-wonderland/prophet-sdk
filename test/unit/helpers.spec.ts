@@ -101,7 +101,7 @@ describe('Helpers', () => {
       getMetadata: getRequestMetadataStub.resolves(getRequestMetadataResult),
     };
 
-    const provider = new providers.JsonRpcProvider(config.TENDERLY_URL);
+    const provider = new providers.JsonRpcProvider(config.RPC_URL);
     helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi, provider);
   });
 
