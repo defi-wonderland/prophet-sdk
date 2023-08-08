@@ -314,10 +314,6 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@defi-wonderland/isolmate@https://github.com/defi-wonderland/isolmate.git#59e18043c2450fef550f1744b3705ce9ebcaf1c8":
-  version "6.2.0-beta2"
-  resolved "https://github.com/defi-wonderland/isolmate.git#59e18043c2450fef550f1744b3705ce9ebcaf1c8"
-
 "@defi-wonderland/keep3r-v2@0.0.0-31de77ed":
   version "0.0.0-31de77ed"
   resolved "https://registry.yarnpkg.com/@defi-wonderland/keep3r-v2/-/keep3r-v2-0.0.0-31de77ed.tgz#e2bb680838af23bacf5034a89c37d1d56b91970c"
@@ -3063,11 +3059,11 @@ dotenv@16.3.1:
 
 "ds-test@https://github.com/dapphub/ds-test":
   version "1.0.0"
-  uid e282159d5170298eb2455a6c05280ab5a73a4ef0
   resolved "https://github.com/dapphub/ds-test#e282159d5170298eb2455a6c05280ab5a73a4ef0"
 
 "ds-test@https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0":
   version "1.0.0"
+  uid e282159d5170298eb2455a6c05280ab5a73a4ef0
   resolved "https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0"
 
 electron-fetch@^1.7.2:
@@ -5769,12 +5765,11 @@ onetime@^5.1.0, onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-opoo-core@0.0.0-88e224d8:
-  version "0.0.0-88e224d8"
-  resolved "https://registry.yarnpkg.com/opoo-core/-/opoo-core-0.0.0-88e224d8.tgz#bc36d53fca98eb6bb87caf69f7c6f5b040d09fb5"
-  integrity sha512-SkXu+V5zuq7+jtDlnkiiBMBe1zfXrlPCeo5peaAACNxxEAzhyHISqWRBbdtzv82z+jOZDD5bUtKn3y4kz18ZqA==
+opoo-core@0.0.0-b461ebb5:
+  version "0.0.0-b461ebb5"
+  resolved "https://registry.yarnpkg.com/opoo-core/-/opoo-core-0.0.0-b461ebb5.tgz#d51b5e0312f053886234b9d58990421dc731e381"
+  integrity sha512-KyOorFAaxzNTKqfC34Ti7poBvKqTUx6vZ6mYEz11RxDzQqcgC1wNd8FLJ3/x59dU67ODcQ8pbbNH1rCcOxOV3w==
   dependencies:
-    "@defi-wonderland/isolmate" "https://github.com/defi-wonderland/isolmate.git#59e18043c2450fef550f1744b3705ce9ebcaf1c8"
     "@defi-wonderland/keep3r-v2" "0.0.0-31de77ed"
     "@defi-wonderland/solidity-utils" "0.0.0-4298c6c6"
     "@ethersproject/abi" "5.7.0"

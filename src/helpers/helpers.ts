@@ -289,6 +289,14 @@ export class Helpers {
   }
 
   /**
+   * Returns the total request count of the Oracle
+   * @returns the total request count of the Oracle
+   */
+  public totalRequestCount(): Promise<bigint> {
+    return this.oracle.totalRequestCount();
+  }
+
+  /**
    * Gets the full request and metadata for the given request id
    * @param requestId - the request id
    * @returns the full request and metadata for the given request id

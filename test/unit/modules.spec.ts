@@ -140,7 +140,7 @@ describe('Modules', () => {
           type: 'string',
         },
         {
-          type: 'string',
+          type: 'uint8',
         },
         {
           type: 'string',
@@ -186,7 +186,7 @@ describe('Modules', () => {
         },
         {
           name: '_method',
-          type: 'string',
+          type: 'uint8',
         },
         {
           name: '_body',

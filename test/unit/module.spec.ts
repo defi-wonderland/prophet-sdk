@@ -76,7 +76,7 @@ describe('Module', () => {
     it('should return the decoded request data for the HttpRequestModule', async () => {
       const data = await module.decodeRequestData(requestId);
       const expectedData = ethers.AbiCoder.defaultAbiCoder().decode(
-        ['string', 'string', 'string', 'address', 'address', 'uint256'],
+        ['string', 'uint8', 'string', 'address', 'address', 'uint256'],
         requestData
       );
       expect(data).to.deep.equal(expectedData);

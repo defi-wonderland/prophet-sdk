@@ -30,6 +30,7 @@ describe('Helpers', () => {
   const listRequestIdsResult = ['requestId1', 'requestId2'];
   const finalizeResult = 'finalizeResult';
   const getRequestMetadataResult = 'getRequestMetadataResult';
+  const totalRequestCountResult = 99;
 
   const createRequestStub: SinonStub = sinon.stub();
   const getRequestStub: SinonStub = sinon.stub();
@@ -50,6 +51,7 @@ describe('Helpers', () => {
   const listRequestIdsStub: SinonStub = sinon.stub();
   const finalizeStub: SinonStub = sinon.stub();
   const getRequestMetadataStub: SinonStub = sinon.stub();
+  const totalRequestCountStub: SinonStub = sinon.stub();
 
   const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
   const cidBytes32 = cidToBytes32(cid);
@@ -95,6 +97,7 @@ describe('Helpers', () => {
       resolveDispute: resolveDisputeStub.resolves(resolveDisputeResult),
       listRequestIds: listRequestIdsStub.resolves(listRequestIdsResult),
       finalize: finalizeStub.resolves(finalizeResult),
+      totalRequestCount: totalRequestCountStub.resolves(totalRequestCountResult),
     };
 
     const mockIpfsApi = {
@@ -334,6 +337,14 @@ describe('Helpers', () => {
         fullRequest: fullRequestSample,
         metadata: requestMetadataSample,
       });
+    });
+  });
+
+  describe('totalRequestCount', () => {
+    it('calls to totalRequestCount', async () => {
+      const result = await helpers.totalRequestCount();
+      expect(totalRequestCountStub.called).to.be.true;
+      expect(result).to.equal(totalRequestCountResult);
     });
   });
 });
