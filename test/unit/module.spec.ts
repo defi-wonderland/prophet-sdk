@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { Module } from '../../src/module';
 import { ethers, Provider } from 'ethers';
-import { OpooSDK } from '../../src/oracle';
 import IHttpRequestModule from '../../node_modules/opoo-core/abi/IHttpRequestModule.json';
 import IBondedResponseModule from '../../node_modules/opoo-core/abi/IBondedResponseModule.json';
 import './setup';
@@ -10,7 +9,6 @@ import config from '../../src/config/config';
 describe('Module', () => {
   let module: Module;
   let otherModule: Module;
-  let sdk: OpooSDK;
   let provider: Provider;
 
   let iface: ethers.Interface;
@@ -29,17 +27,16 @@ describe('Module', () => {
 
   beforeEach(async () => {
     provider = new ethers.JsonRpcProvider(config.RPC_URL);
-    sdk = new OpooSDK(provider);
     iface = new ethers.Interface(IHttpRequestModule.abi);
     otherIface = new ethers.Interface(IBondedResponseModule.abi);
 
-    module = new Module(moduleAddress, iface, sdk);
-    otherModule = new Module(otherModuleAddress, otherIface, sdk);
+    module = new Module(moduleAddress, iface, provider);
+    otherModule = new Module(otherModuleAddress, otherIface, provider);
   });
 
   describe('constructor', () => {
     it('should throw an error if the module address is invalid', () => {
-      expect(new Module('0x0', iface, sdk)).to.throw;
+      expect(new Module('0x0', iface, provider)).to.throw;
     });
 
     it('should initialize a module correctly', async () => {

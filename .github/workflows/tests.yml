@@ -32,4 +32,4 @@ jobs:
       - name: Run tests
         run: yarn test
         env:
-          TENDERLY_URL: ${{ secrets.TENDERLY_URL }}
+          RPC_URL: ${{ secrets.RPC_URL }}

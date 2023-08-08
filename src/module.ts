@@ -1,5 +1,4 @@
-import { ethers, Contract } from 'ethers';
-import { OpooSDK } from './oracle';
+import { ethers, Contract, ContractRunner } from 'ethers';
 import { IModuleBase } from './types/Module';
 
 /**
@@ -9,13 +8,11 @@ import { IModuleBase } from './types/Module';
 export class Module {
   public moduleAddress: string;
   public moduleContract: IModuleBase;
-  public oracle: OpooSDK;
 
-  constructor(moduleAddress: string, abiOrInterface: ethers.Interface | any, oracle: OpooSDK) {
-    this.oracle = oracle;
+  constructor(moduleAddress: string, abiOrInterface: ethers.Interface | any, runner: ContractRunner) {
     this.moduleAddress = moduleAddress;
     try {
-      this.moduleContract = new Contract(moduleAddress, abiOrInterface, this.oracle.runner) as unknown as IModuleBase;
+      this.moduleContract = new Contract(moduleAddress, abiOrInterface, runner) as unknown as IModuleBase;
     } catch (e) {
       throw new Error(`Failed to create module contract instance for ${moduleAddress}: ${e}`);
     }

@@ -7,6 +7,7 @@ import { cidToBytes32 } from '../../src/utils/cid';
 import { AbiCoder, BytesLike, ethers } from 'ethers';
 import config from '../../src/config/config';
 import { RequestMetadata } from '../../src/types/types';
+import { Modules } from '../../src/modules/modules';
 
 describe('Helpers', () => {
   let helpers: Helpers;
@@ -103,6 +104,7 @@ describe('Helpers', () => {
 
     const provider = new ethers.JsonRpcProvider(config.RPC_URL);
     helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi, provider);
+    helpers.setModules({} as Modules);
   });
 
   describe('createRequestWithoutMetadata', () => {
@@ -137,6 +139,7 @@ describe('Helpers', () => {
     it('call upload metadata with the decodeRequest return types', async () => {
       const getNamedDecodeRequestReturnTypesStub: SinonStub = sinon.stub();
       const mockModules = {
+        knownModules: {},
         getNamedDecodeRequestReturnTypes: getNamedDecodeRequestReturnTypesStub.resolves(
           '(string _url,uint256 _bondSize,address _bondToken)'
         ),

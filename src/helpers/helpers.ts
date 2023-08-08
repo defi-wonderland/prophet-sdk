@@ -55,7 +55,7 @@ export class Helpers {
       throw new Error(`Invalid response type: ${requestMetadata.responseType}`);
 
     // If the user didn't set the known modules we just skip it, or should we throw an error?
-    if (this.modules) {
+    if (this.modules.knownModules) {
       requestMetadata['returnedTypes'] = {
         [request.requestModule as string]: await this.modules.getNamedDecodeRequestReturnTypes(
           request.requestModule as string

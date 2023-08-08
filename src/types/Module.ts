@@ -1,10 +1,8 @@
 import { Module } from '../module';
-import { OpooSDK } from '../oracle';
 import { IModule } from '../types/typechain/IModule';
 
 /**
  * Module interface
- * TODO: deprecate?
  */
 export interface IModuleBase extends IModule {
   /**
@@ -16,11 +14,6 @@ export interface IModuleBase extends IModule {
    * The contract instance of the module
    */
   moduleContract: IModule;
-
-  /**
-   * Oracle SDK instance
-   */
-  oracle: OpooSDK;
 
   /**
    * Returns the decoded data for the given requestId, this can return multiple vars compared to requestData

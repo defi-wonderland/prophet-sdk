@@ -107,5 +107,6 @@ export const CONSTANTS = {
     'int240',
     'int248',
     'int256',
+    'tuple',
   ],
 };
