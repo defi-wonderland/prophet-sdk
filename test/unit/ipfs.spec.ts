@@ -12,7 +12,15 @@ describe('ipfs', () => {
   const cidBytes32 = cidToBytes32(cid);
 
   const getRequestResult = { ipfsHash: cidBytes32 };
-  const getRequestMetadataResult = { responseType: 'int256', description: 'test' };
+  const getRequestMetadataResult = {
+    responseType: 'int256',
+    description: 'test',
+    returnedTypes: {
+      '0x123': {
+        '0x456': { '0x789': ['int256', 'int256'] },
+      },
+    },
+  };
 
   const getRequestStub: SinonStub = sinon.stub();
   const getMetadataStub: SinonStub = sinon.stub();
@@ -37,6 +45,14 @@ describe('ipfs', () => {
       expect(getRequestStub.calledWith(sampleRequestId)).to.be.true;
       expect(getMetadataStub.calledWith(cid)).to.be.true;
       expect(result).to.equal(getRequestMetadataResult.responseType);
+    });
+  });
+
+  describe('getReturnedTypes', () => {
+    it('call to getMetadata', async () => {
+      const result = await ipfs.getReturnedTypes(cidBytes32);
+      expect(getMetadataStub.calledWith(cid)).to.be.true;
+      expect(result).to.equal(getRequestMetadataResult.returnedTypes);
     });
   });
 });

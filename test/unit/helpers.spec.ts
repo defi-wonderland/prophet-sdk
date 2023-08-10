@@ -8,6 +8,7 @@ import { AbiCoder, BytesLike, ethers } from 'ethers';
 import config from '../../src/config/config';
 import { RequestMetadata } from '../../src/types/types';
 import { Modules } from '../../src/modules/modules';
+import exp from 'constants';
 
 describe('Helpers', () => {
   let helpers: Helpers;
@@ -31,6 +32,7 @@ describe('Helpers', () => {
   const finalizeResult = 'finalizeResult';
   const getRequestMetadataResult = 'getRequestMetadataResult';
   const totalRequestCountResult = 99;
+  const getNamedDecodeRequestReturnTypesResult = '{ "0": "int256", "1": "int256" }';
 
   const createRequestStub: SinonStub = sinon.stub();
   const getRequestStub: SinonStub = sinon.stub();
@@ -52,6 +54,7 @@ describe('Helpers', () => {
   const finalizeStub: SinonStub = sinon.stub();
   const getRequestMetadataStub: SinonStub = sinon.stub();
   const totalRequestCountStub: SinonStub = sinon.stub();
+  const getNamedDecodeRequestReturnTypesStub: SinonStub = sinon.stub();
 
   const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
   const cidBytes32 = cidToBytes32(cid);
@@ -75,6 +78,11 @@ describe('Helpers', () => {
   let sampleRequestMetadata = {
     responseType: 'uint',
     description: '',
+    returnedTypes: {
+      '0x123': {
+        '0x456': { '0x789': ['int256', 'int256'] },
+      },
+    },
   };
 
   beforeEach(async () => {
@@ -106,8 +114,15 @@ describe('Helpers', () => {
     };
 
     const provider = new ethers.JsonRpcProvider(config.RPC_URL);
-    helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi, provider);
-    helpers.setModules({} as Modules);
+
+    const mockModules = {
+      knownModules: {},
+      getNamedDecodeRequestReturnTypes: getNamedDecodeRequestReturnTypesStub.resolves(
+        getNamedDecodeRequestReturnTypesResult
+      ),
+    };
+
+    helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi, provider, mockModules as Modules);
   });
 
   describe('createRequestWithoutMetadata', () => {
@@ -130,6 +145,11 @@ describe('Helpers', () => {
       const invalidRequestMetadata = {
         responseType: 'uint7',
         description: '',
+        returnedTypes: {
+          '0x123': {
+            '0x456': { '0x789': ['int256', 'int256'] },
+          },
+        },
       };
 
       try {
@@ -141,16 +161,21 @@ describe('Helpers', () => {
 
     it('call upload metadata with the decodeRequest return types', async () => {
       const getNamedDecodeRequestReturnTypesStub: SinonStub = sinon.stub();
+
       const mockModules = {
-        knownModules: {},
+        knownModules: {
+          '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A': {},
+        },
         getNamedDecodeRequestReturnTypes: getNamedDecodeRequestReturnTypesStub.resolves(
           '(string _url,uint256 _bondSize,address _bondToken)'
         ),
       };
 
       helpers.setModules(mockModules as any);
+
       await helpers.createRequest(sampleRequest, sampleRequestMetadata);
       expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
+      expect(createRequestStub.calledWith(sampleRequest)).to.be.true;
 
       // Checking that the request metadata is updated with the decodeRequest return types
       expect(sampleRequestMetadata).to.deep.equal({

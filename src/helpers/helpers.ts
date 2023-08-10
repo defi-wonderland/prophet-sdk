@@ -54,25 +54,19 @@ export class Helpers {
     if (!this.validateResponseType(requestMetadata.responseType))
       throw new Error(`Invalid response type: ${requestMetadata.responseType}`);
 
-    // If the user didn't set the known modules we just skip it, or should we throw an error?
+    // If the user didn't set the known modules we throw an error
     if (this.modules.knownModules) {
-      requestMetadata['returnedTypes'] = {
-        [request.requestModule as string]: await this.modules.getNamedDecodeRequestReturnTypes(
-          request.requestModule as string
-        ),
-        [request.responseModule as string]: await this.modules.getNamedDecodeRequestReturnTypes(
-          request.responseModule as string
-        ),
-        [request.disputeModule as string]: await this.modules.getNamedDecodeRequestReturnTypes(
-          request.disputeModule as string
-        ),
-        [request.resolutionModule as string]: await this.modules.getNamedDecodeRequestReturnTypes(
-          request.resolutionModule as string
-        ),
-        [request.finalityModule as string]: await this.modules.getNamedDecodeRequestReturnTypes(
-          request.finalityModule as string
-        ),
-      };
+      requestMetadata.returnedTypes = {};
+      // Iterate over the known modules and get the return types of the decode request method
+      for (const moduleAddress of Object.keys(this.modules.knownModules)) {
+        const returnedTypes = await this.modules.getNamedDecodeRequestReturnTypes(moduleAddress);
+
+        if (returnedTypes) {
+          requestMetadata.returnedTypes[moduleAddress] = returnedTypes;
+        }
+      }
+    } else {
+      throw new Error('Known modules not set');
     }
 
     const ipfsHash = await this.ipfsApi.uploadMetadata(requestMetadata);

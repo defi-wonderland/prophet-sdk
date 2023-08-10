@@ -27,4 +27,15 @@ export class Ipfs {
     const metadata = await this.ipfsApi.getMetadata(cid);
     return metadata.responseType;
   };
+
+  /**
+   * Gets the returned types of each module for a request
+   * @param ipfsHash - The ipfs hash of the request in bytes format to get the returned types for
+   * @returns returned types of each module for a request
+   */
+  public getReturnedTypes = async (ipfsHash: string): Promise<any> => {
+    const cid = bytes32ToCid(ipfsHash);
+    const metadata = await this.ipfsApi.getMetadata(cid);
+    return metadata.returnedTypes;
+  };
 }

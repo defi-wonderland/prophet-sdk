@@ -135,240 +135,216 @@ describe('Modules', () => {
 
   const expectedReturnTypesModule = [
     {
-      components: [
-        {
-          type: 'string',
-        },
-        {
-          type: 'uint8',
-        },
-        {
-          type: 'string',
-        },
-        {
-          type: 'address',
-        },
-        {
-          type: 'address',
-        },
-        {
-          type: 'uint256',
-        },
-      ],
+      type: 'string',
+    },
+    {
+      type: 'uint8',
+    },
+    {
+      type: 'string',
+    },
+    {
+      type: 'address',
+    },
+    {
+      type: 'address',
+    },
+    {
+      type: 'uint256',
     },
   ];
 
   const expectedReturnTypesOtherModule = [
     {
-      components: [
-        {
-          type: 'address',
-        },
-        {
-          type: 'address',
-        },
-        {
-          type: 'uint256',
-        },
-        {
-          type: 'uint256',
-        },
-      ],
+      type: 'address',
+    },
+    {
+      type: 'address',
+    },
+    {
+      type: 'uint256',
+    },
+    {
+      type: 'uint256',
     },
   ];
 
   const expectedNamedReturnTypesModule = [
     {
-      components: [
-        {
-          name: '_url',
-          type: 'string',
-        },
-        {
-          name: '_method',
-          type: 'uint8',
-        },
-        {
-          name: '_body',
-          type: 'string',
-        },
-        {
-          name: '_accountingExtension',
-          type: 'address',
-        },
-        {
-          name: '_paymentToken',
-          type: 'address',
-        },
-        {
-          name: '_paymentAmount',
-          type: 'uint256',
-        },
-      ],
+      name: '_url',
+      type: 'string',
+    },
+    {
+      name: '_method',
+      type: 'uint8',
+    },
+    {
+      name: '_body',
+      type: 'string',
+    },
+    {
+      name: '_accountingExtension',
+      type: 'address',
+    },
+    {
+      name: '_paymentToken',
+      type: 'address',
+    },
+    {
+      name: '_paymentAmount',
+      type: 'uint256',
     },
   ];
 
   const expectedNamedReturnTypesOtherModule = [
     {
-      components: [
-        {
-          name: '_accounting',
-          type: 'address',
-        },
-        {
-          name: '_bondToken',
-          type: 'address',
-        },
-        {
-          name: '_bondSize',
-          type: 'uint256',
-        },
-        {
-          name: '_deadline',
-          type: 'uint256',
-        },
-      ],
+      name: '_accounting',
+      type: 'address',
+    },
+    {
+      name: '_bondToken',
+      type: 'address',
+    },
+    {
+      name: '_bondSize',
+      type: 'uint256',
+    },
+    {
+      name: '_deadline',
+      type: 'uint256',
     },
   ];
 
   const expectedTupleModuleReturnTypes = [
     {
+      type: 'bytes32',
+    },
+    {
+      type: 'tuple',
       components: [
         {
-          type: 'bytes32',
-        },
-        {
-          type: 'tuple',
-          components: [
-            {
-              type: 'uint256',
-            },
-            {
-              type: 'address',
-            },
-            {
-              type: 'address',
-            },
-            {
-              type: 'bytes32',
-            },
-            {
-              type: 'bytes32',
-            },
-            {
-              type: 'uint8',
-            },
-          ],
+          type: 'uint256',
         },
         {
           type: 'address',
         },
         {
-          type: 'tuple',
-          components: [
-            {
-              type: 'uint256',
-            },
-            {
-              type: 'address',
-            },
-            {
-              type: 'address',
-            },
-            {
-              type: 'bytes32',
-            },
-            {
-              type: 'bytes32',
-            },
-            {
-              type: 'uint8',
-            },
-          ],
+          type: 'address',
         },
+        {
+          type: 'bytes32',
+        },
+        {
+          type: 'bytes32',
+        },
+        {
+          type: 'uint8',
+        },
+      ],
+    },
+    {
+      type: 'address',
+    },
+    {
+      type: 'tuple',
+      components: [
         {
           type: 'uint256',
         },
+        {
+          type: 'address',
+        },
+        {
+          type: 'address',
+        },
+        {
+          type: 'bytes32',
+        },
+        {
+          type: 'bytes32',
+        },
+        {
+          type: 'uint8',
+        },
       ],
+    },
+    {
+      type: 'uint256',
     },
   ];
 
   const expectedTupleModuleNamedReturnTypes = [
     {
+      name: 'requestId',
+      type: 'bytes32',
+    },
+    {
+      name: 'data',
+      type: 'tuple',
       components: [
+        {
+          name: 'createdAt',
+          type: 'uint256',
+        },
+        {
+          name: 'disputer',
+          type: 'address',
+        },
+        {
+          name: 'proposer',
+          type: 'address',
+        },
+        {
+          name: 'responseId',
+          type: 'bytes32',
+        },
         {
           name: 'requestId',
           type: 'bytes32',
         },
         {
-          name: 'data',
-          type: 'tuple',
-          components: [
-            {
-              name: 'createdAt',
-              type: 'uint256',
-            },
-            {
-              name: 'disputer',
-              type: 'address',
-            },
-            {
-              name: 'proposer',
-              type: 'address',
-            },
-            {
-              name: 'responseId',
-              type: 'bytes32',
-            },
-            {
-              name: 'requestId',
-              type: 'bytes32',
-            },
-            {
-              name: 'status',
-              type: 'uint8',
-            },
-          ],
+          name: 'status',
+          type: 'uint8',
+        },
+      ],
+    },
+    {
+      name: 'req2',
+      type: 'address',
+    },
+    {
+      name: '_dispute',
+      type: 'tuple',
+      components: [
+        {
+          name: 'createdAt',
+          type: 'uint256',
         },
         {
-          name: 'req2',
+          name: 'disputer',
           type: 'address',
         },
         {
-          name: '_dispute',
-          type: 'tuple',
-          components: [
-            {
-              name: 'createdAt',
-              type: 'uint256',
-            },
-            {
-              name: 'disputer',
-              type: 'address',
-            },
-            {
-              name: 'proposer',
-              type: 'address',
-            },
-            {
-              name: 'responseId',
-              type: 'bytes32',
-            },
-            {
-              name: 'requestId',
-              type: 'bytes32',
-            },
-            {
-              name: 'status',
-              type: 'uint8',
-            },
-          ],
+          name: 'proposer',
+          type: 'address',
         },
         {
-          name: 'testEnd',
-          type: 'uint256',
+          name: 'responseId',
+          type: 'bytes32',
+        },
+        {
+          name: 'requestId',
+          type: 'bytes32',
+        },
+        {
+          name: 'status',
+          type: 'uint8',
         },
       ],
+    },
+    {
+      name: 'testEnd',
+      type: 'uint256',
     },
   ];
 

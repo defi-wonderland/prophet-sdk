@@ -4,6 +4,7 @@ import { IOracle } from './typechain/IOracle';
 export type RequestMetadata = {
   responseType: string;
   description: string;
+  returnedTypes: any;
 };
 
 export type ModuleInstance = {

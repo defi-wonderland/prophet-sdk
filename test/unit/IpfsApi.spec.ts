@@ -14,6 +14,11 @@ describe('Ipfssdk', () => {
   const metadata = {
     responseType: 'int256',
     description: 'Integer',
+    returnedTypes: {
+      '0x123': {
+        '0x456': { '0x789': ['int256', 'int256'] },
+      },
+    },
   };
 
   const pinataPayload = {

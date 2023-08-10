@@ -43,11 +43,16 @@ export class Modules {
   }
 
   private async getReturnTypes(moduleAddress: string, named: boolean): Promise<any[]> {
-    const returnTypes: any[] = [{ components: [] }];
     const decodeFunction = this.getDecodeRequestFunction(moduleAddress);
+    // If the module doesn't have a decodeRequestData function, return null
+    if (!decodeFunction) {
+      return null;
+    }
+
+    const returnTypes: any[] = [];
 
     for (const output of decodeFunction['outputs']) {
-      named ? this.pushNamedOutput(output, returnTypes[0]) : this.pushOutput(output, returnTypes[0]);
+      named ? this.pushNamedOutput(output, returnTypes) : this.pushOutput(output, returnTypes);
     }
 
     return returnTypes;
@@ -68,15 +73,16 @@ export class Modules {
         type: output.type,
         components: [],
       };
-      currentNode.components.push(newCurrentNode);
+      currentNode.components ? currentNode.components.push(newCurrentNode) : currentNode.push(newCurrentNode);
       for (const component of output.components) {
         this.pushNamedOutput(component, newCurrentNode);
       }
     } else {
-      currentNode.components.push({
+      const newNode = {
         name: output.name,
         type: output.type,
-      });
+      };
+      currentNode.components ? currentNode.components.push(newNode) : currentNode.push(newNode);
     }
   }
 
@@ -86,14 +92,15 @@ export class Modules {
         type: output.type,
         components: [],
       };
-      currentNode.components.push(newCurrentNode);
+      currentNode.components ? currentNode.components.push(newCurrentNode) : currentNode.push(newCurrentNode);
       for (const component of output.components) {
         this.pushOutput(component, newCurrentNode);
       }
     } else {
-      currentNode.components.push({
+      const newNode = {
         type: output.type,
-      });
+      };
+      currentNode.components ? currentNode.components.push(newNode) : currentNode.push(newNode);
     }
   }
 
