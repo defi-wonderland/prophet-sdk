@@ -40,7 +40,7 @@ export class OpooSDK {
       const ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);
       this.modules = new Modules(knownModules);
       this.helpers = new Helpers(this.oracle, ipfsApi, runner, this.modules);
-      this.ipfs = new Ipfs(this.oracle, ipfsApi);
+      this.ipfs = new Ipfs(ipfsApi);
       this.modules = new Modules(knownModules);
     } catch (e) {
       throw new Error(`Failed to create oracle contract ${e}`);
