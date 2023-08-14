@@ -45,4 +45,20 @@ describe('ipfs', () => {
       expect(result).to.equal(getRequestMetadataResult.returnedTypes);
     });
   });
+
+  describe('getMetadata', () => {
+    it('call to getMetadata', async () => {
+      const result = await ipfs.getMetadata(cidBytes32);
+      expect(getMetadataStub.calledWith(cid)).to.be.true;
+      expect(result).to.equal(getRequestMetadataResult);
+    });
+  });
+
+  describe('getDescription', () => {
+    it('call to getMetadata', async () => {
+      const result = await ipfs.getDescription(cidBytes32);
+      expect(getMetadataStub.calledWith(cid)).to.be.true;
+      expect(result).to.equal(getRequestMetadataResult.description);
+    });
+  });
 });
