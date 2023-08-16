@@ -54,28 +54,11 @@ export class Helpers {
     if (!this.validateResponseType(requestMetadata.responseType))
       throw new Error(`Invalid response type: ${requestMetadata.responseType}`);
 
-    // If the user didn't set the known modules we throw an error
-    if (this.modules.knownModules) {
-      requestMetadata.returnedTypes = {};
-      // Iterate over the known modules and get the return types of the decode request method
-      for (const moduleAddress of Object.keys(this.modules.knownModules)) {
-        const returnedTypes = await this.modules.getNamedDecodeRequestReturnTypes(moduleAddress);
+    request.ipfsHash = await this.uploadMetadata(requestMetadata);
 
-        if (returnedTypes) {
-          requestMetadata.returnedTypes[moduleAddress] = returnedTypes;
-        }
-      }
-    } else {
-      throw new Error('Known modules not set');
-    }
-
-    const ipfsHash = await this.ipfsApi.uploadMetadata(requestMetadata);
-    request.ipfsHash = ipfsHash;
     return this.oracle.createRequest(request);
   }
 
-  /*
-  // TODO: Not available because is not implemented yet in the oracle contract, uncomment when it is implemented
   public async createRequests(
     requests: IOracle.NewRequestStruct[],
     requestMetadata: RequestMetadata[]
@@ -83,54 +66,19 @@ export class Helpers {
     if (requests.length !== requestMetadata.length)
       throw new Error('Requests data and metadata must be the same length');
 
-    const abiCoder = new ethers.utils.AbiCoder();
-
-    const requestsData: BytesLike[] = [];
-    for (let i = 0; i < requests.length; i++) {
+    const uploadPromises = requests.map(async (request, i) => {
       const metadata = requestMetadata[i];
-      const request = requests[i];
 
       if (!this.validateResponseType(metadata.responseType))
         throw new Error(`Invalid response type: ${metadata.responseType}`);
 
-      const ipfsHash = await this.ipfsApi.uploadMetadata(metadata);
-      request.ipfsHash = ipfsHash;
+      request.ipfsHash = await this.uploadMetadata(metadata);
+    });
 
-      requestsData.push(
-        abiCoder.encode(
-          [
-            'bytes',
-            'bytes',
-            'bytes',
-            'bytes',
-            'bytes',
-            'bytes32',
-            'address',
-            'address',
-            'address',
-            'address',
-            'address',
-          ],
-          [
-            request.requestModuleData,
-            request.responseModuleData,
-            request.disputeModuleData,
-            request.resolutionModuleData,
-            request.finalityModuleData,
-            request.ipfsHash,
-            request.requestModule,
-            request.responseModule,
-            request.disputeModule,
-            request.resolutionModule,
-            request.finalityModule,
-          ]
-        )
-      );
-    }
+    await Promise.all(uploadPromises);
 
-    return this.oracle.createRequests(requestsData);
+    return this.oracle.createRequests(requests);
   }
-  */
 
   /**
    * Gets the request for the given request id
@@ -310,5 +258,26 @@ export class Helpers {
       ...CONSTANTS.SOLIDITY_TYPES.map((type) => `${type}[]`),
     ];
     return validResponseTypes.includes(responseType);
+  }
+
+  private async uploadMetadata(requestMetadata: RequestMetadata): Promise<string> {
+    // If the user didn't set the known modules we throw an error
+    if (this.modules.knownModules) {
+      requestMetadata.returnedTypes = {};
+      // Iterate over the known modules and get the return types of the decode request method
+      for (const moduleAddress of Object.keys(this.modules.knownModules)) {
+        const returnedTypes = await this.modules.getNamedDecodeRequestReturnTypes(moduleAddress);
+
+        if (returnedTypes) {
+          requestMetadata.returnedTypes[moduleAddress] = returnedTypes;
+        }
+      }
+    } else {
+      throw new Error('Known modules not set');
+    }
+
+    const ipfsHash = await this.ipfsApi.uploadMetadata(requestMetadata);
+
+    return ipfsHash;
   }
 }

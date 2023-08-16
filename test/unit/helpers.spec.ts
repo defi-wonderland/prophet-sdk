@@ -244,26 +244,22 @@ describe('Helpers', () => {
     });
   });
 
-  // TODO: Not available because is not implemented yet in the oracle contract, uncomment when it is implemented
-  /*
-    describe('createRequests', () => {
-        it('call to createRequests', async () => {
-            const encodedRequest = getEncodedFunctionData([sampleRequest], [sampleRequestMetadata]);
-            const result = await helpers.createRequests([sampleRequest], [sampleRequestMetadata]);
-            expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
-            expect(createRequestsStub.calledWith(encodedRequest)).to.be.true;
-            expect(result).to.equal(createRequestsResult);
-        });
-
-        it('throws error if requests and metadata length mismatch', async () => {
-            try {
-                await helpers.createRequests([sampleRequest], [sampleRequestMetadata, sampleRequestMetadata]);
-            } catch (e) {
-                expect(e.message).to.equal('Requests data and metadata must be the same length');
-            }
-        });
+  describe('createRequests', () => {
+    it('call to createRequests', async () => {
+      const result = await helpers.createRequests([sampleRequest], [sampleRequestMetadata]);
+      expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
+      expect(createRequestsStub.calledWith([sampleRequest])).to.be.true;
+      expect(result).to.equal(createRequestsResult);
     });
-    */
+
+    it('throws error if requests and metadata length mismatch', async () => {
+      try {
+        await helpers.createRequests([sampleRequest], [sampleRequestMetadata, sampleRequestMetadata]);
+      } catch (e) {
+        expect(e.message).to.equal('Requests data and metadata must be the same length');
+      }
+    });
+  });
 
   describe('validModule', () => {
     it('calls to validModule', async () => {
