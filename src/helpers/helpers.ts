@@ -54,6 +54,7 @@ export class Helpers {
     if (!this.validateResponseType(requestMetadata.responseType))
       throw new Error(`Invalid response type: ${requestMetadata.responseType}`);
 
+    this.decodedReturnTypesForModuleExists(request);
     request.ipfsHash = await this.uploadMetadata(requestMetadata);
 
     return this.oracle.createRequest(request);
@@ -72,6 +73,7 @@ export class Helpers {
       if (!this.validateResponseType(metadata.responseType))
         throw new Error(`Invalid response type: ${metadata.responseType}`);
 
+      this.decodedReturnTypesForModuleExists(request);
       request.ipfsHash = await this.uploadMetadata(metadata);
     });
 
@@ -262,22 +264,36 @@ export class Helpers {
 
   private async uploadMetadata(requestMetadata: RequestMetadata): Promise<string> {
     // If the user didn't set the known modules we throw an error
-    if (this.modules.knownModules) {
-      requestMetadata.returnedTypes = {};
-      // Iterate over the known modules and get the return types of the decode request method
-      for (const moduleAddress of Object.keys(this.modules.knownModules)) {
-        const returnedTypes = await this.modules.getNamedDecodeRequestReturnTypes(moduleAddress);
+    requestMetadata.returnedTypes = {};
+    // Iterate over the known modules and get the return types of the decode request method
+    for (const moduleAddress of Object.keys(this.modules.knownModules)) {
+      const returnedTypes = await this.modules.getNamedDecodeRequestReturnTypes(moduleAddress);
 
-        if (returnedTypes) {
-          requestMetadata.returnedTypes[moduleAddress] = returnedTypes;
-        }
+      if (returnedTypes) {
+        requestMetadata.returnedTypes[moduleAddress] = returnedTypes;
       }
-    } else {
-      throw new Error('Known modules not set');
     }
 
     const ipfsHash = await this.ipfsApi.uploadMetadata(requestMetadata);
 
     return ipfsHash;
+  }
+
+  private decodedReturnTypesForModuleExists(request: IOracle.NewRequestStruct) {
+    if (!this.modules.knownModules) throw new Error('Known modules not set');
+    // Address that we need to get the named decoded return types for
+    const requestModules = [
+      { name: 'requestModule', address: request.requestModule },
+      { name: 'responseModule', address: request.responseModule },
+      { name: 'disputeModule', address: request.disputeModule },
+      { name: 'resolutionModule', address: request.resolutionModule },
+    ];
+    requestModules.forEach((requestModule) => {
+      if (
+        !(requestModule.address == '0x0000000000000000000000000000000000000000' || !requestModule.address) &&
+        !Object.keys(this.modules.knownModules).includes(requestModule.address as string)
+      )
+        throw new Error(`${requestModule.name}: ${requestModule.address} is not a known module`);
+    });
   }
 }

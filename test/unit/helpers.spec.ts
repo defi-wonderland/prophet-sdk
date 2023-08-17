@@ -61,6 +61,12 @@ describe('Helpers', () => {
 
   const sampleBytes32 = '0xb4ff0acb4895c1b00daf9ec45a04d4d0192d5d0000de47e266767a8e20ea5fd8';
 
+  const ARBITRATOR_MODULE = '0x457cCf29090fe5A24c19c1bc95F492168C0EaFdb';
+  const BONDED_DISPUTE_MODULE = '0x525C7063E7C20997BaaE9bDa922159152D0e8417';
+  const BONDED_RESPONSE_MODULE = '0x38a024C0b412B9d1db8BC398140D00F5Af3093D4';
+  const CALLBACK_MODULE = '0xB82008565FdC7e44609fA118A4a681E92581e680';
+  const HTTP_REQUEST_MODULE = '0x2a810409872AfC346F9B5b26571Fd6eC42EA4849';
+
   let sampleRequest = {
     requestModuleData: ethers.encodeBytes32String('requestModuleData'),
     responseModuleData: ethers.encodeBytes32String('responseModuleData'),
@@ -68,11 +74,11 @@ describe('Helpers', () => {
     resolutionModuleData: ethers.encodeBytes32String('resolutionModuleData'),
     finalityModuleData: ethers.encodeBytes32String('finalityModuleData'),
     ipfsHash: ethers.encodeBytes32String('ipfsHash'),
-    requestModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
-    responseModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
-    disputeModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
-    resolutionModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
-    finalityModule: '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
+    requestModule: HTTP_REQUEST_MODULE,
+    responseModule: BONDED_RESPONSE_MODULE,
+    disputeModule: BONDED_DISPUTE_MODULE,
+    resolutionModule: ARBITRATOR_MODULE,
+    finalityModule: CALLBACK_MODULE,
   };
 
   let sampleRequestMetadata = {
@@ -116,13 +122,24 @@ describe('Helpers', () => {
     const provider = new ethers.JsonRpcProvider(config.RPC_URL);
 
     const mockModules = {
-      knownModules: {},
+      knownModules: {
+        [ARBITRATOR_MODULE]: [],
+        [BONDED_DISPUTE_MODULE]: [],
+        [BONDED_RESPONSE_MODULE]: [],
+        [CALLBACK_MODULE]: [],
+        [HTTP_REQUEST_MODULE]: [],
+      },
       getNamedDecodeRequestReturnTypes: getNamedDecodeRequestReturnTypesStub.resolves(
         getNamedDecodeRequestReturnTypesResult
       ),
     };
 
-    helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi, provider, mockModules as Modules);
+    helpers = new Helpers(
+      oracleMock as unknown as IOracle,
+      mockIpfsApi as IpfsApi,
+      provider,
+      mockModules as unknown as Modules
+    );
   });
 
   describe('createRequestWithoutMetadata', () => {
@@ -159,12 +176,38 @@ describe('Helpers', () => {
       }
     });
 
+    it("throws error if it doesn't have the decodeRequest return types", async () => {
+      const mockModules = {
+        knownModules: {
+          [ARBITRATOR_MODULE]: [],
+          [BONDED_DISPUTE_MODULE]: [],
+          // [BONDED_RESPONSE_MODULE]: [], // Commented out to test the error
+          [CALLBACK_MODULE]: [],
+          [HTTP_REQUEST_MODULE]: [],
+        },
+        getNamedDecodeRequestReturnTypes: getNamedDecodeRequestReturnTypesStub.resolves(
+          '(string _url,uint256 _bondSize,address _bondToken)'
+        ),
+      };
+
+      helpers.setModules(mockModules as any);
+      try {
+        await helpers.createRequest(sampleRequest, sampleRequestMetadata);
+      } catch (e) {
+        expect(e.message).to.equal(`responseModule: ${BONDED_RESPONSE_MODULE} is not a known module`);
+      }
+    });
+
     it('call upload metadata with the decodeRequest return types', async () => {
       const getNamedDecodeRequestReturnTypesStub: SinonStub = sinon.stub();
 
       const mockModules = {
         knownModules: {
-          '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A': {},
+          [ARBITRATOR_MODULE]: [],
+          [BONDED_DISPUTE_MODULE]: [],
+          [BONDED_RESPONSE_MODULE]: [],
+          [CALLBACK_MODULE]: [],
+          [HTTP_REQUEST_MODULE]: [],
         },
         getNamedDecodeRequestReturnTypes: getNamedDecodeRequestReturnTypesStub.resolves(
           '(string _url,uint256 _bondSize,address _bondToken)'
@@ -182,7 +225,11 @@ describe('Helpers', () => {
         responseType: 'uint',
         description: '',
         returnedTypes: {
-          '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A': '(string _url,uint256 _bondSize,address _bondToken)',
+          [ARBITRATOR_MODULE]: '(string _url,uint256 _bondSize,address _bondToken)',
+          [BONDED_DISPUTE_MODULE]: '(string _url,uint256 _bondSize,address _bondToken)',
+          [BONDED_RESPONSE_MODULE]: '(string _url,uint256 _bondSize,address _bondToken)',
+          [CALLBACK_MODULE]: '(string _url,uint256 _bondSize,address _bondToken)',
+          [HTTP_REQUEST_MODULE]: '(string _url,uint256 _bondSize,address _bondToken)',
         },
       });
     });
