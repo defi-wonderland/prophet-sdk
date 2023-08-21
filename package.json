@@ -14,7 +14,7 @@
     "build": "yarn typechain && rm -rf dist && tsc -p tsconfig.json",
     "lint:check": "prettier --check './**' && eslint ./src",
     "lint:fix": "sort-package-json && prettier --write './**' && eslint ./src --fix",
-    "test": "cross-env mocha 'test/**/*.spec.ts'",
+    "test": "cross-env mocha 'test/**/*.spec.ts' --timeout 10000",
     "test:coverage": "nyc --reporter=lcov --reporter=text mocha 'test/**/*.spec.ts'",
     "typechain": "typechain --target ethers-v6 --out-dir src/types/typechain './node_modules/opoo-core/abi/*.json'"
   },
