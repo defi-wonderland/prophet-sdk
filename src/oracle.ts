@@ -1,5 +1,5 @@
 import { ContractRunner, ethers } from 'ethers';
-import { abi as IAbiOracle } from 'opoo-core/abi/IOracle.json';
+import { abi as IAbiOracle } from 'opoo-core-abi/abi/IOracle.json';
 import { IOracle } from './types/typechain';
 import { Batching } from './batching';
 import { Helpers } from './helpers';

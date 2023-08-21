@@ -2,7 +2,7 @@ import { Batching } from '../../src/batching';
 import { IOracle } from '../../src/types/typechain';
 import { ethers } from 'ethers';
 import config from '../../src/config/config';
-import { abi as IAbiOracle } from 'opoo-core/abi/IOracle.json';
+import { abi as IAbiOracle } from 'opoo-core-abi/abi/IOracle.json';
 import { expect } from 'chai';
 
 describe('Batching', () => {

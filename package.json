@@ -16,7 +16,7 @@
     "lint:fix": "sort-package-json && prettier --write './**' && eslint ./src --fix",
     "test": "cross-env mocha 'test/**/*.spec.ts' --timeout 10000",
     "test:coverage": "nyc --reporter=lcov --reporter=text mocha 'test/**/*.spec.ts'",
-    "typechain": "typechain --target ethers-v6 --out-dir src/types/typechain './node_modules/opoo-core/abi/*.json'"
+    "typechain": "typechain --target ethers-v6 --out-dir src/types/typechain './node_modules/opoo-core-abi/abi/*.json'"
   },
   "husky": {
     "hooks": {
@@ -34,7 +34,7 @@
     "dotenv": "16.3.1",
     "ethers": "6.7.0",
     "ipfs-core": "0.18.1",
-    "opoo-core": "0.0.0-b461ebb5",
+    "opoo-core-abi": "0.0.0-83be3eb5",
     "pinata-upload-cli": "1.1.0"
   },
   "devDependencies": {

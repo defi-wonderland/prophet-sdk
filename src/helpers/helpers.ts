@@ -287,6 +287,7 @@ export class Helpers {
       { name: 'responseModule', address: request.responseModule },
       { name: 'disputeModule', address: request.disputeModule },
       { name: 'resolutionModule', address: request.resolutionModule },
+      { name: 'finalityModule', address: request.finalityModule },
     ];
     requestModules.forEach((requestModule) => {
       if (

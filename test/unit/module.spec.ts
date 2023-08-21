@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { Module } from '../../src/module';
 import { ethers, Provider } from 'ethers';
-import IHttpRequestModule from '../../node_modules/opoo-core/abi/IHttpRequestModule.json';
-import IBondedResponseModule from '../../node_modules/opoo-core/abi/IBondedResponseModule.json';
+import IHttpRequestModule from 'opoo-core-abi/abi/IHttpRequestModule.json';
+import IBondedResponseModule from 'opoo-core-abi/abi/IBondedResponseModule.json';
 import './setup';
 import config from '../../src/config/config';
 
