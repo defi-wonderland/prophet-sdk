@@ -26,6 +26,7 @@ const requestDataAbi: any[] = [
           { name: 'requester', type: 'address' },
           { name: 'nonce', type: 'uint256' },
           { name: 'createdAt', type: 'uint256' },
+          { name: 'finalizedAt', type: 'uint256' },
           { name: 'requestId', type: 'bytes32' },
         ],
       },
