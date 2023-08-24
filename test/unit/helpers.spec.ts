@@ -4,11 +4,9 @@ import { Helpers } from '../../src/helpers';
 import { IOracle } from '../../src/types/typechain';
 import { IpfsApi } from '../../src/ipfsApi';
 import { cidToBytes32 } from '../../src/utils/cid';
-import { AbiCoder, BytesLike, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import config from '../../src/config/config';
-import { RequestMetadata } from '../../src/types/types';
 import { Modules } from '../../src/modules/modules';
-import exp from 'constants';
 
 describe('Helpers', () => {
   let helpers: Helpers;
@@ -30,9 +28,11 @@ describe('Helpers', () => {
   const resolveDisputeResult = 'resolveDisputeResult';
   const listRequestIdsResult = ['requestId1', 'requestId2'];
   const finalizeResult = 'finalizeResult';
+  const finalizeResultWithoutResponse = 'finalizeResultWithoutResponse';
   const getRequestMetadataResult = 'getRequestMetadataResult';
   const totalRequestCountResult = 99;
   const getNamedDecodeRequestReturnTypesResult = '{ "0": "int256", "1": "int256" }';
+  const deleteResponseResult = 'deleteResponseResult';
 
   const createRequestStub: SinonStub = sinon.stub();
   const getRequestStub: SinonStub = sinon.stub();
@@ -55,6 +55,8 @@ describe('Helpers', () => {
   const getRequestMetadataStub: SinonStub = sinon.stub();
   const totalRequestCountStub: SinonStub = sinon.stub();
   const getNamedDecodeRequestReturnTypesStub: SinonStub = sinon.stub();
+  const deleteResponseStub: SinonStub = sinon.stub();
+  const finalizeWithoutResponseStub: SinonStub = sinon.stub();
 
   const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
   const cidBytes32 = cidToBytes32(cid);
@@ -110,8 +112,10 @@ describe('Helpers', () => {
       escalateDispute: escalationDisputeStub.resolves(escalationDisputeResult),
       resolveDispute: resolveDisputeStub.resolves(resolveDisputeResult),
       listRequestIds: listRequestIdsStub.resolves(listRequestIdsResult),
-      finalize: finalizeStub.resolves(finalizeResult),
+      ['finalize(bytes32,bytes32)']: finalizeStub.resolves(finalizeResult),
+      ['finalize(bytes32)']: finalizeWithoutResponseStub.resolves(finalizeResultWithoutResponse),
       totalRequestCount: totalRequestCountStub.resolves(totalRequestCountResult),
+      deleteResponse: deleteResponseStub.resolves(deleteResponseResult),
     };
 
     const mockIpfsApi = {
@@ -377,6 +381,14 @@ describe('Helpers', () => {
     });
   });
 
+  describe('finalizeWithoutResponse', () => {
+    it('calls to finalize without response', async () => {
+      const result = await helpers.finalize(sampleBytes32);
+      expect(finalizeWithoutResponseStub.calledWith(sampleBytes32)).to.be.true;
+      expect(result).to.equal(finalizeResultWithoutResponse);
+    });
+  });
+
   describe('getRequestMetadata', () => {
     it('calls to ipfsApi getRequestMetadata', async () => {
       const result = await helpers.getRequestMetadata(cidBytes32);
@@ -415,37 +427,12 @@ describe('Helpers', () => {
       expect(result).to.equal(totalRequestCountResult);
     });
   });
+
+  describe('deleteResponse', () => {
+    it('calls to deleteResponse', async () => {
+      const result = await helpers.deleteResponse(sampleBytes32);
+      expect(deleteResponseStub.calledWith(sampleBytes32)).to.be.true;
+      expect(result).to.equal(deleteResponseResult);
+    });
+  });
 });
-
-const getEncodedFunctionData = (requests: IOracle.NewRequestStruct[], requestMetadata: RequestMetadata[]) => {
-  const abiCoder = AbiCoder.defaultAbiCoder();
-
-  const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
-  const cidBytes32 = cidToBytes32(cid);
-
-  let requestsData: BytesLike[] = [];
-  for (let i = 0; i < requests.length; i++) {
-    const request = requests[i];
-    request.ipfsHash = cidBytes32;
-    requestsData.push(
-      abiCoder.encode(
-        ['bytes', 'bytes', 'bytes', 'bytes', 'bytes', 'bytes32', 'address', 'address', 'address', 'address', 'address'],
-        [
-          request.requestModuleData,
-          request.responseModuleData,
-          request.disputeModuleData,
-          request.resolutionModuleData,
-          request.finalityModuleData,
-          request.ipfsHash,
-          request.requestModule,
-          request.responseModule,
-          request.disputeModule,
-          request.resolutionModule,
-          request.finalityModule,
-        ]
-      )
-    );
-  }
-
-  return requestsData;
-};

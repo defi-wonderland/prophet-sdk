@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import {IOracle} from 'opoo-core/contracts/IOracle.sol';
-import {IModule} from 'opoo-core/contracts/IModule.sol';
+import {IOracle} from 'opoo-core-abi/contracts/IOracle.sol';
+import {IModule} from 'opoo-core-abi/contracts/IModule.sol';
 
 /**
   * @title BatchRequestsData contract

@@ -218,8 +218,21 @@ export class Helpers {
    * @param finalizedResponseId - the finalized response id
    * @returns the contract transaction
    **/
-  public finalize(requestId: BytesLike, finalizedResponseId: BytesLike): Promise<ContractTransaction> {
-    return this.oracle.finalize(requestId, finalizedResponseId);
+  public finalize(requestId: BytesLike, finalizedResponseId: BytesLike): Promise<ContractTransaction>;
+
+  /**
+   * Finalizes the given request without a response id
+   * @param requestId - the request id
+   * @returns the contract transaction
+   */
+  public finalize(requestId: BytesLike): Promise<ContractTransaction>;
+
+  public async finalize(requestId: BytesLike, finalizedResponseId?: BytesLike): Promise<ContractTransaction> {
+    if (finalizedResponseId) {
+      return this.oracle['finalize(bytes32,bytes32)'](requestId, finalizedResponseId);
+    } else {
+      return this.oracle['finalize(bytes32)'](requestId);
+    }
   }
 
   /**
@@ -252,6 +265,15 @@ export class Helpers {
       fullRequest: fullRequest,
       metadata: metadata,
     };
+  }
+
+  /**
+   * Deletes the given response
+   * @param responseId - the response id
+   * @returns the contract transaction
+   */
+  public deleteResponse(responseId: BytesLike): Promise<ContractTransaction> {
+    return this.oracle.deleteResponse(responseId);
   }
 
   private validateResponseType(responseType: string): boolean {
