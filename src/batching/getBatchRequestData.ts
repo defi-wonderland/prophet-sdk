@@ -52,6 +52,12 @@ const requestDataAbi: any[] = [
         ],
       },
       { name: 'disputeStatus', type: 'uint8' },
+
+      { name: 'requestModuleName', type: 'string' },
+      { name: 'responseModuleName', type: 'string' },
+      { name: 'disputeModuleName', type: 'string' },
+      { name: 'resolutionModuleName', type: 'string' },
+      { name: 'finalityModuleName', type: 'string' },
     ],
     name: 'RequestData',
     type: 'tuple[]',
@@ -92,6 +98,11 @@ export interface RequestFullData {
     response: string;
   };
   disputeStatus: number;
+  requestModuleName: string;
+  responseModuleName: string;
+  disputeModuleName: string;
+  resolutionModuleName: string;
+  finalityModuleName: string;
 }
 
 /**

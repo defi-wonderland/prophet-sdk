@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import 'opoo-core/contracts/IOracle.sol';
+import {IOracle} from 'opoo-core/contracts/IOracle.sol';
+import {IModule} from 'opoo-core/contracts/IModule.sol';
 
 /**
   * @title BatchRequestsData contract
@@ -15,6 +16,11 @@ contract BatchRequestsData {
     IOracle.Response[] _responses;
     IOracle.Response _finalizedResponse;
     IOracle.DisputeStatus _disputeStatus;
+    string requestModuleName;
+    string responseModuleName;
+    string disputeModuleName;
+    string resolutionModuleName;
+    string finalityModuleName;
   }
 
   constructor(IOracle _oracle, uint256 _startFrom, uint256 _amount) {
@@ -49,7 +55,12 @@ contract BatchRequestsData {
         _request: _request,
         _responses: _responses,
         _finalizedResponse: _finalizedResponse,
-        _disputeStatus: _disputeStatus
+        _disputeStatus: _disputeStatus,
+        requestModuleName: _getModuleName(_request.requestModule),
+        responseModuleName: _getModuleName(_request.responseModule),
+        disputeModuleName: _getModuleName(_request.disputeModule),
+        resolutionModuleName: _getModuleName(_request.resolutionModule),
+        finalityModuleName: _getModuleName(_request.finalityModule)
       });
     }
 
@@ -61,5 +72,9 @@ contract BatchRequestsData {
       let dataStart := add(data, 32) // abi.encode adds an additional offset
       return(dataStart, sub(msize(), dataStart))
     }
+  }
+
+  function _getModuleName(IModule _module) internal pure returns (string memory) {
+    return address(_module) == address(0) ? '' : _module.moduleName();
   }
 }
