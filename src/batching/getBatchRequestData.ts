@@ -34,6 +34,7 @@ const requestDataAbi: any[] = [
         name: 'responses',
         type: 'tuple[]',
         components: [
+          { name: 'responseId', type: 'bytes32' },
           { name: 'createdAt', type: 'uint256' },
           { name: 'proposer', type: 'address' },
           { name: 'requestId', type: 'bytes32' },
@@ -85,6 +86,7 @@ export interface RequestFullData {
     requestId: string;
   };
   responses: {
+    responseId: string;
     createdAt: string;
     proposer: string;
     requestId: string;

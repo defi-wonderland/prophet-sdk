@@ -9,11 +9,20 @@ import {IModule} from 'opoo-core-abi/contracts/IModule.sol';
   * @notice This contract is used to get batch requests data from the oracle contract
   */
 contract BatchRequestsData {
+
+  struct ResponseWithId {
+    bytes32 responseId;
+    uint256 createdAt;
+    address proposer;
+    bytes32 requestId;
+    bytes32 disputeId;
+    bytes response;
+  }
   
   struct RequestData {
     bytes32 _requestId;
     IOracle.FullRequest _request;
-    IOracle.Response[] _responses;
+    ResponseWithId[] _responses;
     IOracle.Response _finalizedResponse;
     IOracle.DisputeStatus _disputeStatus;
     string requestModuleName;
@@ -34,12 +43,19 @@ contract BatchRequestsData {
       bytes32 _requestId = keccak256(abi.encodePacked(_request.requester, address(_oracle), _request.nonce));
 
       bytes32[] memory _responseIds = _oracle.getResponseIds(_requestId);
-      IOracle.Response[] memory _responses = new IOracle.Response[](_responseIds.length);
+      ResponseWithId[] memory _responses = new ResponseWithId[](_responseIds.length);
 
       for (uint256 _j = 0; _j < _responseIds.length; _j++) {
         IOracle.Response memory _response = _oracle.getResponse(_responseIds[_j]);
 
-        _responses[_j] = _response;
+        _responses[_j] = ResponseWithId ({ 
+          responseId: _responseIds[_j],
+          createdAt: _response.createdAt,
+          proposer: _response.proposer,
+          requestId: _response.requestId,
+          disputeId: _response.disputeId,
+          response: _response.response 
+        });
       }
 
       IOracle.Response memory _finalizedResponse = _oracle.getFinalizedResponse(_requestId);

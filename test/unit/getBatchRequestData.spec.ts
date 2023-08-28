@@ -20,4 +20,12 @@ describe('getBatchRequestData', () => {
     expect(result[0].resolutionModuleName).to.equal('ArbitratorModule');
     expect(result[0].finalityModuleName).to.equal('CallbackModule');
   });
+
+  it('returns the ids of the responses', async () => {
+    const result = await getBatchRequestData(provider, '0x1f10F3Ba7ACB61b2F50B9d6DdCf91a6f787C0E82', 370, 1);
+
+    expect(result[0].responses[0].responseId).to.equal(
+      '0xfde6053f50abcafcb179284d7e36a70dd31ac9c464aa13a61220398d05f3a199'
+    );
+  });
 });
