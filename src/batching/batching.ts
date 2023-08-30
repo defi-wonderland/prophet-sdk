@@ -2,6 +2,7 @@ import { BytesLike } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { RequestFullData, getBatchRequestData } from './getBatchRequestData';
 import { ResponseData, getBatchResponseData } from './getBatchResponseData';
+import { DisputeData, getBatchDisputeData } from './getBatchDisputeData';
 
 /**
  * @title Batching class
@@ -34,6 +35,17 @@ export class Batching {
    **/
   public async getFullRequestData(startFrom: number, amount: number): Promise<RequestFullData[]> {
     const result = await getBatchRequestData(this.oracle.runner, await this.oracle.getAddress(), startFrom, amount);
+    return result;
+  }
+
+  /**
+   * Gets the dispute data for all the requests in the given range
+   * @param startFrom - index to start from
+   * @param amount - amount of requests to get the disputes of
+   * @returns array of DisputeData objects
+   */
+  public async getDisputeData(startFrom: number, amount: number): Promise<DisputeData[]> {
+    const result = await getBatchDisputeData(this.oracle.runner, await this.oracle.getAddress(), startFrom, amount);
     return result;
   }
 }

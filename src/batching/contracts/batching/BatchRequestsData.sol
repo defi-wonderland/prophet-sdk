@@ -90,7 +90,7 @@ contract BatchRequestsData {
     }
   }
 
-  function _getModuleName(IModule _module) internal pure returns (string memory) {
+  function _getModuleName(IModule _module) internal view returns (string memory) {
     return address(_module) == address(0) ? '' : _module.moduleName();
   }
 }
