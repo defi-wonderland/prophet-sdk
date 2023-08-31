@@ -7,6 +7,7 @@ const disputeDataAbi: any[] = [
     type: 'tuple[]',
     components: [
       { name: 'requestId', type: 'bytes32' },
+      { name: 'isFinalized', type: 'bool' },
       {
         name: 'disputes',
         type: 'tuple[]',
@@ -26,6 +27,7 @@ const disputeDataAbi: any[] = [
 
 export interface DisputeData {
   requestId: string;
+  isFinalized: boolean;
   disputes: {
     disputeId: string;
     createdAt: number;

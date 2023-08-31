@@ -33,7 +33,7 @@ export class Batching {
    * @param amount - amount of requests to get
    * @returns array of RequestFullData objects that include the request, its responses, and dispute status
    **/
-  public async getFullRequestData(startFrom: number, amount: number): Promise<RequestFullData[]> {
+  public async listRequests(startFrom: number, amount: number): Promise<RequestFullData[]> {
     const result = await getBatchRequestData(this.oracle.runner, await this.oracle.getAddress(), startFrom, amount);
     return result;
   }
@@ -44,7 +44,7 @@ export class Batching {
    * @param amount - amount of requests to get the disputes of
    * @returns array of DisputeData objects
    */
-  public async getDisputeData(startFrom: number, amount: number): Promise<DisputeData[]> {
+  public async listDisputes(startFrom: number, amount: number): Promise<DisputeData[]> {
     const result = await getBatchDisputeData(this.oracle.runner, await this.oracle.getAddress(), startFrom, amount);
     return result;
   }

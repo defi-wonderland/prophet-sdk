@@ -22,6 +22,7 @@ contract BatchDisputeData {
 
   struct DisputesData  {
     bytes32 requestId;
+    bool isFinalized;
     DisputeWithId[] disputes;
   }
 
@@ -31,7 +32,9 @@ contract BatchDisputeData {
       bytes32[] memory _requestsIds = _oracle.listRequestIds(_startFrom, _amount);
 
       for (uint256 _i = 0; _i < _requestsIds.length; _i++) {
+          IOracle.Request memory _request = _oracle.getRequest(_requestsIds[_i]);
           _returnData[_i].requestId = _requestsIds[_i];
+          _returnData[_i].isFinalized = _request.finalizedAt != 0;
           bytes32[] memory _responseIds = _oracle.getResponseIds(_requestsIds[_i]);
 
           DisputeWithId[] memory _disputes = new DisputeWithId[](_responseIds.length);
