@@ -39,7 +39,7 @@ export class OpooSDK {
       this.batching = new Batching(this.oracle);
       const ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);
       this.modules = new Modules(knownModules);
-      this.helpers = new Helpers(this.oracle, ipfsApi, runner, this.modules);
+      this.helpers = new Helpers(this.oracle, ipfsApi, this.modules);
       this.ipfs = new Ipfs(ipfsApi);
       this.modules = new Modules(knownModules);
     } catch (e) {

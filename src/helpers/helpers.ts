@@ -1,4 +1,4 @@
-import { BigNumberish, BytesLike, ContractRunner, ContractTransaction } from 'ethers';
+import { BigNumberish, BytesLike, ContractTransaction } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { IpfsApi } from '../ipfsApi';
 import { FullRequestWithMetadata, RequestMetadata } from '../types/types';
@@ -11,12 +11,9 @@ export class Helpers {
   private ipfsApi: IpfsApi;
   private modules: Modules;
 
-  public runner: ContractRunner;
-
-  constructor(oracle: IOracle, ipfsApi: IpfsApi, runner: ContractRunner, modules?: Modules) {
+  constructor(oracle: IOracle, ipfsApi: IpfsApi, modules?: Modules) {
     this.oracle = oracle;
     this.ipfsApi = ipfsApi;
-    this.runner = runner;
     this.modules = modules;
   }
 
@@ -139,7 +136,7 @@ export class Helpers {
   }
 
   /**
-   * Disputes the given request id
+   * Disputes the given response
    * @param requestId - the request id
    * @returns the contract transaction
    **/
@@ -274,6 +271,16 @@ export class Helpers {
    */
   public deleteResponse(responseId: BytesLike): Promise<ContractTransaction> {
     return this.oracle.deleteResponse(responseId);
+  }
+
+  /**
+   * Performs a static call to the Oracle contract
+   * @param method the method to call
+   * @param parameters the parameters to pass to the method
+   * @returns the result of the static call
+   */
+  public async callStatic(method: string, ...parameters: any): Promise<any> {
+    return this.oracle[method].staticCall(...parameters);
   }
 
   private validateResponseType(responseType: string): boolean {
