@@ -20,7 +20,7 @@ const responseAbi: any[] = [
 ];
 
 export interface ResponseData {
-  createdAt: string;
+  createdAt: number;
   proposer: string;
   requestId: string;
   disputeId: string;

@@ -81,20 +81,21 @@ export interface RequestFullData {
     resolutionModule: string;
     finalityModule: string;
     requester: string;
-    nonce: string;
-    createdAt: string;
+    nonce: number;
+    createdAt: number;
+    finalizedAt: number;
     requestId: string;
   };
   responses: {
     responseId: string;
-    createdAt: string;
+    createdAt: number;
     proposer: string;
     requestId: string;
     disputeId: string;
     response: string;
   }[];
   finalizedResponse: {
-    createdAt: string;
+    createdAt: number;
     proposer: string;
     requestId: string;
     disputeId: string;
