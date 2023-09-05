@@ -1,6 +1,6 @@
 import { ContractRunner } from 'ethers';
 import { AbiCoder, BytesLike } from 'ethers';
-import { bytecode } from './abi/BatchResponseData.json';
+import { bytecode } from './abi/BatchResponsesData.json';
 
 /**
  * Represents the data returned from the BatchResponsesData contract
