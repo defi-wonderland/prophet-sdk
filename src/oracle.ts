@@ -1,5 +1,5 @@
 import { ContractRunner, ethers } from 'ethers';
-import { abi as IAbiOracle } from 'opoo-core-abi/abi/IOracle.json';
+import { abi as IAbiOracle } from 'prophet-core-abi/abi/IOracle.json';
 import { IOracle } from './types/typechain';
 import { Batching } from './batching';
 import { Helpers } from './helpers';
@@ -10,7 +10,7 @@ import { CONSTANTS } from './utils';
 import { ModulesMap } from './types/Module';
 import { Modules } from './modules/modules';
 
-export class OpooSDK {
+export class ProphetSDK {
   /**
    * The contract of the Oracle to use
    */

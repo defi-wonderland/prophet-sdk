@@ -1,12 +1,12 @@
-# Optimistic Oracle SDK
+# Prophet SDK
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/defi-wonderland/opoo-sdk/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/defi-wonderland/prophet-sdk/blob/main/LICENSE)
 
 ⚠️ The code is under development, tread with caution.
 
 ## Overview
 
-Lightweight and user-friendly wrapper around OpOO contracts. The SDK will be a wrapper for blockchain calls, and will support all of the shared interfaces mirroring all of the oracle’s and the modules’ functions in the **[Smart Contracts](https://github.com/defi-wonderland/opoo-core/blob/main/solidity/contracts)**.
+Lightweight and user-friendly wrapper around Prophet contracts. The SDK will be a wrapper for blockchain calls, and will support all of the shared interfaces mirroring all of the oracle’s and the modules’ functions in the **[Smart Contracts](https://github.com/defi-wonderland/prophet-core/blob/main/solidity/contracts)**.
 
 The SDK will also support adding custom modules so that any developer can create and use modules specific to their use case.
 
@@ -15,7 +15,7 @@ The SDK will also support adding custom modules so that any developer can create
 To build it locally, run:
 
 ```sh
-git clone git@github.com:defi-wonderland/opoo-sdk.git
+git clone git@github.com:defi-wonderland/prophet-sdk.git
 cd
 yarn install
 yarn build
@@ -26,7 +26,7 @@ yarn build
 You can install the sdk via yarn:
 
 ```sh
-yarn add opoo-sdk
+yarn add prophet-sdk
 ```
 
 ## Structure
@@ -56,7 +56,7 @@ yarn add opoo-sdk
 
 ## Contributors
 
-Optimistic Oracle SDK was built with ❤️ by [Wonderland](https://defi.sucks).
+Prophet SDK was built with ❤️ by [Wonderland](https://defi.sucks).
 
 Wonderland is a team of top Web3 researchers, developers, and operators who believe that the future needs to be open-source, permissionless, and decentralized.
 

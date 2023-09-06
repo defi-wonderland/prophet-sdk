@@ -1,27 +1,27 @@
 import { expect } from 'chai';
 import { ethers, Provider } from 'ethers';
-import { OpooSDK } from '../../src/oracle';
+import { ProphetSDK } from '../../src/oracle';
 import config from '../../src/config/config';
 import { CONSTANTS } from '../../src/utils/constants';
 
-describe('OpooSDK', () => {
-  let sdk: OpooSDK;
+describe('ProphetSDK', () => {
+  let sdk: ProphetSDK;
   let provider: Provider;
 
   beforeEach(async () => {
-    // We want to define the OpooSDK and the provider here
+    // We want to define the ProphetSDK and the provider here
     provider = new ethers.JsonRpcProvider(config.RPC_URL);
-    sdk = new OpooSDK(provider);
+    sdk = new ProphetSDK(provider);
   });
 
   describe('constructor', () => {
     it('should throw an error if the rpc is invalid', () => {
       const provider = new ethers.JsonRpcProvider('0xBAD');
-      expect(new OpooSDK(provider)).to.throw;
+      expect(new ProphetSDK(provider)).to.throw;
     });
 
     it('should throw an error if the oracle address is invalid', () => {
-      expect(new OpooSDK(provider, '0x00')).to.throw;
+      expect(new ProphetSDK(provider, '0x00')).to.throw;
     });
 
     it('should initialize oracle correctly', async () => {

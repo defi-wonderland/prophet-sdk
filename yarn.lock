@@ -2632,14 +2632,14 @@ dotenv@16.3.1:
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
   integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
 
+"ds-test@git+https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0":
+  version "1.0.0"
+  uid e282159d5170298eb2455a6c05280ab5a73a4ef0
+  resolved "git+https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0"
+
 "ds-test@https://github.com/dapphub/ds-test":
   version "1.0.0"
   resolved "https://github.com/dapphub/ds-test#e282159d5170298eb2455a6c05280ab5a73a4ef0"
-
-"ds-test@https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0":
-  version "1.0.0"
-  uid e282159d5170298eb2455a6c05280ab5a73a4ef0
-  resolved "https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0"
 
 electron-fetch@^1.7.2:
   version "1.9.1"
@@ -3025,13 +3025,13 @@ foreground-child@^2.0.0:
     cross-spawn "^7.0.0"
     signal-exit "^3.0.2"
 
+"forge-std@git+https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e":
+  version "1.5.6"
+  resolved "git+https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e"
+
 "forge-std@https://github.com/foundry-rs/forge-std":
   version "1.6.0"
   resolved "https://github.com/foundry-rs/forge-std#669e4a6a21a56b4232d45adbb83d234a4bbfc064"
-
-"forge-std@https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e":
-  version "1.5.6"
-  resolved "https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e"
 
 form-data@^2.3.3:
   version "2.5.1"
@@ -5043,16 +5043,6 @@ onetime@^5.1.0, onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-opoo-core-abi@0.0.0-42bd61ad:
-  version "0.0.0-42bd61ad"
-  resolved "https://registry.yarnpkg.com/opoo-core-abi/-/opoo-core-abi-0.0.0-42bd61ad.tgz#90cd9292712982134654c4f2709662a8c5aeafe9"
-  integrity sha512-DvwgH/v3zg1JLTAJg4oYPzQQ8n7kkWAEEioqa2WX9LZh1a3PmlLBZe6dxdccF9khg9a0q7whZ/HLZcNKzyCBuA==
-  dependencies:
-    "@defi-wonderland/solidity-utils" "0.0.0-3e9c8e8b"
-    ds-test "https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0"
-    forge-std "https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e"
-    solmate "https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c"
-
 optionator@^0.9.1:
   version "0.9.3"
   resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.9.3.tgz#007397d44ed1872fdc6ed31360190f81814e2c64"
@@ -5352,6 +5342,16 @@ proper-lockfile@^4.0.0:
     graceful-fs "^4.2.4"
     retry "^0.12.0"
     signal-exit "^3.0.2"
+
+prophet-core-abi@0.0.0-51d66dc7:
+  version "0.0.0-51d66dc7"
+  resolved "https://registry.yarnpkg.com/prophet-core-abi/-/prophet-core-abi-0.0.0-51d66dc7.tgz#b969a6f1aa1b6d31cd70ac81d7dc40a56687e980"
+  integrity sha512-skOXB/rCq9ZZOWogVhvzK5gulB/RVCWqOcJg2GY7AKF6VgVISraz8+I5A5NQu6QfN7NMhlUGNS3QZGDP85xByA==
+  dependencies:
+    "@defi-wonderland/solidity-utils" "0.0.0-3e9c8e8b"
+    ds-test "https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0"
+    forge-std "https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e"
+    solmate "https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c"
 
 protobufjs@^6.11.2:
   version "6.11.3"
@@ -5745,9 +5745,9 @@ socket.io-parser@~4.2.4:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.1"
 
-"solmate@https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c":
+"solmate@git+https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c":
   version "6.1.0"
-  resolved "https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c"
+  resolved "git+https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c"
 
 sort-keys@^5.0.0:
   version "5.0.0"

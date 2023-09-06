@@ -1,8 +1,8 @@
 {
-  "name": "opoo-sdk",
+  "name": "prophet-sdk",
   "version": "1.0.0",
-  "description": "Lightweight and user-friendly wrapper around OpOO contracts",
-  "repository": "git@github.com:defi-wonderland/opoo-sdk-private.git",
+  "description": "Lightweight and user-friendly wrapper around Prophet contracts",
+  "repository": "git@github.com:defi-wonderland/prophet-sdk-private.git",
   "license": "MIT",
   "author": "Wonderland",
   "main": "dist/index.js",
@@ -16,7 +16,7 @@
     "lint:fix": "sort-package-json && prettier --write './**' && eslint ./src --fix",
     "test": "cross-env mocha 'test/**/*.spec.ts' --timeout 10000",
     "test:coverage": "nyc --reporter=lcov --reporter=text mocha 'test/**/*.spec.ts'",
-    "typechain": "typechain --target ethers-v6 --out-dir src/types/typechain './node_modules/opoo-core-abi/abi/*.json'"
+    "typechain": "typechain --target ethers-v6 --out-dir src/types/typechain './node_modules/prophet-core-abi/abi/*.json'"
   },
   "husky": {
     "hooks": {
@@ -34,7 +34,7 @@
     "dotenv": "16.3.1",
     "ethers": "6.7.0",
     "ipfs-core": "0.18.1",
-    "opoo-core-abi": "0.0.0-42bd61ad",
+    "prophet-core-abi": "0.0.0-51d66dc7",
     "pinata-upload-cli": "1.1.0"
   },
   "devDependencies": {
