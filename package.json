@@ -34,8 +34,8 @@
     "dotenv": "16.3.1",
     "ethers": "6.7.0",
     "ipfs-core": "0.18.1",
-    "prophet-core-abi": "0.0.0-51d66dc7",
-    "pinata-upload-cli": "1.1.0"
+    "pinata-upload-cli": "1.1.0",
+    "prophet-core-abi": "0.0.0-51d66dc7"
   },
   "devDependencies": {
     "@typechain/ethers-v6": "0.4.3",
