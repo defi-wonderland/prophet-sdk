@@ -35,6 +35,7 @@
     "ethers": "6.7.0",
     "ipfs-core": "0.18.1",
     "pinata-upload-cli": "1.1.0",
+    "prophet-batching-abi": "0.0.0-7752b08c",
     "prophet-core-abi": "0.0.0-51d66dc7"
   },
   "devDependencies": {

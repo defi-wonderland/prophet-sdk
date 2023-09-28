@@ -3,6 +3,7 @@ import { IOracle } from '../types/typechain';
 import { RequestFullData, getBatchRequestData } from './getBatchRequestData';
 import { ResponseData, getBatchResponseData } from './getBatchResponseData';
 import { DisputeData, getBatchDisputeData } from './getBatchDisputeData';
+import { RequestForFinalizeData, getBatchRequestForFinalizeData } from './getBatchRequestForFinalizeData';
 
 /**
  * @title Batching class
@@ -46,6 +47,22 @@ export class Batching {
    */
   public async listDisputes(startFrom: number, amount: number): Promise<DisputeData[]> {
     const result = await getBatchDisputeData(this.oracle.runner, await this.oracle.getAddress(), startFrom, amount);
+    return result;
+  }
+
+  /**
+   * Paginates requests starting from the given index
+   * @param startFrom - index to start from
+   * @param amount - amount of requests to get
+   * @returns array of RequestForFinalizeData objects that include the request, its responses, and dispute status
+   **/
+  public async listRequestsForFinalize(startFrom: number, amount: number): Promise<RequestForFinalizeData[]> {
+    const result = await getBatchRequestForFinalizeData(
+      this.oracle.runner,
+      await this.oracle.getAddress(),
+      startFrom,
+      amount
+    );
     return result;
   }
 }
