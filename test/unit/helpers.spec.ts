@@ -30,6 +30,10 @@ describe('Helpers', () => {
   const totalRequestCountResult = 99;
   const getNamedDecodeRequestReturnTypesResult = '{ "0": "int256", "1": "int256" }';
   const deleteResponseResult = 'deleteResponseResult';
+  const getFinalizedResponseIdResult = 'getFinalizedResponseIdResult';
+  const getRequestByNonceResult = 'getRequestByNonceResult';
+  const getRequestIdResult = 'getRequestIdResult';
+  const isParticipantResult = 'isParticipantResult';
 
   const createRequestStub: SinonStub = sinon.stub();
   const getRequestStub: SinonStub = sinon.stub();
@@ -54,6 +58,10 @@ describe('Helpers', () => {
   const getNamedDecodeRequestReturnTypesStub: SinonStub = sinon.stub();
   const deleteResponseStub: SinonStub = sinon.stub();
   const finalizeWithoutResponseStub: SinonStub = sinon.stub();
+  const getFinalizedResponseIdStub: SinonStub = sinon.stub();
+  const getRequestByNonceStub: SinonStub = sinon.stub();
+  const getRequestIdsStub: SinonStub = sinon.stub();
+  const isParticipantStub: SinonStub = sinon.stub();
 
   const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
   const cidBytes32 = cidToBytes32(cid);
@@ -112,6 +120,10 @@ describe('Helpers', () => {
     ['finalize(bytes32)']: finalizeWithoutResponseStub.resolves(finalizeResultWithoutResponse),
     totalRequestCount: totalRequestCountStub.resolves(totalRequestCountResult),
     deleteResponse: deleteResponseStub.resolves(deleteResponseResult),
+    getFinalizedResponseId: getFinalizedResponseIdStub.resolves(getFinalizedResponseIdResult),
+    getRequestByNonce: getRequestByNonceStub.resolves(getRequestByNonceResult),
+    getRequestId: getRequestIdsStub.resolves(getRequestIdResult),
+    isParticipant: isParticipantStub.resolves(isParticipantResult),
   };
 
   const mockIpfsApi = {
@@ -507,6 +519,38 @@ describe('Helpers', () => {
       const result = await helpers.callStatic('deleteResponse', sampleBytes32);
       expect(deleteResponseStub.calledWith(sampleBytes32)).to.be.true;
       expect(result).to.equal(deleteResponseResult);
+    });
+  });
+
+  describe('getFinalizedResponseId', () => {
+    it('calls to getFinalizedResponseId', async () => {
+      const result = await helpers.getFinalizedResponseId(sampleBytes32);
+      expect(getFinalizedResponseIdStub.calledWith(sampleBytes32)).to.be.true;
+      expect(result).to.equal(getFinalizedResponseIdResult);
+    });
+  });
+
+  describe('getRequestByNonce', () => {
+    it('calls to getRequestByNonce', async () => {
+      const result = await helpers.getRequestByNonce(1);
+      expect(getRequestByNonceStub.calledWith(1)).to.be.true;
+      expect(result).to.equal(getRequestByNonceResult);
+    });
+  });
+
+  describe('getRequestId', () => {
+    it('calls to getRequestId', async () => {
+      const result = await helpers.getRequestId(1);
+      expect(getRequestIdsStub.calledWith(1)).to.be.true;
+      expect(result).to.equal(getRequestIdResult);
+    });
+  });
+
+  describe('isParticipant', () => {
+    it('calls to isParticipant', async () => {
+      const result = await helpers.isParticipant(sampleBytes32, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A');
+      expect(isParticipantStub.calledWith(sampleBytes32, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A')).to.be.true;
+      expect(result).to.equal(isParticipantResult);
     });
   });
 });

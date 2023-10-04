@@ -16,6 +16,6 @@ export type ModuleInstance = {
 export type Address = string | Contract;
 
 export type FullRequestWithMetadata = {
-  fullRequest: IOracle.FullRequestStructOutput;
+  fullRequest: IOracle.FullRequestStruct;
   metadata: RequestMetadata;
 };

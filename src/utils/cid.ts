@@ -4,6 +4,7 @@
 
 import { encode, decode } from 'bs58';
 import { Buffer } from 'buffer';
+import { BytesLike } from 'ethers';
 
 /**
  * Converts IPFS content identifier address string to 32 byte hex
@@ -21,7 +22,7 @@ export const cidToBytes32 = (cid: string): string => {
  * @dev Works correctly with CID version 0
  * @returns CID string
  */
-export const bytes32ToCid = (bytes32: string): string => {
+export const bytes32ToCid = (bytes32: BytesLike): string => {
   // Add our default ipfs values for first 2 bytes:
   // function:0x12=sha2, size:0x20=256 bits
   // and cut off leading "0x"

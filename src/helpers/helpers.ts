@@ -1,7 +1,7 @@
-import { BigNumberish, BytesLike, ContractTransaction } from 'ethers';
+import { AddressLike, BigNumberish, BytesLike, ContractTransaction } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { IpfsApi } from '../ipfsApi';
-import { FullRequestWithMetadata, RequestMetadata } from '../types/types';
+import { Address, FullRequestWithMetadata, RequestMetadata } from '../types/types';
 import { CONSTANTS } from '../utils/constants';
 import { bytes32ToCid } from '../utils/cid';
 import { Modules } from '../modules/modules';
@@ -84,7 +84,7 @@ export class Helpers {
    * @param requestId - the request id
    * @returns the request for the given requestId
    */
-  public getRequest(requestId: BytesLike): Promise<IOracle.RequestStructOutput> {
+  public getRequest(requestId: BytesLike): Promise<IOracle.RequestStruct> {
     return this.oracle.getRequest(requestId);
   }
 
@@ -103,7 +103,7 @@ export class Helpers {
    * @param responseId - the response id
    * @returns the response for the given response id
    **/
-  public getResponse(responseId: BytesLike): Promise<IOracle.ResponseStructOutput> {
+  public getResponse(responseId: BytesLike): Promise<IOracle.ResponseStruct> {
     return this.oracle.getResponse(responseId);
   }
 
@@ -112,7 +112,7 @@ export class Helpers {
    * @param requestId - the request id
    * @returns the ids of the responses for the given request id
    **/
-  public getResponseIds(requestId: BytesLike): Promise<string[]> {
+  public getResponseIds(requestId: BytesLike): Promise<BytesLike[]> {
     return this.oracle.getResponseIds(requestId);
   }
 
@@ -121,7 +121,7 @@ export class Helpers {
    * @param requestId - the request id
    * @returns the finalized response for the given request id
    **/
-  public getFinalizedResponse(requestId: BytesLike): Promise<IOracle.ResponseStructOutput> {
+  public getFinalizedResponse(requestId: BytesLike): Promise<IOracle.ResponseStruct> {
     return this.oracle.getFinalizedResponse(requestId);
   }
 
@@ -131,7 +131,7 @@ export class Helpers {
    * @param amount - the amount of requests to get
    * @returns the list of full requests for the given startFrom and amount
    **/
-  public listRequests(startFrom: BigNumberish, amount: BigNumberish): Promise<IOracle.FullRequestStructOutput[]> {
+  public listRequests(startFrom: BigNumberish, amount: BigNumberish): Promise<IOracle.FullRequestStruct[]> {
     return this.oracle.listRequests(startFrom, amount);
   }
 
@@ -150,7 +150,7 @@ export class Helpers {
    * @param module - the module address
    * @returns true or false depending on if the module is valid
    **/
-  public allowedModule(requestId: BytesLike, module: string): Promise<boolean> {
+  public allowedModule(requestId: BytesLike, module: AddressLike): Promise<boolean> {
     return this.oracle.allowedModule(requestId, module);
   }
 
@@ -159,7 +159,7 @@ export class Helpers {
    * @param disputeId - the dispute id
    * @returns the dispute for the given dispute id
    **/
-  public getDispute(disputeId: BytesLike): Promise<IOracle.DisputeStructOutput> {
+  public getDispute(disputeId: BytesLike): Promise<IOracle.DisputeStruct> {
     return this.oracle.getDispute(disputeId);
   }
 
@@ -168,7 +168,7 @@ export class Helpers {
    * @param requestId - the request id
    * @returns the full request for the given request id
    **/
-  public getFullRequest(requestId: BytesLike): Promise<IOracle.FullRequestStructOutput> {
+  public getFullRequest(requestId: BytesLike): Promise<IOracle.FullRequestStruct> {
     return this.oracle.getFullRequest(requestId);
   }
 
@@ -177,7 +177,7 @@ export class Helpers {
    * @param requestId - the request id
    * @returns the dispute id for the given request id
    **/
-  public disputeOf(requestId: BytesLike): Promise<string> {
+  public disputeOf(requestId: BytesLike): Promise<BytesLike> {
     return this.oracle.disputeOf(requestId);
   }
 
@@ -205,7 +205,7 @@ export class Helpers {
    * @param batchSize - the amount of requests to get
    * @returns the list of request ids for the given startFrom and batchSize
    **/
-  public listRequestIds(startFrom: BigNumberish, batchSize: BigNumberish): Promise<string[]> {
+  public listRequestIds(startFrom: BigNumberish, batchSize: BigNumberish): Promise<BytesLike[]> {
     return this.oracle.listRequestIds(startFrom, batchSize);
   }
 
@@ -237,7 +237,7 @@ export class Helpers {
    * @param ipfsHash - the IPFS hash
    * @returns the request metadata
    **/
-  public getRequestMetadata(ipfsHash: string): Promise<RequestMetadata> {
+  public getRequestMetadata(ipfsHash: BytesLike): Promise<RequestMetadata> {
     const cid = bytes32ToCid(ipfsHash);
     return this.ipfsApi.getMetadata(cid);
   }
@@ -246,7 +246,7 @@ export class Helpers {
    * Returns the total request count of the Oracle
    * @returns the total request count of the Oracle
    */
-  public totalRequestCount(): Promise<bigint> {
+  public totalRequestCount(): Promise<BigNumberish> {
     return this.oracle.totalRequestCount();
   }
 
@@ -271,6 +271,43 @@ export class Helpers {
    */
   public deleteResponse(responseId: BytesLike): Promise<ContractTransaction> {
     return this.oracle.deleteResponse(responseId);
+  }
+
+  /**
+   * Returns the finalized response id for the given request id
+   * @param requestId - the request id
+   * @returns the finalized response id for the given request id
+   */
+  public async getFinalizedResponseId(requestId: BytesLike): Promise<BytesLike> {
+    return this.oracle.getFinalizedResponseId(requestId);
+  }
+
+  /**
+   * Returns the request for the given nonce
+   * @param nonce - the nonce
+   * @returns the request for the given nonce
+   */
+  public async getRequestByNonce(nonce: BigNumberish): Promise<IOracle.RequestStruct> {
+    return this.oracle.getRequestByNonce(nonce);
+  }
+
+  /**
+   * Returns the request id for the given nonce
+   * @param nonce - the nonce
+   * @returns the request id for the given nonce
+   */
+  public async getRequestId(nonce: BigNumberish): Promise<BytesLike> {
+    return this.oracle.getRequestId(nonce);
+  }
+
+  /**
+   * Returns true or false whether the given user is a participant in the given request
+   * @param requestId - the request id
+   * @param user - the user address
+   * @returns boolean if the user is a participant in the given request
+   */
+  public async isParticipant(requestId: BytesLike, user: Address): Promise<boolean> {
+    return this.oracle.isParticipant(requestId, user);
   }
 
   /**
