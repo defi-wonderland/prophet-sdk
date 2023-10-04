@@ -1,4 +1,4 @@
-import { bytecode } from 'prophet-batching-abi/abi/BatchRequestsData.json';
+import { bytecode } from '@defi-wonderland/prophet-batching-abi/abi/BatchRequestsData.json';
 import { AbiCoder, ContractRunner } from 'ethers';
 
 /**

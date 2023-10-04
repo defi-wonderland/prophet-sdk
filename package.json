@@ -1,5 +1,5 @@
 {
-  "name": "prophet-sdk",
+  "name": "@defi-wonderland/prophet-sdk",
   "version": "1.0.0",
   "description": "Lightweight and user-friendly wrapper around Prophet contracts",
   "repository": "git@github.com:defi-wonderland/prophet-sdk-private.git",
@@ -16,7 +16,7 @@
     "lint:fix": "sort-package-json && prettier --write './**' && eslint ./src --fix",
     "test": "cross-env mocha 'test/**/*.spec.ts' --timeout 10000",
     "test:coverage": "nyc --reporter=lcov --reporter=text mocha 'test/**/*.spec.ts'",
-    "typechain": "typechain --target ethers-v6 --out-dir src/types/typechain './node_modules/prophet-core-abi/abi/*.json'"
+    "typechain": "typechain --target ethers-v6 --out-dir src/types/typechain './node_modules/@defi-wonderland/prophet-core-abi/abi/*.json'"
   },
   "husky": {
     "hooks": {
@@ -28,15 +28,15 @@
     "package.json": "sort-package-json"
   },
   "dependencies": {
+    "@defi-wonderland/prophet-batching-abi": "0.0.0-421b4b24",
+    "@defi-wonderland/prophet-core-abi": "0.0.0-f5236cfc",
     "@pinata/sdk": "2.1.0",
     "axios": "1.4.0",
     "cids": "1.1.9",
     "dotenv": "16.3.1",
     "ethers": "6.7.0",
     "ipfs-core": "0.18.1",
-    "pinata-upload-cli": "1.1.0",
-    "prophet-batching-abi": "0.0.0-7752b08c",
-    "prophet-core-abi": "0.0.0-51d66dc7"
+    "pinata-upload-cli": "1.1.0"
   },
   "devDependencies": {
     "@typechain/ethers-v6": "0.4.3",

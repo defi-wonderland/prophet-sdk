@@ -150,8 +150,8 @@ export class Helpers {
    * @param module - the module address
    * @returns true or false depending on if the module is valid
    **/
-  public validModule(requestId: BytesLike, module: string): Promise<boolean> {
-    return this.oracle.validModule(requestId, module);
+  public allowedModule(requestId: BytesLike, module: string): Promise<boolean> {
+    return this.oracle.allowedModule(requestId, module);
   }
 
   /**

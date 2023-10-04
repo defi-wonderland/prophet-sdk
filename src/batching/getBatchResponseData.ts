@@ -1,6 +1,6 @@
 import { ContractRunner } from 'ethers';
 import { AbiCoder, BytesLike } from 'ethers';
-import { bytecode } from 'prophet-batching-abi/abi/BatchResponsesData.json';
+import { bytecode } from '@defi-wonderland/prophet-batching-abi/abi/BatchResponsesData.json';
 
 /**
  * Represents the data returned from the BatchResponsesData contract

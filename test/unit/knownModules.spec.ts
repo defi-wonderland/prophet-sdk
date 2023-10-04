@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { Module } from '../../src/module';
 import { Provider, ethers } from 'ethers';
-import IHttpRequestModule from 'prophet-core-abi/abi/IHttpRequestModule.json';
-import IBondedResponseModule from 'prophet-core-abi/abi/IBondedResponseModule.json';
+import IHttpRequestModule from '@defi-wonderland/prophet-core-abi/abi/IHttpRequestModule.json';
+import IBondedResponseModule from '@defi-wonderland/prophet-core-abi/abi/IBondedResponseModule.json';
 import './setup';
 import config from '../../src/config/config';
 import { ModulesMap } from '../../src/types/Module';

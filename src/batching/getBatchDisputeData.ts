@@ -1,4 +1,4 @@
-import { bytecode } from 'prophet-batching-abi/abi/BatchDisputesData.json';
+import { bytecode } from '@defi-wonderland/prophet-batching-abi/abi/BatchDisputesData.json';
 import { AbiCoder, ContractRunner } from 'ethers';
 
 const disputeDataAbi: any[] = [

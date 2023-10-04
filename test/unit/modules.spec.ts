@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { Module } from '../../src/module';
 import { Provider, ethers } from 'ethers';
-import IHttpRequestModule from 'prophet-core-abi/abi/IHttpRequestModule.json';
-import IBondedResponseModule from 'prophet-core-abi/abi/IBondedResponseModule.json';
+import IHttpRequestModule from '@defi-wonderland/prophet-core-abi/abi/IHttpRequestModule.json';
+import IBondedResponseModule from '@defi-wonderland/prophet-core-abi/abi/IBondedResponseModule.json';
 import './setup';
 import config from '../../src/config/config';
 import { ModulesMap } from '../../src/types/Module';
@@ -135,83 +135,57 @@ describe('Modules', () => {
 
   const expectedReturnTypesModule = [
     {
-      type: 'string',
-    },
-    {
-      type: 'uint8',
-    },
-    {
-      type: 'string',
-    },
-    {
-      type: 'address',
-    },
-    {
-      type: 'address',
-    },
-    {
-      type: 'uint256',
+      type: 'tuple',
+      components: [
+        { type: 'string' },
+        { type: 'string' },
+        { type: 'uint8' },
+        { type: 'address' },
+        { type: 'address' },
+        { type: 'uint256' },
+      ],
     },
   ];
 
   const expectedReturnTypesOtherModule = [
     {
-      type: 'address',
-    },
-    {
-      type: 'address',
-    },
-    {
-      type: 'uint256',
-    },
-    {
-      type: 'uint256',
+      type: 'tuple',
+      components: [
+        { type: 'address' },
+        { type: 'address' },
+        { type: 'uint256' },
+        { type: 'uint256' },
+        { type: 'uint256' },
+      ],
     },
   ];
 
   const expectedNamedReturnTypesModule = [
     {
-      name: '_url',
-      type: 'string',
-    },
-    {
-      name: '_method',
-      type: 'uint8',
-    },
-    {
-      name: '_body',
-      type: 'string',
-    },
-    {
-      name: '_accountingExtension',
-      type: 'address',
-    },
-    {
-      name: '_paymentToken',
-      type: 'address',
-    },
-    {
-      name: '_paymentAmount',
-      type: 'uint256',
+      name: '_params',
+      type: 'tuple',
+      components: [
+        { name: 'url', type: 'string' },
+        { name: 'body', type: 'string' },
+        { name: 'method', type: 'uint8' },
+        { name: 'accountingExtension', type: 'address' },
+        { name: 'paymentToken', type: 'address' },
+        { name: 'paymentAmount', type: 'uint256' },
+      ],
     },
   ];
 
   const expectedNamedReturnTypesOtherModule = [
     {
-      name: '_accountingExtension',
-      type: 'address',
-    },
-    {
-      name: '_bondToken',
-      type: 'address',
-    },
-    {
-      name: '_bondSize',
-      type: 'uint256',
-    },
-    {
-      name: '_deadline',
-      type: 'uint256',
+      name: '_params',
+      type: 'tuple',
+      components: [
+        { name: 'accountingExtension', type: 'address' },
+        { name: 'bondToken', type: 'address' },
+        { name: 'bondSize', type: 'uint256' },
+        { name: 'deadline', type: 'uint256' },
+        { name: 'disputeWindow', type: 'uint256' },
+      ],
     },
   ];
 

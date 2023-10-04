@@ -17,7 +17,7 @@ describe('Helpers', () => {
   const listRequestsResult = ['request2', 'request2'];
   const disputeResponseResult = 'disputeResponseResult';
   const createRequestsResult = 'createRequestsResult';
-  const validModuleResult = 'validModuleResult';
+  const allowedModuleResult = 'allowedModuleResult';
   const getDisputeResult = 'getDisputeResult';
   const getFullRequestResult = 'getFullRequestResult';
   const disputeOfResult = 'disputeOfResult';
@@ -41,7 +41,7 @@ describe('Helpers', () => {
   const listRequestStub: SinonStub = sinon.stub();
   const disputeResponseStub: SinonStub = sinon.stub();
   const createRequestsStub: SinonStub = sinon.stub();
-  const validModuleStub: SinonStub = sinon.stub();
+  const allowedModuleStub: SinonStub = sinon.stub();
   const getDisputeStub: SinonStub = sinon.stub();
   const getFullRequestStub: SinonStub = sinon.stub();
   const disputeOfStub: SinonStub = sinon.stub();
@@ -101,7 +101,7 @@ describe('Helpers', () => {
     listRequests: listRequestStub.resolves(listRequestsResult),
     disputeResponse: disputeResponseStub.resolves(disputeResponseResult),
     createRequests: createRequestsStub.resolves(createRequestsResult),
-    validModule: validModuleStub.resolves(validModuleResult),
+    allowedModule: allowedModuleStub.resolves(allowedModuleResult),
     getDispute: getDisputeStub.resolves(getDisputeResult),
     getFullRequest: getFullRequestStub.resolves(getFullRequestResult),
     disputeOf: disputeOfStub.resolves(disputeOfResult),
@@ -303,11 +303,11 @@ describe('Helpers', () => {
     });
   });
 
-  describe('validModule', () => {
-    it('calls to validModule', async () => {
-      const result = await helpers.validModule(sampleBytes32, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A');
-      expect(validModuleStub.calledWith(sampleBytes32, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A')).to.be.true;
-      expect(result).to.equal(validModuleResult);
+  describe('allowedModule', () => {
+    it('calls to allowedModule', async () => {
+      const result = await helpers.allowedModule(sampleBytes32, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A');
+      expect(allowedModuleStub.calledWith(sampleBytes32, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A')).to.be.true;
+      expect(result).to.equal(allowedModuleResult);
     });
   });
 
