@@ -4,6 +4,7 @@ import './utils/cid';
 import { cidToBytes32, isIpfsCID } from './utils/cid';
 import { RequestMetadata } from './types/types';
 import { CONSTANTS } from './utils';
+import { BytesLike } from 'ethers';
 
 /**
  * @title IpfsApi class
@@ -11,7 +12,7 @@ import { CONSTANTS } from './utils';
  * @dev Uploads metadata to IPFS, and hides the SDK implementation details
  * and hides the sdk implementation details
  */
-export class IpfsApi {
+export class IpfsApi implements IIpfsApi {
   api: PinataClient;
 
   constructor(apiKey: string, secretApiKey: string) {
@@ -25,7 +26,7 @@ export class IpfsApi {
    * @param metadata - Contains the request response type and description
    * @return CID as bytes32
    */
-  public async uploadMetadata(metadata: RequestMetadata): Promise<string> {
+  public async uploadMetadata(metadata: RequestMetadata): Promise<BytesLike> {
     const pinataPayload = {
       pinataOptions: {
         cidVersion: CONSTANTS.CID_VERSION, // Since we are using base58 encoding, CID version must be 0
@@ -49,4 +50,13 @@ export class IpfsApi {
     const response = await axios.get<RequestMetadata>(`${CONSTANTS.IPFS_BASE_URL}/${cid}`);
     return response.data;
   }
+}
+
+/**
+ * @title IIpfsApi interface
+ * @notice Interface for IpfsApi
+ */
+export interface IIpfsApi {
+  uploadMetadata(metadata: RequestMetadata): Promise<BytesLike>;
+  getMetadata(cid: string): Promise<RequestMetadata>;
 }

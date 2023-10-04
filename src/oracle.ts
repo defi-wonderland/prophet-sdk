@@ -3,7 +3,7 @@ import { abi as IAbiOracle } from '@defi-wonderland/prophet-core-abi/abi/IOracle
 import { IOracle } from './types/typechain';
 import { Batching } from './batching';
 import { Helpers } from './helpers';
-import { IpfsApi } from './ipfsApi';
+import { IIpfsApi, IpfsApi } from './ipfsApi';
 import { Ipfs } from './ipfs';
 import config from './config/config';
 import { CONSTANTS } from './utils';
@@ -54,5 +54,13 @@ export class ProphetSDK {
   public setKnownModules(knownModules: ModulesMap) {
     this.modules.setKnownModules(knownModules);
     this.helpers.setModules(this.modules);
+  }
+
+  /**
+   * Set a custom ipfs api, Pinata will be used by default
+   * @param ipfsApi - The ipfs api to use
+   */
+  public setIpfsApi(ipfsApi: IIpfsApi) {
+    this.ipfs.setIpfsApi(ipfsApi);
   }
 }

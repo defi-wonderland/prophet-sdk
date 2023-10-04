@@ -1,4 +1,5 @@
-import { IpfsApi } from '../ipfsApi';
+import { BytesLike } from 'ethers';
+import { IIpfsApi } from '../ipfsApi';
 import { RequestMetadata } from '../types/types';
 import { bytes32ToCid } from '../utils/cid';
 
@@ -7,9 +8,9 @@ import { bytes32ToCid } from '../utils/cid';
  * @notice Helper class to compose queries to IPFS
  */
 export class Ipfs {
-  private ipfsApi: IpfsApi;
+  private ipfsApi: IIpfsApi;
 
-  constructor(ipfsApi: IpfsApi) {
+  constructor(ipfsApi: IIpfsApi) {
     this.ipfsApi = ipfsApi;
   }
 
@@ -18,7 +19,7 @@ export class Ipfs {
    * @param ipfsHash - The ipfs hash of the request in bytes format to get the metadata for
    * @returns the RequestMetadata for the ipfsHash
    */
-  public getMetadata = async (ipfsHash: string): Promise<RequestMetadata> => {
+  public getMetadata = async (ipfsHash: BytesLike): Promise<RequestMetadata> => {
     const cid = bytes32ToCid(ipfsHash);
     const metadata = await this.ipfsApi.getMetadata(cid);
     return metadata;
@@ -29,7 +30,7 @@ export class Ipfs {
    * @param ipfsHash - The ipfs hash of the request in bytes format to get the response type for
    * @returns the response type for the request
    */
-  public getResponseType = async (ipfsHash: string): Promise<string> => {
+  public getResponseType = async (ipfsHash: BytesLike): Promise<string> => {
     const metadata = await this.getMetadata(ipfsHash);
     return metadata.responseType;
   };
@@ -39,7 +40,7 @@ export class Ipfs {
    * @param ipfsHash - The ipfs hash of the request in bytes format to get the returned types for
    * @returns returned types of each module for a request
    */
-  public getReturnedTypes = async (ipfsHash: string): Promise<any> => {
+  public getReturnedTypes = async (ipfsHash: BytesLike): Promise<any> => {
     const metadata = await this.getMetadata(ipfsHash);
     return metadata.returnedTypes;
   };
@@ -49,8 +50,16 @@ export class Ipfs {
    * @param ipfsHash - The ipfs hash of the request in bytes format to get the description for
    * @returns the RequestMetadata description
    */
-  public getDescription = async (ipfsHash: string): Promise<string> => {
+  public getDescription = async (ipfsHash: BytesLike): Promise<string> => {
     const metadata = await this.getMetadata(ipfsHash);
     return metadata.description;
   };
+
+  /**
+   * Set the ipfs api
+   * @param ipfsApi - The ipfs api to use
+   */
+  public setIpfsApi(ipfsApi: IIpfsApi) {
+    this.ipfsApi = ipfsApi;
+  }
 }

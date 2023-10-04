@@ -328,7 +328,7 @@ export class Helpers {
     return validResponseTypes.includes(responseType);
   }
 
-  private async uploadMetadata(requestMetadata: RequestMetadata): Promise<string> {
+  private async uploadMetadata(requestMetadata: RequestMetadata): Promise<BytesLike> {
     // If the user didn't set the known modules we throw an error
     requestMetadata.returnedTypes = {};
     // Iterate over the known modules and get the return types of the decode request method
