@@ -14,6 +14,7 @@ import { BytesLike } from 'ethers';
  */
 export class IpfsApi implements IIpfsApi {
   api: PinataClient;
+  alternativeIpfsUrls: string[] = [CONSTANTS.IPFS_ALTERNATIVE_URL];
 
   constructor(apiKey: string, secretApiKey: string) {
     this.api = new PinataClient(apiKey, secretApiKey);
@@ -47,8 +48,27 @@ export class IpfsApi implements IIpfsApi {
    * @return RequestMetadata that contains responseType and description
    **/
   public async getMetadata(cid: string): Promise<RequestMetadata> {
-    const response = await axios.get<RequestMetadata>(`${CONSTANTS.IPFS_BASE_URL}/${cid}`);
-    return response.data;
+    const ipfsUrls = [CONSTANTS.IPFS_BASE_URL, ...this.alternativeIpfsUrls];
+
+    for (const url of ipfsUrls) {
+      try {
+        const response = await axios.get<RequestMetadata>(`${url}/${cid}`);
+        return response.data;
+      } catch (error) {
+        /* eslint-env node */
+        console.error(`Failed to get metadata from ${url}/${cid}`, error);
+      }
+    }
+
+    throw new Error(`Failed to get metadata from ${cid}`);
+  }
+
+  /**
+   * Add alternative IPFS urls to try if the default one fails
+   * @param urls - The urls to add
+   */
+  public addAlternativeIpfsUrls(urls: string[]) {
+    this.alternativeIpfsUrls = [...this.alternativeIpfsUrls, ...urls];
   }
 }
 
@@ -59,4 +79,5 @@ export class IpfsApi implements IIpfsApi {
 export interface IIpfsApi {
   uploadMetadata(metadata: RequestMetadata): Promise<BytesLike>;
   getMetadata(cid: string): Promise<RequestMetadata>;
+  addAlternativeIpfsUrls(urls: string[]): void;
 }

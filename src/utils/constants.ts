@@ -3,6 +3,7 @@ export const CONSTANTS = {
   ORACLE: '0xe8D2A1E88c91DCd5433208d4152Cc4F399a7e91d',
   CID_VERSION: 0, // Base58 for cid encoding
   IPFS_BASE_URL: 'https://gateway.pinata.cloud/ipfs',
+  IPFS_ALTERNATIVE_URL: 'https://ipfs.io/ipfs',
   AXIOS_TIMEOUT: 50000,
   SOLIDITY_TYPES: [
     'address',

@@ -62,4 +62,12 @@ export class Ipfs {
   public setIpfsApi(ipfsApi: IIpfsApi) {
     this.ipfsApi = ipfsApi;
   }
+
+  /**
+   * Add alternative IPFS urls to try if the default one fails
+   * @param urls - The urls to add
+   */
+  public addAlternativeIpfsUrls(urls: string[]) {
+    this.ipfsApi.addAlternativeIpfsUrls(urls);
+  }
 }
