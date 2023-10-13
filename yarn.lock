@@ -481,6 +481,17 @@
   resolved "https://registry.yarnpkg.com/@defi-wonderland/prophet-batching-abi/-/prophet-batching-abi-0.0.0-421b4b24.tgz#03aae97c4f1d5a3697f621cba913038d8135792a"
   integrity sha512-EGZAJ7f8rObPkYS/sEqIVvQ8Q1sb3BBm01ERTCaIelnRpFaquzHaPjrv7+7YUJhavdP/dAqU8Dx1T3e8QVzJQg==
 
+"@defi-wonderland/prophet-core-abi@0.0.0-bb56cdd7":
+  version "0.0.0-bb56cdd7"
+  resolved "https://registry.yarnpkg.com/@defi-wonderland/prophet-core-abi/-/prophet-core-abi-0.0.0-bb56cdd7.tgz#550aebcdec5cb47dfcd7dd60d48d8a396a878351"
+  integrity sha512-uu6+AaStUEXT2yMAmtHTgB4dn4t7ldEgp2TFtsiQXLBgnZygiaLW0fo/TChbeurmzcpJMQYtHb+pTn2JsCXIwA==
+  dependencies:
+    "@defi-wonderland/solidity-utils" "0.0.0-3e9c8e8b"
+    "@openzeppelin/contracts" "^4.9.3"
+    ds-test "https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0"
+    forge-std "https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e"
+    solmate "https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c"
+
 "@defi-wonderland/prophet-core-contracts@0.0.0-bb56cdd7":
   version "0.0.0-bb56cdd7"
   resolved "https://registry.yarnpkg.com/@defi-wonderland/prophet-core-contracts/-/prophet-core-contracts-0.0.0-bb56cdd7.tgz#9b54484b923c9252af4d2dac696b17626b600234"
@@ -2990,6 +3001,11 @@ dotenv@16.3.1:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
   integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
 
+"ds-test@git+https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0":
+  version "1.0.0"
+  uid e282159d5170298eb2455a6c05280ab5a73a4ef0
+  resolved "git+https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0"
+
 "ds-test@https://github.com/dapphub/ds-test":
   version "1.0.0"
   resolved "https://github.com/dapphub/ds-test#e282159d5170298eb2455a6c05280ab5a73a4ef0"
@@ -3399,6 +3415,10 @@ foreground-child@^2.0.0:
   dependencies:
     cross-spawn "^7.0.0"
     signal-exit "^3.0.2"
+
+"forge-std@git+https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e":
+  version "1.5.6"
+  resolved "git+https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e"
 
 "forge-std@https://github.com/foundry-rs/forge-std":
   version "1.6.0"
@@ -6415,6 +6435,10 @@ socket.io-parser@~4.2.4:
   dependencies:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.1"
+
+"solmate@git+https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c":
+  version "6.1.0"
+  resolved "git+https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c"
 
 "solmate@https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c":
   version "6.1.0"
