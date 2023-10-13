@@ -24,7 +24,10 @@
     }
   },
   "lint-staged": {
-    "*.ts": "eslint ./src/**/*.ts",
+    "*.ts": [
+      "prettier --write './**/*.ts'",
+      "eslint ./src --fix"
+    ],
     "package.json": "sort-package-json"
   },
   "dependencies": {
@@ -39,6 +42,8 @@
     "pinata-upload-cli": "1.1.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "17.6.5",
+    "@commitlint/config-conventional": "17.6.5",
     "@typechain/ethers-v6": "0.4.3",
     "@types/chai": "4.3.5",
     "@types/chai-as-promised": "7.1.5",
