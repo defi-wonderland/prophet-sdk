@@ -12,13 +12,12 @@
   ],
   "scripts": {
     "build": "yarn typechain && rm -rf dist && tsc -p tsconfig.json",
-    "postinstall": "husky install",
     "lint:check": "prettier --check './**' && eslint ./src",
     "lint:fix": "sort-package-json && prettier --write './**' && eslint ./src --fix",
     "prepare": "husky install && wonderland-crypto-husky-checks install",
     "test": "cross-env mocha 'test/**/*.spec.ts' --timeout 10000",
     "test:coverage": "nyc --reporter=lcov --reporter=text mocha 'test/**/*.spec.ts'",
-    "typechain": "typechain --target ethers-v6 --out-dir src/types/typechain './node_modules/@defi-wonderland/prophet-core-contracts/abi/*.json'"
+    "typechain": "typechain --target ethers-v6 --out-dir src/types/typechain './node_modules/@defi-wonderland/prophet-core-abi/abi/*.json'"
   },
   "husky": {
     "hooks": {
