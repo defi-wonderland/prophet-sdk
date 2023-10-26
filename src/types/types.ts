@@ -20,17 +20,21 @@ export type FullRequestWithMetadata = {
   metadata: RequestMetadata;
 };
 
+/**
+ * Changed the keys to differentiate between the NewRequestStrunct and RequestData, which is not encoded
+ */
 export type RequestData = {
-  requestModuleData: any;
-  responseModuleData: any;
-  disputeModuleData: any;
-  resolutionModuleData: any;
-  finalityModuleData: any;
-  requestModule: AddressLike;
-  responseModule: AddressLike;
-  disputeModule: AddressLike;
-  resolutionModule: AddressLike;
-  finalityModule: AddressLike;
+  requestObject: any;
+  responseObject: any;
+  disputeObject: any;
+  resolutionObject: any;
+  finalityObject: any;
+  requestModuleAddress: AddressLike;
+  responseModuleAddress: AddressLike;
+  disputeModuleAddress: AddressLike;
+  resolutionModuleAddress: AddressLike;
+  finalityModuleAddress: AddressLike;
+  ipfsHash?: string;
 };
 
 export type AddressAndAbi = {

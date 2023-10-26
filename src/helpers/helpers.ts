@@ -32,8 +32,9 @@ export class Helpers {
    * @param request - the request to be created
    * @returns the contract transaction
    */
-  public createRequestWithoutMetadata(request: IOracle.NewRequestStruct): Promise<ContractTransaction> {
-    return this.oracle.createRequest(request);
+  public createRequestWithoutMetadata(request: IOracle.NewRequestStruct | RequestData): Promise<ContractTransaction> {
+    const newRequest = 'requestModuleData' in request ? request : this.mapRequestDataToNewRequestStruct(request);
+    return this.oracle.createRequest(newRequest);
   }
 
   /**
@@ -51,51 +52,32 @@ export class Helpers {
     if (!this.validateResponseType(requestMetadata.responseType))
       throw new Error(`Invalid response type: ${requestMetadata.responseType}`);
 
-    if ('ipfsHash' in request) {
-      // The params are already encoded
-      this.decodedReturnTypesForModuleExists(request);
-      request.ipfsHash = await this.uploadMetadata(requestMetadata);
+    const newRequest = 'requestModuleData' in request ? request : this.mapRequestDataToNewRequestStruct(request);
 
-      return this.oracle.createRequest(request);
-    } else {
-      // Encode requestData
-      const requestModuleData = this.encodeRequestData(request.requestModuleData, request.requestModule as string);
-      const responseModuleData = this.encodeRequestData(request.responseModuleData, request.responseModule as string);
-      const disputeModuleData = this.encodeRequestData(request.disputeModuleData, request.disputeModule as string);
-      const resolutionModuleData = this.encodeRequestData(
-        request.resolutionModuleData,
-        request.resolutionModule as string
-      );
-      const finalityModuleData = this.encodeRequestData(request.finalityModuleData, request.finalityModule as string);
-
-      const newRequestStruct: IOracle.NewRequestStruct = {
-        requestModuleData: requestModuleData,
-        responseModuleData: responseModuleData,
-        disputeModuleData: disputeModuleData,
-        resolutionModuleData: resolutionModuleData,
-        finalityModuleData: finalityModuleData,
-        ipfsHash: '0',
-        requestModule: request.requestModule,
-        responseModule: request.responseModule,
-        disputeModule: request.disputeModule,
-        resolutionModule: request.resolutionModule,
-        finalityModule: request.finalityModule,
-      };
-
-      newRequestStruct.ipfsHash = await this.uploadMetadata(requestMetadata);
-
-      return this.oracle.createRequest(newRequestStruct);
-    }
+    this.decodedReturnTypesForModuleExists(newRequest);
+    newRequest.ipfsHash = await this.uploadMetadata(requestMetadata);
+    return this.oracle.createRequest(newRequest);
   }
 
+  /**
+   * Creates multiple requests with the given request data and metadata
+   * @param requests - the requests to be created
+   * @param requestMetadata - the metadata of the requests, such as response type and description
+   * @returns the contract transaction
+   */
   public async createRequests(
-    requests: IOracle.NewRequestStruct[],
+    requests: IOracle.NewRequestStruct[] | RequestData[],
     requestMetadata: RequestMetadata[]
   ): Promise<ContractTransaction> {
     if (requests.length !== requestMetadata.length)
       throw new Error('Requests data and metadata must be the same length');
 
-    const uploadPromises = requests.map(async (request, i) => {
+    const newRequests: IOracle.NewRequestStruct[] =
+      'requestModuleData' in requests[0]
+        ? (requests as IOracle.NewRequestStruct[])
+        : (requests as RequestData[]).map((req) => this.mapRequestDataToNewRequestStruct(req));
+
+    const uploadPromises = newRequests.map(async (request, i) => {
       const metadata = requestMetadata[i];
 
       if (!this.validateResponseType(metadata.responseType))
@@ -107,7 +89,7 @@ export class Helpers {
 
     await Promise.all(uploadPromises);
 
-    return this.oracle.createRequests(requests);
+    return this.oracle.createRequests(newRequests);
   }
 
   /**
@@ -413,5 +395,33 @@ export class Helpers {
   private getDecodeRequestDataReturnTypes(abi: any[]): any[] {
     const returnTypes = abi.find((item) => item.name === 'decodeRequestData').outputs;
     return returnTypes;
+  }
+
+  private mapRequestDataToNewRequestStruct(request: RequestData): IOracle.NewRequestStruct {
+    // Encode requestData
+    const requestModuleData = this.encodeRequestData(request.requestObject, request.requestModuleAddress as string);
+    const responseModuleData = this.encodeRequestData(request.responseObject, request.responseModuleAddress as string);
+    const disputeModuleData = this.encodeRequestData(request.disputeObject, request.disputeModuleAddress as string);
+    const resolutionModuleData = this.encodeRequestData(
+      request.resolutionObject,
+      request.resolutionModuleAddress as string
+    );
+    const finalityModuleData = this.encodeRequestData(request.finalityObject, request.finalityModuleAddress as string);
+
+    const newRequestStruct: IOracle.NewRequestStruct = {
+      requestModuleData: requestModuleData,
+      responseModuleData: responseModuleData,
+      disputeModuleData: disputeModuleData,
+      resolutionModuleData: resolutionModuleData,
+      finalityModuleData: finalityModuleData,
+      ipfsHash: request.ipfsHash ? request.ipfsHash : '0',
+      requestModule: request.requestModuleAddress,
+      responseModule: request.responseModuleAddress,
+      disputeModule: request.disputeModuleAddress,
+      resolutionModule: request.resolutionModuleAddress,
+      finalityModule: request.finalityModuleAddress,
+    };
+
+    return newRequestStruct;
   }
 }
