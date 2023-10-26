@@ -9,6 +9,8 @@ import config from './config/config';
 import { CONSTANTS } from './utils';
 import { ModulesMap } from './types/Module';
 import { Modules } from './modules/modules';
+import { AddressAndAbi } from './types/types';
+import { Module } from './module';
 
 export class ProphetSDK {
   /**
@@ -29,7 +31,7 @@ export class ProphetSDK {
   /**
    * Constructor
    */
-  constructor(runner: ContractRunner, oracleAddress?: string, knownModules?: ModulesMap) {
+  constructor(runner: ContractRunner, oracleAddress?: string, knownModules?: ModulesMap | AddressAndAbi[]) {
     this.runner = runner;
     oracleAddress = oracleAddress ? oracleAddress : CONSTANTS.ORACLE;
 
@@ -38,10 +40,9 @@ export class ProphetSDK {
 
       this.batching = new Batching(this.oracle);
       const ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);
-      this.modules = new Modules(knownModules);
-      this.helpers = new Helpers(this.oracle, ipfsApi, this.modules);
+      this.helpers = new Helpers(this.oracle, ipfsApi);
       this.ipfs = new Ipfs(ipfsApi);
-      this.modules = new Modules(knownModules);
+      this.setKnownModules(knownModules);
     } catch (e) {
       throw new Error(`Failed to create oracle contract ${e}`);
     }
@@ -51,8 +52,19 @@ export class ProphetSDK {
    * Set the known modules
    * @param knownModules - A list of custom modules that can be added to the oracle
    */
-  public setKnownModules(knownModules: ModulesMap) {
-    this.modules.setKnownModules(knownModules);
+  public setKnownModules(knownModules: ModulesMap | AddressAndAbi[]) {
+    if (!this.modules) this.modules = new Modules({});
+    if (!knownModules) return;
+    if (Array.isArray(knownModules)) {
+      const modulesMap: ModulesMap = {};
+      for (const module of knownModules) {
+        modulesMap[module.address] = new Module(module.address, module.abi, this.runner);
+      }
+      this.modules.setKnownModules(modulesMap);
+    } else {
+      this.modules.setKnownModules(knownModules);
+    }
+
     this.helpers.setModules(this.modules);
   }
 

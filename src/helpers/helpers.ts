@@ -1,7 +1,7 @@
-import { AddressLike, BigNumberish, BytesLike, ContractTransaction } from 'ethers';
+import { AddressLike, BigNumberish, BytesLike, ContractTransaction, ethers } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { IpfsApi } from '../ipfsApi';
-import { Address, FullRequestWithMetadata, RequestMetadata } from '../types/types';
+import { Address, FullRequestWithMetadata, RequestData, RequestMetadata } from '../types/types';
 import { CONSTANTS } from '../utils/constants';
 import { bytes32ToCid } from '../utils/cid';
 import { Modules } from '../modules/modules';
@@ -45,16 +45,47 @@ export class Helpers {
    * @returns the contract transaction
    */
   public async createRequest(
-    request: IOracle.NewRequestStruct,
+    request: IOracle.NewRequestStruct | RequestData,
     requestMetadata: RequestMetadata
   ): Promise<ContractTransaction> {
     if (!this.validateResponseType(requestMetadata.responseType))
       throw new Error(`Invalid response type: ${requestMetadata.responseType}`);
 
-    this.decodedReturnTypesForModuleExists(request);
-    request.ipfsHash = await this.uploadMetadata(requestMetadata);
+    if ('ipfsHash' in request) {
+      // The params are already encoded
+      this.decodedReturnTypesForModuleExists(request);
+      request.ipfsHash = await this.uploadMetadata(requestMetadata);
 
-    return this.oracle.createRequest(request);
+      return this.oracle.createRequest(request);
+    } else {
+      // Encode requestData
+      const requestModuleData = this.encodeRequestData(request.requestModuleData, request.requestModule as string);
+      const responseModuleData = this.encodeRequestData(request.responseModuleData, request.responseModule as string);
+      const disputeModuleData = this.encodeRequestData(request.disputeModuleData, request.disputeModule as string);
+      const resolutionModuleData = this.encodeRequestData(
+        request.resolutionModuleData,
+        request.resolutionModule as string
+      );
+      const finalityModuleData = this.encodeRequestData(request.finalityModuleData, request.finalityModule as string);
+
+      const newRequestStruct: IOracle.NewRequestStruct = {
+        requestModuleData: requestModuleData,
+        responseModuleData: responseModuleData,
+        disputeModuleData: disputeModuleData,
+        resolutionModuleData: resolutionModuleData,
+        finalityModuleData: finalityModuleData,
+        ipfsHash: '0',
+        requestModule: request.requestModule,
+        responseModule: request.responseModule,
+        disputeModule: request.disputeModule,
+        resolutionModule: request.resolutionModule,
+        finalityModule: request.finalityModule,
+      };
+
+      newRequestStruct.ipfsHash = await this.uploadMetadata(requestMetadata);
+
+      return this.oracle.createRequest(newRequestStruct);
+    }
   }
 
   public async createRequests(
@@ -362,5 +393,25 @@ export class Helpers {
       )
         throw new Error(`${requestModule.name}: ${requestModule.address} is not a known module`);
     });
+  }
+
+  private encodeRequestData(requestData: any, module: string): string {
+    try {
+      const encodedData = ethers.AbiCoder.defaultAbiCoder().encode(
+        this.getDecodeRequestDataReturnTypes(this.modules.knownModules[module].abi),
+        [requestData]
+      );
+      return encodedData;
+    } catch (e) {
+      throw new Error(
+        `Failed to encode request data for ${requestData} and module: ${module}
+        \nplease check if the known modules are set for the module addres: ${e}`
+      );
+    }
+  }
+
+  private getDecodeRequestDataReturnTypes(abi: any[]): any[] {
+    const returnTypes = abi.find((item) => item.name === 'decodeRequestData').outputs;
+    return returnTypes;
   }
 }

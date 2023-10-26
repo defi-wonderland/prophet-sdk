@@ -8,11 +8,13 @@ import { IModuleBase } from './types/Module';
 export class Module {
   public moduleAddress: string;
   public moduleContract: IModuleBase;
+  public abi: any[];
 
   constructor(moduleAddress: string, abiOrInterface: ethers.Interface | any, runner: ContractRunner) {
     this.moduleAddress = moduleAddress;
     try {
       this.moduleContract = new Contract(moduleAddress, abiOrInterface, runner) as unknown as IModuleBase;
+      this.abi = abiOrInterface;
     } catch (e) {
       throw new Error(`Failed to create module contract instance for ${moduleAddress}: ${e}`);
     }
