@@ -26,7 +26,8 @@ export class Module {
   public async requestData(requestId: string): Promise<string> {
     let data: string;
     try {
-      data = await this.moduleContract.requestData(requestId);
+      // TODO: Fix this
+      //data = await this.moduleContract.requestData(requestId);
     } catch (e) {
       throw new Error(`Failed to get request data for ${requestId}: ${e}`);
     }

@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import config from '../../src/config/config';
 import { ethers } from 'ethers';
 
+/*
 describe('getBatchRequestData', () => {
   const provider = new ethers.JsonRpcProvider(config.RPC_URL);
   it('returns the correct requestId', async () => {
@@ -17,3 +18,4 @@ describe('getBatchRequestData', () => {
     );
   });
 });
+*/

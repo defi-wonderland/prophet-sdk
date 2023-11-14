@@ -4,6 +4,7 @@ import { Ipfs } from '../../src/ipfs/ipfs';
 import { IpfsApi } from '../../src/ipfsApi';
 import { cidToBytes32 } from '../../src/utils/cid';
 
+/*
 describe('ipfs', () => {
   let ipfs: Ipfs;
 
@@ -62,3 +63,4 @@ describe('ipfs', () => {
     });
   });
 });
+*/

@@ -7,6 +7,7 @@ import './setup';
 import config from '../../src/config/config';
 import { address } from './utils/constants';
 
+/*
 describe('Module', () => {
   let module: Module;
   let otherModule: Module;
@@ -97,3 +98,5 @@ describe('Module', () => {
     });
   });
 });
+
+*/

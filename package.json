@@ -31,9 +31,12 @@
     ],
     "package.json": "sort-package-json"
   },
+  "resolutions": {
+    "@nomiclabs/hardhat-ethers/ethers": "5.7.2"
+  },
   "dependencies": {
     "@defi-wonderland/prophet-batching-abi": "0.0.0-421b4b24",
-    "@defi-wonderland/prophet-core-abi": "0.0.0-bb56cdd7",
+    "@defi-wonderland/prophet-core-abi": "0.0.0-1ae08a81",
     "@pinata/sdk": "2.1.0",
     "axios": "1.4.0",
     "cids": "1.1.9",
@@ -47,6 +50,7 @@
     "@commitlint/config-conventional": "17.6.5",
     "@defi-wonderland/crypto-husky-checks": "0.0.0-29a10090",
     "@defi-wonderland/prophet-modules-abi": "0.0.0-172c4052",
+    "@nomiclabs/hardhat-ethers": "2.2.1",
     "@typechain/ethers-v6": "0.4.3",
     "@types/chai": "4.3.5",
     "@types/chai-as-promised": "7.1.5",
@@ -58,6 +62,7 @@
     "chai-as-promised": "7.1.1",
     "cross-env": "7.0.3",
     "eslint": "8.40.0",
+    "hardhat": "2.16.0",
     "husky": "8.0.3",
     "lint-staged": "10",
     "mocha": "10.2.0",

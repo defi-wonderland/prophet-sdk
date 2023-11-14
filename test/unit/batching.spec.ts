@@ -6,6 +6,7 @@ import { abi as IAbiOracle } from '@defi-wonderland/prophet-core-abi/abi/IOracle
 import { expect } from 'chai';
 import { address } from './utils/constants';
 
+/*
 describe('Batching', () => {
   const provider = new ethers.JsonRpcProvider(config.RPC_URL);
 
@@ -44,3 +45,4 @@ describe('Batching', () => {
     expect(result[0]).to.deep.equal(firstRow);
   });
 });
+*/

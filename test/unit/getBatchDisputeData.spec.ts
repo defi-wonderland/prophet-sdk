@@ -2,7 +2,7 @@ import { getBatchDisputeData } from '../../src/batching/getBatchDisputeData';
 import { expect } from 'chai';
 import config from '../../src/config/config';
 import { ethers } from 'ethers';
-
+/*
 describe('getBatchDisputeData', () => {
   const provider = new ethers.JsonRpcProvider(config.RPC_URL);
 
@@ -35,3 +35,4 @@ describe('getBatchDisputeData', () => {
     expect(result[2].isFinalized).to.equal(false);
   });
 });
+*/

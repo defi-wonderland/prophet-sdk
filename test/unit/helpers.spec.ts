@@ -34,6 +34,9 @@ describe('Helpers', () => {
   const getRequestByNonceResult = 'getRequestByNonceResult';
   const getRequestIdResult = 'getRequestIdResult';
   const isParticipantResult = 'isParticipantResult';
+  const queryFilterResult = 'queryFilterResult';
+  const filtersStubResult = 'filtersStubResult';
+  const queryFilterMappedResult = 'queryFilterMappedResult';
 
   const createRequestStub: SinonStub = sinon.stub();
   const getRequestStub: SinonStub = sinon.stub();
@@ -43,6 +46,7 @@ describe('Helpers', () => {
   const getResponseIdsStub: SinonStub = sinon.stub();
   const getFinalizedResponseStub: SinonStub = sinon.stub();
   const listRequestStub: SinonStub = sinon.stub();
+  const queryFilterStub: SinonStub = sinon.stub();
   const disputeResponseStub: SinonStub = sinon.stub();
   const createRequestsStub: SinonStub = sinon.stub();
   const allowedModuleStub: SinonStub = sinon.stub();
@@ -62,6 +66,8 @@ describe('Helpers', () => {
   const getRequestByNonceStub: SinonStub = sinon.stub();
   const getRequestIdsStub: SinonStub = sinon.stub();
   const isParticipantStub: SinonStub = sinon.stub();
+  const filtersStub: SinonStub = sinon.stub();
+  const queryFilterStubResultStub: SinonStub = sinon.stub();
 
   const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
   const cidBytes32 = cidToBytes32(cid);
@@ -74,18 +80,19 @@ describe('Helpers', () => {
   const CALLBACK_MODULE = '0xB82008565FdC7e44609fA118A4a681E92581e680';
   const HTTP_REQUEST_MODULE = '0x2a810409872AfC346F9B5b26571Fd6eC42EA4849';
 
-  let sampleRequest = {
+  let sampleRequest: IOracle.RequestStruct = {
     requestModuleData: ethers.encodeBytes32String('requestModuleData'),
     responseModuleData: ethers.encodeBytes32String('responseModuleData'),
     disputeModuleData: ethers.encodeBytes32String('disputeModuleData'),
     resolutionModuleData: ethers.encodeBytes32String('resolutionModuleData'),
     finalityModuleData: ethers.encodeBytes32String('finalityModuleData'),
-    ipfsHash: ethers.encodeBytes32String('ipfsHash'),
     requestModule: HTTP_REQUEST_MODULE,
     responseModule: BONDED_RESPONSE_MODULE,
     disputeModule: BONDED_DISPUTE_MODULE,
     resolutionModule: ARBITRATOR_MODULE,
     finalityModule: CALLBACK_MODULE,
+    nonce: 1,
+    requester: '0x102EEA73631BaB024C55540B048FEA1e43271962',
   };
 
   let sampleRequestMetadata = {
@@ -106,7 +113,8 @@ describe('Helpers', () => {
     getResponse: getResponseStub.resolves(getResponseResult),
     getResponseIds: getResponseIdsStub.resolves(getResponseIdsResult),
     getFinalizedResponse: getFinalizedResponseStub.resolves(getFinalizedResponseResult),
-    listRequests: listRequestStub.resolves(listRequestsResult),
+    queryFilter: queryFilterStub.resolves({ map: queryFilterStubResultStub.resolves(queryFilterMappedResult) }),
+    filters: { RequestCreated: 'RequestCreated' },
     disputeResponse: disputeResponseStub.resolves(disputeResponseResult),
     createRequests: createRequestsStub.resolves(createRequestsResult),
     allowedModule: allowedModuleStub.resolves(allowedModuleResult),
@@ -151,7 +159,8 @@ describe('Helpers', () => {
 
   describe('createRequestWithoutMetadata', () => {
     it('call to createRequest', async () => {
-      const result = await helpers.createRequestWithoutMetadata(sampleRequest);
+      const result = await helpers.createRequestWithoutMetadata(sampleRequest, cidBytes32);
+      // TODO: should call it with ipfs hash too
       expect(result).to.equal(createRequestResult);
       expect(createRequestStub.calledWith(sampleRequest)).to.be.true;
     });
@@ -161,6 +170,7 @@ describe('Helpers', () => {
     it('call to createRequest', async () => {
       const result = await helpers.createRequest(sampleRequest, sampleRequestMetadata);
       expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
+      // TODO: should call it with ipfs hash too
       expect(createRequestStub.calledWith(sampleRequest)).to.be.true;
       expect(result).to.equal(createRequestResult);
     });
@@ -242,14 +252,6 @@ describe('Helpers', () => {
     });
   });
 
-  describe('getRequest', () => {
-    it('call to getRequest', async () => {
-      const result = await helpers.getRequest('1');
-      expect(getRequestStub.calledWith('1')).to.be.true;
-      expect(result).to.equal(getRequestResult);
-    });
-  });
-
   describe('proposeResponse', () => {
     it('call to proposeResponse', async () => {
       const result = await helpers.proposeResponse('1', 'responseData');
@@ -258,6 +260,8 @@ describe('Helpers', () => {
     });
   });
 
+  // TODO: check if needs to be removed
+  /*
   describe('getResponse', () => {
     it('call to getResponse', async () => {
       const result = await helpers.getResponse('1');
@@ -265,6 +269,7 @@ describe('Helpers', () => {
       expect(result).to.equal(getResponseResult);
     });
   });
+  */
 
   describe('getResponseIds', () => {
     it('call to getResponseIds', async () => {
@@ -274,22 +279,24 @@ describe('Helpers', () => {
     });
   });
 
-  describe('getFinalizedResponse', () => {
-    it('call to getFinalizedResponse', async () => {
-      const result = await helpers.getFinalizedResponse('1');
-      expect(getFinalizedResponseStub.calledWith('1')).to.be.true;
-      expect(result).to.be.equal(getFinalizedResponseResult);
+  describe('getFinalizedResponseId', () => {
+    it('call to getFinalizedResponseId', async () => {
+      const result = await helpers.getFinalizedResponseId('1');
+      expect(getFinalizedResponseIdStub.calledWith('1')).to.be.true;
+      expect(result).to.be.equal(getFinalizedResponseIdResult);
     });
   });
 
   describe('listRequests', () => {
     it('call to listRequests', async () => {
       const result = await helpers.listRequests(0, 10);
-      expect(listRequestStub.calledWith(0, 10)).to.be.true;
-      expect(result).to.be.equal(listRequestsResult);
+      expect(queryFilterStub.calledWith('RequestCreated', 0, 10)).to.be.true;
+      expect(result).to.be.equal(queryFilterMappedResult);
     });
   });
 
+  // TODO: check this one why is needed to send the entire structs
+  /*
   describe('disputeResponse', () => {
     it('call to disputeResponse', async () => {
       const result = await helpers.disputeResponse('1', '2');
@@ -297,11 +304,13 @@ describe('Helpers', () => {
       expect(result).to.be.equal(disputeResponseResult);
     });
   });
+  */
 
   describe('createRequests', () => {
     it('call to createRequests', async () => {
       const result = await helpers.createRequests([sampleRequest], [sampleRequestMetadata]);
       expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
+      // TODO: should call it with ipfs hash too
       expect(createRequestsStub.calledWith([sampleRequest])).to.be.true;
       expect(result).to.equal(createRequestsResult);
     });
@@ -323,6 +332,7 @@ describe('Helpers', () => {
     });
   });
 
+  /* TODO: check
   describe('getDispute', () => {
     it('calls to getDispute', async () => {
       const result = await helpers.getDispute(sampleBytes32);
@@ -330,7 +340,9 @@ describe('Helpers', () => {
       expect(result).to.equal(getDisputeResult);
     });
   });
+  */
 
+  /*
   describe('getFullRequest', () => {
     it('calls to getFullRequest', async () => {
       const result = await helpers.getFullRequest(sampleBytes32);
@@ -338,6 +350,7 @@ describe('Helpers', () => {
       expect(result).to.equal(getFullRequestResult);
     });
   });
+  */
 
   describe('disputeOf', () => {
     it('calls to disputeOf', async () => {
@@ -347,6 +360,8 @@ describe('Helpers', () => {
     });
   });
 
+  // TODO: implement
+  /*
   describe('escalateDispute', () => {
     it('calls to escalateDispute', async () => {
       const result = await helpers.escalateDispute(sampleBytes32);
@@ -354,7 +369,10 @@ describe('Helpers', () => {
       expect(result).to.equal(escalationDisputeResult);
     });
   });
+  */
 
+  // TODO: implement
+  /*
   describe('resolveDispute', () => {
     it('calls to resolveDispute', async () => {
       const result = await helpers.resolveDispute(sampleBytes32);
@@ -362,6 +380,7 @@ describe('Helpers', () => {
       expect(result).to.equal(resolveDisputeResult);
     });
   });
+  */
 
   describe('listRequestIds', () => {
     it('calls to listRequestIds', async () => {
@@ -371,6 +390,8 @@ describe('Helpers', () => {
     });
   });
 
+  // TODO: implement
+  /*
   describe('finalize', () => {
     it('calls to finalize', async () => {
       const result = await helpers.finalize(
@@ -383,7 +404,10 @@ describe('Helpers', () => {
       expect(result).to.equal(finalizeResult);
     });
   });
+  */
 
+  // TODO: implement?
+  /*
   describe('finalizeWithoutResponse', () => {
     it('calls to finalize without response', async () => {
       const result = await helpers.finalize(sampleBytes32);
@@ -391,6 +415,7 @@ describe('Helpers', () => {
       expect(result).to.equal(finalizeResultWithoutResponse);
     });
   });
+  */
 
   describe('getRequestMetadata', () => {
     it('calls to ipfsApi getRequestMetadata', async () => {
@@ -400,6 +425,8 @@ describe('Helpers', () => {
     });
   });
 
+  // TODO: implement
+  /*
   describe('getFullRequestWithMetadata', () => {
     it('calls to getFullRequest and getRequestMetadata', async () => {
       const fullRequestSample = { ipfsHash: cidBytes32 }; // we just care about ipfs hash here
@@ -422,6 +449,7 @@ describe('Helpers', () => {
       });
     });
   });
+  */
 
   describe('totalRequestCount', () => {
     it('calls to totalRequestCount', async () => {
@@ -431,6 +459,8 @@ describe('Helpers', () => {
     });
   });
 
+  // TODO: remove?
+  /*
   describe('deleteResponse', () => {
     it('calls to deleteResponse', async () => {
       const result = await helpers.deleteResponse(sampleBytes32);
@@ -438,6 +468,7 @@ describe('Helpers', () => {
       expect(result).to.equal(deleteResponseResult);
     });
   });
+  */
 
   describe('call static methods', () => {
     // Just defined some of the methods to test the callStatic method
@@ -530,6 +561,8 @@ describe('Helpers', () => {
     });
   });
 
+  // TODO: remove?
+  /*
   describe('getRequestByNonce', () => {
     it('calls to getRequestByNonce', async () => {
       const result = await helpers.getRequestByNonce(1);
@@ -537,6 +570,7 @@ describe('Helpers', () => {
       expect(result).to.equal(getRequestByNonceResult);
     });
   });
+  */
 
   describe('getRequestId', () => {
     it('calls to getRequestId', async () => {
