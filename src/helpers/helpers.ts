@@ -1,16 +1,15 @@
-import { AddressLike, BigNumberish, BytesLike, ContractTransaction, ethers } from 'ethers';
-import { IOracle, IOracle__factory } from '../types/typechain';
+import { AddressLike, BigNumberish, BytesLike, ContractTransactionResponse } from 'ethers';
+import { IOracle } from '../types/typechain';
 import { IpfsApi } from '../ipfsApi';
-import { Address, FullRequestWithMetadata, RequestMetadata, RequestWithId } from '../types/types';
+import { Address, RequestMetadata, RequestWithId } from '../types/types';
 import { CONSTANTS } from '../utils/constants';
 import { bytes32ToCid } from '../utils/cid';
 import { Modules } from '../modules/modules';
-import { eventNames } from 'process';
 
 export class Helpers {
   private oracle: IOracle;
   private ipfsApi: IpfsApi;
-  private modules: Modules;
+  private modules?: Modules;
 
   constructor(oracle: IOracle, ipfsApi: IpfsApi, modules?: Modules) {
     this.oracle = oracle;
@@ -32,12 +31,12 @@ export class Helpers {
    *        IPFS hash is set in the request data
    * @param request - the request to be created
    * @param ipfsHash - the IPFS hash of the metadata
-   * @returns the contract transaction
+   * @returns the contract transaction response
    */
   public createRequestWithoutMetadata(
     request: IOracle.RequestStruct,
     ipfsHash: BytesLike
-  ): Promise<ContractTransaction> {
+  ): Promise<ContractTransactionResponse> {
     // TODO add ipfs hash to the parameters
     return this.oracle.createRequest(request);
   }
@@ -48,12 +47,12 @@ export class Helpers {
    *        and sets the IPFS hash in the request data
    * @param request - the request to be created
    * @param requestMetadata - the metadata of the request, such as response type and description
-   * @returns the contract transaction
+   * @returns the contract transaction response
    */
   public async createRequest(
     request: IOracle.RequestStruct,
     requestMetadata: RequestMetadata
-  ): Promise<ContractTransaction> {
+  ): Promise<ContractTransactionResponse> {
     if (!this.validateResponseType(requestMetadata.responseType))
       throw new Error(`Invalid response type: ${requestMetadata.responseType}`);
     await this.uploadMetadata(requestMetadata);
@@ -61,10 +60,16 @@ export class Helpers {
     return this.oracle.createRequest(request);
   }
 
+  /**
+   * Create multiple requests with the given request data and metadata
+   * @param requests - the requests to be created
+   * @param requestMetadata - the metadata of the requests, such as response type and description
+   * @returns the contract transaction response
+   */
   public async createRequests(
     requests: IOracle.RequestStruct[],
     requestMetadata: RequestMetadata[]
-  ): Promise<ContractTransaction> {
+  ): Promise<ContractTransactionResponse> {
     if (requests.length !== requestMetadata.length)
       throw new Error('Requests data and metadata must be the same length');
 
@@ -99,13 +104,16 @@ export class Helpers {
   */
 
   /**
-   * Proposes a response for the given request id
-   * @param requestId - the request id
-   * @param responseData - the response data
-   * @returns the contract transaction
+   * Proposes a response for the given request
+   * @param request - the request struct
+   * @param responseData - the response struct
+   * @returns the contract transaction response
    */
-  public proposeResponse(requestId: BytesLike, responseData: BytesLike): Promise<ContractTransaction> {
-    return this.oracle['proposeResponse(bytes32,bytes)'](requestId, responseData);
+  public proposeResponse(
+    request: IOracle.RequestStruct,
+    response: IOracle.ResponseStruct
+  ): Promise<ContractTransactionResponse> {
+    return this.oracle.proposeResponse(request, response);
   }
 
   /**
@@ -151,14 +159,18 @@ export class Helpers {
 
   /**
    * Disputes the given response
-   * @param requestId - the request id
-   * @returns the contract transaction
+   * @param request - the request struct
+   * @param response - the response struct
+   * @param dispute - the dispute struct
+   * @returns the contract transaction response
    **/
-  /*
-  public disputeResponse(requestId: BytesLike, responseId: BytesLike): Promise<ContractTransaction> {
-    return this.oracle.disputeResponse(requestId, responseId);
+  public disputeResponse(
+    request: IOracle.RequestStruct,
+    response: IOracle.ResponseStruct,
+    dispute: IOracle.DisputeStruct
+  ): Promise<ContractTransactionResponse> {
+    return this.oracle.disputeResponse(request, response, dispute);
   }
-  */
 
   /**
    * Returns true or false whether the request is configured to use the given module
@@ -181,22 +193,21 @@ export class Helpers {
     // return this.oracle.getDispute(disputeId);
   }*/
 
-  // TODO: FIX
-  //function disputeStatus(bytes32 _disputeId) external view returns (DisputeStatus _status)
-
-  // TODO: FIX
-  //function finalizedAt(bytes32 _requestId) external view returns(uint128 _finalizedAt)
-
   /**
-   * Gets the full request for the given request id
-   * @param requestId - the request id
-   * @returns the full request for the given request id
-   **/
+   * Returns the dispute status for a given dispute
+   * @param disputeId - the dispute id
+   * @returns the dispute status
+   */
+  public disputeStatus(disputeId: BytesLike): Promise<bigint> {
+    return this.oracle.disputeStatus(disputeId);
+  }
+
+  // TODO : add it when new canary published
   /*
-  public getFullRequest(requestId: BytesLike): Promise<IOracle.RequestStruct> {
-    // TODO: FIX
-    // return this.oracle.getFullRequest(requestId);
-  }*/
+  public finalizedAt(requestId: BytesLike): Promise<BigNumberish> {
+    return this.oracle.finalizedAt(requestId);
+  }
+  */
 
   /**
    * Gets the dispute id for the given response id
@@ -208,26 +219,60 @@ export class Helpers {
   }
 
   /**
-   * Escalates the given dispute
-   * @param disputeId - the dispute id
-   * @returns the contract transaction
-   **/
-  /*
-  public escalateDispute(_disputeId: BytesLike): Promise<ContractTransaction> {
-    return this.oracle.escalateDispute(_disputeId);
+   * Gets the created unix timestamp for the given request id
+   * @param requestId - the request id
+   * @returns the created unix timestamp for the given request id
+   */
+  public createdAt(requestId: BytesLike): Promise<BigNumberish> {
+    return this.oracle.createdAt(requestId);
   }
-  */
+
+  /**
+   * Escalates the given dispute
+   * @param request - the request struct
+   * @param response - the response struct
+   * @param dispute - the dispute struct
+   * @returns the contract transaction response
+   **/
+  public escalateDispute(
+    request: IOracle.RequestStruct,
+    response: IOracle.ResponseStruct,
+    dispute: IOracle.DisputeStruct
+  ): Promise<ContractTransactionResponse> {
+    return this.oracle.escalateDispute(request, response, dispute);
+  }
 
   /**
    * Resolves the given dispute
-   * @param disputeId - the dispute id
-   * @returns the contract transaction
+   * @param request - the request struct
+   * @param response - the response struct
+   * @param dispute - the dispute struct
+   * @returns the contract transaction response
    **/
-  /*
-  public resolveDispute(disputeId: BytesLike): Promise<ContractTransaction> {
-    return this.oracle.resolveDispute(disputeId);
+  public resolveDispute(
+    request: IOracle.RequestStruct,
+    response: IOracle.ResponseStruct,
+    dispute: IOracle.DisputeStruct
+  ): Promise<ContractTransactionResponse> {
+    return this.oracle.resolveDispute(request, response, dispute);
   }
-  */
+
+  /**
+   * Updates the dispute status for the given dispute
+   * @param request - the request struct
+   * @param response - the response struct
+   * @param dispute  - the dispute struct
+   * @param status  - the dispute status
+   * @returns the contract transaction response
+   */
+  public updateDisputeStatus(
+    request: IOracle.RequestStruct,
+    response: IOracle.ResponseStruct,
+    dispute: IOracle.DisputeStruct,
+    status: number
+  ): Promise<ContractTransactionResponse> {
+    return this.oracle.updateDisputeStatus(request, response, dispute, status);
+  }
 
   /**
    * Gets the list of request ids for the given startFrom and batchSize
@@ -240,26 +285,16 @@ export class Helpers {
   }
 
   /**
-   * Finalizes the given request
-   * @param requestId - the request id
-   * @param finalizedResponseId - the finalized response id
-   * @returns the contract transaction
-   **/
-  public finalize(requestId: BytesLike, finalizedResponseId: BytesLike): Promise<ContractTransaction>;
-
-  /**
    * Finalizes the given request without a response id
-   * @param requestId - the request id
-   * @returns the contract transaction
+   * @param request - the request struct
+   * @param response - the response struct
+   * @returns the contract transaction response
    */
-  public finalize(requestId: BytesLike): Promise<ContractTransaction>;
-
-  public async finalize(requestId: BytesLike, finalizedResponseId?: BytesLike): Promise<ContractTransaction> {
-    if (finalizedResponseId) {
-      return this.oracle['finalize(bytes32,bytes32)'](requestId, finalizedResponseId);
-    } else {
-      return this.oracle['finalize(bytes32)'](requestId);
-    }
+  public async finalize(
+    request: IOracle.RequestStruct,
+    response: IOracle.ResponseStruct
+  ): Promise<ContractTransactionResponse> {
+    return this.oracle.finalize(request, response);
   }
 
   /**
@@ -294,42 +329,6 @@ export class Helpers {
       metadata: metadata,
     };
   }*/
-
-  /**
-   * Deletes the given response
-   * @param responseId - the response id
-   * @returns the contract transaction
-   */
-  /*
-  public deleteResponse(responseId: BytesLike): Promise<ContractTransaction> {
-    // TODO: FIX
-    //return this.oracle.deleteResponse(responseId);
-  }
-  */
-
-  /**
-   * Returns the finalized response id for the given request id
-   * @param requestId - the request id
-   * @returns the finalized response id for the given request id
-   */
-  /*
-  public async getFinalizedResponseId(requestId: BytesLike): Promise<BytesLike> {
-    // TODO: FIX
-    //return this.oracle.getFinalizedResponseId(requestId);
-  }
-  */
-
-  /**
-   * Returns the request for the given nonce
-   * @param nonce - the nonce
-   * @returns the request for the given nonce
-   */
-  /*
-  public async getRequestByNonce(nonce: BigNumberish): Promise<IOracle.RequestStruct> {
-    // TODO: FIX
-    // return this.oracle.getRequestByNonce(nonce);
-  }
-  */
 
   /**
    * Returns the request id for the given nonce
@@ -371,6 +370,7 @@ export class Helpers {
   private async uploadMetadata(requestMetadata: RequestMetadata): Promise<BytesLike> {
     // If the user didn't set the known modules we throw an error
     requestMetadata.returnedTypes = {};
+    if (!this.modules?.knownModules) throw new Error('Known modules not set');
     // Iterate over the known modules and get the return types of the decode request method
     for (const moduleAddress of Object.keys(this.modules.knownModules)) {
       const returnedTypes = await this.modules.getNamedDecodeRequestReturnTypes(moduleAddress);
@@ -386,7 +386,8 @@ export class Helpers {
   }
 
   private decodedReturnTypesForModuleExists(request: IOracle.RequestStruct) {
-    if (!this.modules.knownModules) throw new Error('Known modules not set');
+    if (!this.modules?.knownModules) throw new Error('Known modules not set');
+    const knownModules = this.modules.knownModules;
     // Address that we need to get the named decoded return types for
     const requestModules = [
       { name: 'requestModule', address: request.requestModule },
@@ -395,10 +396,11 @@ export class Helpers {
       { name: 'resolutionModule', address: request.resolutionModule },
       { name: 'finalityModule', address: request.finalityModule },
     ];
+
     requestModules.forEach((requestModule) => {
       if (
         !(requestModule.address == '0x0000000000000000000000000000000000000000' || !requestModule.address) &&
-        !Object.keys(this.modules.knownModules).includes(requestModule.address as string)
+        !Object.keys(knownModules).includes(requestModule.address as string)
       )
         throw new Error(`${requestModule.name}: ${requestModule.address} is not a known module`);
     });

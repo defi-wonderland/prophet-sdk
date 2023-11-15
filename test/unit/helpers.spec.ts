@@ -6,6 +6,7 @@ import { IpfsApi } from '../../src/ipfsApi';
 import { cidToBytes32 } from '../../src/utils/cid';
 import { ethers } from 'ethers';
 import { Modules } from '../../src/modules/modules';
+import exp from 'constants';
 
 describe('Helpers', () => {
   const createRequestResult = 'createRequestResult';
@@ -21,7 +22,7 @@ describe('Helpers', () => {
   const getDisputeResult = 'getDisputeResult';
   const getFullRequestResult = 'getFullRequestResult';
   const disputeOfResult = 'disputeOfResult';
-  const escalationDisputeResult = 'escalationDisputeResult';
+  const escalateDisputeResult = 'escalationDisputeResult';
   const resolveDisputeResult = 'resolveDisputeResult';
   const listRequestIdsResult = ['requestId1', 'requestId2'];
   const finalizeResult = 'finalizeResult';
@@ -34,9 +35,9 @@ describe('Helpers', () => {
   const getRequestByNonceResult = 'getRequestByNonceResult';
   const getRequestIdResult = 'getRequestIdResult';
   const isParticipantResult = 'isParticipantResult';
-  const queryFilterResult = 'queryFilterResult';
-  const filtersStubResult = 'filtersStubResult';
   const queryFilterMappedResult = 'queryFilterMappedResult';
+  const createdAtResult = 'createdAtResult';
+  const updateDisputeStatusResult = 'updateDisputeStatusResult';
 
   const createRequestStub: SinonStub = sinon.stub();
   const getRequestStub: SinonStub = sinon.stub();
@@ -45,7 +46,6 @@ describe('Helpers', () => {
   const uploadMetadataStub: SinonStub = sinon.stub();
   const getResponseIdsStub: SinonStub = sinon.stub();
   const getFinalizedResponseStub: SinonStub = sinon.stub();
-  const listRequestStub: SinonStub = sinon.stub();
   const queryFilterStub: SinonStub = sinon.stub();
   const disputeResponseStub: SinonStub = sinon.stub();
   const createRequestsStub: SinonStub = sinon.stub();
@@ -53,7 +53,7 @@ describe('Helpers', () => {
   const getDisputeStub: SinonStub = sinon.stub();
   const getFullRequestStub: SinonStub = sinon.stub();
   const disputeOfStub: SinonStub = sinon.stub();
-  const escalationDisputeStub: SinonStub = sinon.stub();
+  const escalateDisputeStub: SinonStub = sinon.stub();
   const resolveDisputeStub: SinonStub = sinon.stub();
   const listRequestIdsStub: SinonStub = sinon.stub();
   const finalizeStub: SinonStub = sinon.stub();
@@ -66,8 +66,9 @@ describe('Helpers', () => {
   const getRequestByNonceStub: SinonStub = sinon.stub();
   const getRequestIdsStub: SinonStub = sinon.stub();
   const isParticipantStub: SinonStub = sinon.stub();
-  const filtersStub: SinonStub = sinon.stub();
   const queryFilterStubResultStub: SinonStub = sinon.stub();
+  const createdAtStub: SinonStub = sinon.stub();
+  const updateStatusStub: SinonStub = sinon.stub();
 
   const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
   const cidBytes32 = cidToBytes32(cid);
@@ -79,6 +80,34 @@ describe('Helpers', () => {
   const BONDED_RESPONSE_MODULE = '0x38a024C0b412B9d1db8BC398140D00F5Af3093D4';
   const CALLBACK_MODULE = '0xB82008565FdC7e44609fA118A4a681E92581e680';
   const HTTP_REQUEST_MODULE = '0x2a810409872AfC346F9B5b26571Fd6eC42EA4849';
+
+  const requestStructMock: sinon.SinonStubbedInstance<IOracle.RequestStruct> = {
+    nonce: sinon.stub(),
+    requester: sinon.stub(),
+    requestModule: sinon.stub(),
+    responseModule: sinon.stub(),
+    disputeModule: sinon.stub(),
+    resolutionModule: sinon.stub(),
+    finalityModule: sinon.stub(),
+    requestModuleData: sinon.stub(),
+    responseModuleData: sinon.stub(),
+    disputeModuleData: sinon.stub(),
+    resolutionModuleData: sinon.stub(),
+    finalityModuleData: sinon.stub(),
+  };
+
+  const responseStructMock: sinon.SinonStubbedInstance<IOracle.ResponseStruct> = {
+    proposer: sinon.stub(),
+    requestId: sinon.stub(),
+    response: sinon.stub(),
+  };
+
+  const disputeStructMock: sinon.SinonStubbedInstance<IOracle.DisputeStruct> = {
+    disputer: sinon.stub(),
+    proposer: sinon.stub(),
+    responseId: sinon.stub(),
+    requestId: sinon.stub(),
+  };
 
   let sampleRequest: IOracle.RequestStruct = {
     requestModuleData: ethers.encodeBytes32String('requestModuleData'),
@@ -108,8 +137,7 @@ describe('Helpers', () => {
   const oracleMock = {
     createRequest: createRequestStub.resolves(createRequestResult),
     getRequest: getRequestStub.resolves(getRequestResult),
-    ['proposeResponse(bytes32,bytes)']: proposeResponseStub.resolves(proposeResponseResult),
-    ['proposeResponse(address,bytes32,bytes)']: proposeResponseStub.resolves(proposeResponseResult),
+    proposeResponse: proposeResponseStub.resolves(proposeResponseResult),
     getResponse: getResponseStub.resolves(getResponseResult),
     getResponseIds: getResponseIdsStub.resolves(getResponseIdsResult),
     getFinalizedResponse: getFinalizedResponseStub.resolves(getFinalizedResponseResult),
@@ -121,17 +149,18 @@ describe('Helpers', () => {
     getDispute: getDisputeStub.resolves(getDisputeResult),
     getFullRequest: getFullRequestStub.resolves(getFullRequestResult),
     disputeOf: disputeOfStub.resolves(disputeOfResult),
-    escalateDispute: escalationDisputeStub.resolves(escalationDisputeResult),
+    escalateDispute: escalateDisputeStub.resolves(escalateDisputeResult),
     resolveDispute: resolveDisputeStub.resolves(resolveDisputeResult),
     listRequestIds: listRequestIdsStub.resolves(listRequestIdsResult),
-    ['finalize(bytes32,bytes32)']: finalizeStub.resolves(finalizeResult),
-    ['finalize(bytes32)']: finalizeWithoutResponseStub.resolves(finalizeResultWithoutResponse),
+    finalize: finalizeStub.resolves(finalizeResult),
     totalRequestCount: totalRequestCountStub.resolves(totalRequestCountResult),
     deleteResponse: deleteResponseStub.resolves(deleteResponseResult),
     getFinalizedResponseId: getFinalizedResponseIdStub.resolves(getFinalizedResponseIdResult),
     getRequestByNonce: getRequestByNonceStub.resolves(getRequestByNonceResult),
     getRequestId: getRequestIdsStub.resolves(getRequestIdResult),
     isParticipant: isParticipantStub.resolves(isParticipantResult),
+    createdAt: createdAtStub.resolves(createdAtResult),
+    updateDisputeStatus: updateStatusStub.resolves(updateDisputeStatusResult),
   };
 
   const mockIpfsApi = {
@@ -254,8 +283,8 @@ describe('Helpers', () => {
 
   describe('proposeResponse', () => {
     it('call to proposeResponse', async () => {
-      const result = await helpers.proposeResponse('1', 'responseData');
-      expect(proposeResponseStub.calledWith('1', 'responseData')).to.be.true;
+      const result = await helpers.proposeResponse(requestStructMock, responseStructMock);
+      expect(proposeResponseStub.calledWith(requestStructMock, responseStructMock)).to.be.true;
       expect(result).to.equal(proposeResponseResult);
     });
   });
@@ -295,16 +324,21 @@ describe('Helpers', () => {
     });
   });
 
-  // TODO: check this one why is needed to send the entire structs
-  /*
   describe('disputeResponse', () => {
     it('call to disputeResponse', async () => {
-      const result = await helpers.disputeResponse('1', '2');
-      expect(disputeResponseStub.calledWith('1', '2')).to.be.true;
+      const result = await helpers.disputeResponse(requestStructMock, responseStructMock, disputeStructMock);
+      expect(disputeResponseStub.calledWith(requestStructMock, responseStructMock, disputeStructMock)).to.be.true;
       expect(result).to.be.equal(disputeResponseResult);
     });
   });
-  */
+
+  describe('disputeStatus', () => {
+    it('call to disputeStatus', async () => {
+      const result = await helpers.disputeOf(sampleBytes32);
+      expect(disputeOfStub.calledWith(sampleBytes32));
+      expect(result).to.be.equal(disputeOfResult);
+    });
+  });
 
   describe('createRequests', () => {
     it('call to createRequests', async () => {
@@ -329,6 +363,14 @@ describe('Helpers', () => {
       const result = await helpers.allowedModule(sampleBytes32, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A');
       expect(allowedModuleStub.calledWith(sampleBytes32, '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A')).to.be.true;
       expect(result).to.equal(allowedModuleResult);
+    });
+  });
+
+  describe('createdAt', () => {
+    it('calls to createdAt', async () => {
+      const result = await helpers.createdAt(sampleBytes32);
+      expect(createdAtStub.calledWith(sampleBytes32)).to.be.true;
+      expect(result).to.equal(createdAtResult);
     });
   });
 
@@ -360,27 +402,29 @@ describe('Helpers', () => {
     });
   });
 
-  // TODO: implement
-  /*
   describe('escalateDispute', () => {
     it('calls to escalateDispute', async () => {
-      const result = await helpers.escalateDispute(sampleBytes32);
-      expect(escalationDisputeStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(escalationDisputeResult);
+      const result = await helpers.escalateDispute(requestStructMock, responseStructMock, disputeStructMock);
+      expect(escalateDisputeStub.calledWith(requestStructMock, responseStructMock, disputeStructMock)).to.be.true;
+      expect(result).to.equal(escalateDisputeResult);
     });
   });
-  */
 
-  // TODO: implement
-  /*
   describe('resolveDispute', () => {
     it('calls to resolveDispute', async () => {
-      const result = await helpers.resolveDispute(sampleBytes32);
-      expect(resolveDisputeStub.calledWith(sampleBytes32)).to.be.true;
+      const result = await helpers.resolveDispute(requestStructMock, responseStructMock, disputeStructMock);
+      expect(resolveDisputeStub.calledWith(requestStructMock, responseStructMock, disputeStructMock)).to.be.true;
       expect(result).to.equal(resolveDisputeResult);
     });
   });
-  */
+
+  describe('updateDisputeStatus', () => {
+    it('calls to updateDisputeStatus', async () => {
+      const result = await helpers.updateDisputeStatus(requestStructMock, responseStructMock, disputeStructMock, 1);
+      expect(updateStatusStub.calledWith(requestStructMock, responseStructMock, disputeStructMock, 1)).to.be.true;
+      expect(result).to.equal(updateDisputeStatusResult);
+    });
+  });
 
   describe('listRequestIds', () => {
     it('calls to listRequestIds', async () => {
@@ -390,21 +434,13 @@ describe('Helpers', () => {
     });
   });
 
-  // TODO: implement
-  /*
   describe('finalize', () => {
     it('calls to finalize', async () => {
-      const result = await helpers.finalize(
-        sampleBytes32,
-        '0xc5ff0acb4895c1b00daf9ec45a04d4d0192d5d0000de47e266767a8e20ea5fd7'
-      );
-      expect(
-        finalizeStub.calledWith(sampleBytes32, '0xc5ff0acb4895c1b00daf9ec45a04d4d0192d5d0000de47e266767a8e20ea5fd7')
-      ).to.be.true;
+      const result = await helpers.finalize(requestStructMock, responseStructMock);
+      expect(finalizeStub.calledWith(requestStructMock, responseStructMock)).to.be.true;
       expect(result).to.equal(finalizeResult);
     });
   });
-  */
 
   // TODO: implement?
   /*
@@ -477,7 +513,7 @@ describe('Helpers', () => {
       ['proposeResponse(bytes32,bytes)']: { staticCall: proposeResponseStub.resolves(proposeResponseResult) },
       disputeResponse: { staticCall: disputeResponseStub.resolves(disputeResponseResult) },
       createRequests: { staticCall: createRequestsStub.resolves(createRequestsResult) },
-      escalateDispute: { staticCall: escalationDisputeStub.resolves(escalationDisputeResult) },
+      escalateDispute: { staticCall: escalateDisputeStub.resolves(escalateDisputeResult) },
       resolveDispute: { staticCall: resolveDisputeStub.resolves(resolveDisputeResult) },
       ['finalize(bytes32,bytes32)']: { staticCall: finalizeStub.resolves(finalizeResult) },
       totalRequestCount: { staticCall: totalRequestCountStub.resolves(totalRequestCountResult) },
@@ -518,8 +554,8 @@ describe('Helpers', () => {
 
     it('calls to escalateDispute static call', async () => {
       const result = await helpers.callStatic('escalateDispute', sampleBytes32);
-      expect(escalationDisputeStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(escalationDisputeResult);
+      expect(escalateDisputeStub.calledWith(sampleBytes32)).to.be.true;
+      expect(result).to.equal(escalateDisputeResult);
     });
 
     it('calls to resolveDispute static call', async () => {
