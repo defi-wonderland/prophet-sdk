@@ -35,10 +35,12 @@ describe('Helpers', () => {
   const getRequestByNonceResult = 'getRequestByNonceResult';
   const getRequestIdResult = 'getRequestIdResult';
   const isParticipantResult = 'isParticipantResult';
-  const queryFilterMappedResult = 'queryFilterMappedResult';
-  const createdAtResult = 'createdAtResult';
+  const queryFilterMappedResult = {
+    find: sinon.stub(),
+  };
+  const createdAtResult = 1;
   const updateDisputeStatusResult = 'updateDisputeStatusResult';
-
+  const finalizedAtResult = 'finalizedAtResult';
   const createRequestStub: SinonStub = sinon.stub();
   const getRequestStub: SinonStub = sinon.stub();
   const proposeResponseStub: SinonStub = sinon.stub();
@@ -69,6 +71,7 @@ describe('Helpers', () => {
   const queryFilterStubResultStub: SinonStub = sinon.stub();
   const createdAtStub: SinonStub = sinon.stub();
   const updateStatusStub: SinonStub = sinon.stub();
+  const finalizedAtStub: SinonStub = sinon.stub();
 
   const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
   const cidBytes32 = cidToBytes32(cid);
@@ -134,6 +137,17 @@ describe('Helpers', () => {
     },
   };
 
+  const queryFilterMapMock = {
+    map: () => {
+      return queryFilterFindMock;
+    },
+  };
+  const queryFilterFindMockResult = ['request1', 'request2'];
+  const queryFilterFindMock = {
+    find: () => {
+      return queryFilterFindMockResult;
+    },
+  };
   const oracleMock = {
     createRequest: createRequestStub.resolves(createRequestResult),
     getRequest: getRequestStub.resolves(getRequestResult),
@@ -141,7 +155,8 @@ describe('Helpers', () => {
     getResponse: getResponseStub.resolves(getResponseResult),
     getResponseIds: getResponseIdsStub.resolves(getResponseIdsResult),
     getFinalizedResponse: getFinalizedResponseStub.resolves(getFinalizedResponseResult),
-    queryFilter: queryFilterStub.resolves({ map: queryFilterStubResultStub.resolves(queryFilterMappedResult) }),
+    //queryFilter: queryFilterStub.resolves({ map: queryFilterStubResultStub.resolves(queryFilterMappedResult) }),
+    queryFilter: queryFilterStub.resolves(queryFilterMapMock),
     filters: { RequestCreated: 'RequestCreated' },
     disputeResponse: disputeResponseStub.resolves(disputeResponseResult),
     createRequests: createRequestsStub.resolves(createRequestsResult),
@@ -161,6 +176,7 @@ describe('Helpers', () => {
     isParticipant: isParticipantStub.resolves(isParticipantResult),
     createdAt: createdAtStub.resolves(createdAtResult),
     updateDisputeStatus: updateStatusStub.resolves(updateDisputeStatusResult),
+    finalizedAt: finalizedAtStub.resolves(finalizedAtResult),
   };
 
   const mockIpfsApi = {
@@ -320,7 +336,7 @@ describe('Helpers', () => {
     it('call to listRequests', async () => {
       const result = await helpers.listRequests(0, 10);
       expect(queryFilterStub.calledWith('RequestCreated', 0, 10)).to.be.true;
-      expect(result).to.be.equal(queryFilterMappedResult);
+      expect(result).to.be.equal(queryFilterFindMock);
     });
   });
 
@@ -371,6 +387,14 @@ describe('Helpers', () => {
       const result = await helpers.createdAt(sampleBytes32);
       expect(createdAtStub.calledWith(sampleBytes32)).to.be.true;
       expect(result).to.equal(createdAtResult);
+    });
+  });
+
+  describe('finalizedAt', () => {
+    it('calls to finalizedAt', async () => {
+      const result = await helpers.finalizedAt(sampleBytes32);
+      expect(finalizedAtStub.calledWith(sampleBytes32)).to.be.true;
+      expect(result).to.equal(finalizedAtResult);
     });
   });
 
@@ -452,6 +476,15 @@ describe('Helpers', () => {
     });
   });
   */
+
+  describe('getRequest', () => {
+    it('calls to createdAt and calls to getRequest', async () => {
+      const result = await helpers.getRequest(sampleBytes32);
+      expect(createdAtStub.calledWith(sampleBytes32)).to.be.true;
+      expect(queryFilterStub.calledWith('RequestCreated', createdAtResult, createdAtResult + 1)).to.be.true;
+      expect(result).to.equal(queryFilterFindMockResult);
+    });
+  });
 
   describe('getRequestMetadata', () => {
     it('calls to ipfsApi getRequestMetadata', async () => {
@@ -596,17 +629,6 @@ describe('Helpers', () => {
       expect(result).to.equal(getFinalizedResponseIdResult);
     });
   });
-
-  // TODO: remove?
-  /*
-  describe('getRequestByNonce', () => {
-    it('calls to getRequestByNonce', async () => {
-      const result = await helpers.getRequestByNonce(1);
-      expect(getRequestByNonceStub.calledWith(1)).to.be.true;
-      expect(result).to.equal(getRequestByNonceResult);
-    });
-  });
-  */
 
   describe('getRequestId', () => {
     it('calls to getRequestId', async () => {

@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@defi-wonderland/prophet-batching-abi": "0.0.0-421b4b24",
-    "@defi-wonderland/prophet-core-abi": "0.0.0-1ae08a81",
+    "@defi-wonderland/prophet-core-abi": "0.0.0-59a5e3ee",
     "@pinata/sdk": "2.1.0",
     "axios": "1.4.0",
     "cids": "1.1.9",

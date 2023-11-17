@@ -20,8 +20,14 @@ export type FullRequestWithMetadata = {
   metadata: RequestMetadata;
 };
 
-export type RequestWithId = {
+export interface RequestWithId {
   requestId: BytesLike;
   request: IOracle.RequestStruct;
   blockNumber: bigint;
-};
+}
+
+export interface ResponseWithId {
+  requestId: BytesLike;
+  response: IOracle.ResponseStruct;
+  responseId: BytesLike;
+}

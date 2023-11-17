@@ -29,7 +29,7 @@ export class ProphetSDK {
   /**
    * Constructor
    */
-  constructor(runner: ContractRunner, oracleAddress?: string, knownModules?: ModulesMap) {
+  constructor(runner: ContractRunner, oracleAddress: string, knownModules: ModulesMap) {
     this.runner = runner;
     oracleAddress = oracleAddress ? oracleAddress : CONSTANTS.ORACLE;
 
@@ -41,7 +41,6 @@ export class ProphetSDK {
       this.modules = new Modules(knownModules);
       this.helpers = new Helpers(this.oracle, ipfsApi, this.modules);
       this.ipfs = new Ipfs(ipfsApi);
-      this.modules = new Modules(knownModules);
     } catch (e) {
       throw new Error(`Failed to create oracle contract ${e}`);
     }

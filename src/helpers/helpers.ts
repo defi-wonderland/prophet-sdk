@@ -1,7 +1,7 @@
 import { AddressLike, BigNumberish, BytesLike, ContractTransactionResponse } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { IpfsApi } from '../ipfsApi';
-import { Address, RequestMetadata, RequestWithId } from '../types/types';
+import { Address, RequestMetadata, RequestWithId, ResponseWithId } from '../types/types';
 import { CONSTANTS } from '../utils/constants';
 import { bytes32ToCid } from '../utils/cid';
 import { Modules } from '../modules/modules';
@@ -9,9 +9,9 @@ import { Modules } from '../modules/modules';
 export class Helpers {
   private oracle: IOracle;
   private ipfsApi: IpfsApi;
-  private modules?: Modules;
+  private modules: Modules;
 
-  constructor(oracle: IOracle, ipfsApi: IpfsApi, modules?: Modules) {
+  constructor(oracle: IOracle, ipfsApi: IpfsApi, modules: Modules) {
     this.oracle = oracle;
     this.ipfsApi = ipfsApi;
     this.modules = modules;
@@ -92,18 +92,6 @@ export class Helpers {
   }
 
   /**
-   * Gets the request for the given request id
-   * @param requestId - the request id
-   * @returns the request for the given requestId
-   */
-  /*
-  public getRequest(requestId: BytesLike): Promise<IOracle.RequestStruct> {
-    // TODO: FIX
-    // return this.oracle.getRequest(requestId);
-  }
-  */
-
-  /**
    * Proposes a response for the given request
    * @param request - the request struct
    * @param responseData - the response struct
@@ -121,11 +109,14 @@ export class Helpers {
    * @param responseId - the response id
    * @returns the response for the given response id
    **/
-  /*
-  public getResponse(responseId: BytesLike): Promise<IOracle.ResponseStruct> {
-    // TODO: FIX
-    //return this.oracle.getResponse(responseId);
-  }*/
+  public async getResponse(responseId: BytesLike): Promise<ResponseWithId> {
+    const blockNumber = Number(await this.oracle.createdAt(responseId));
+    const result = (await this.oracle.queryFilter(this.oracle.filters.ResponseProposed, blockNumber, blockNumber + 1))
+      .map((event) => this.mapEventArgsToResponseWithId(event.args))
+      .find((response) => response.responseId === responseId);
+    if (!result) throw new Error(`Response with id ${responseId} not found`);
+    return result;
+  }
 
   /**
    * Gets the ids of the responses for the given request id
@@ -202,12 +193,14 @@ export class Helpers {
     return this.oracle.disputeStatus(disputeId);
   }
 
-  // TODO : add it when new canary published
-  /*
+  /**
+   * Gets the block number at which the given request was finalized
+   * @param requestId
+   * @returns the block number at which the given request was finalized
+   */
   public finalizedAt(requestId: BytesLike): Promise<BigNumberish> {
     return this.oracle.finalizedAt(requestId);
   }
-  */
 
   /**
    * Gets the dispute id for the given response id
@@ -219,9 +212,9 @@ export class Helpers {
   }
 
   /**
-   * Gets the created unix timestamp for the given request id
+   * Gets the block number for the given request id
    * @param requestId - the request id
-   * @returns the created unix timestamp for the given request id
+   * @returns the block number given request id
    */
   public createdAt(requestId: BytesLike): Promise<BigNumberish> {
     return this.oracle.createdAt(requestId);
@@ -307,6 +300,15 @@ export class Helpers {
     return this.ipfsApi.getMetadata(cid);
   }
 
+  public async getRequest(requestId: BytesLike): Promise<RequestWithId> {
+    const blockNumber = Number(await this.oracle.createdAt(requestId));
+    const result = (await this.oracle.queryFilter(this.oracle.filters.RequestCreated, blockNumber, blockNumber + 1))
+      .map((event) => this.mapEventArgsToRequestWithId(event.args))
+      .find((request) => request.requestId === requestId);
+    if (!result) throw new Error(`Request with id ${requestId} not found`);
+    return result;
+  }
+
   /**
    * Returns the total request count of the Oracle
    * @returns the total request count of the Oracle
@@ -314,21 +316,6 @@ export class Helpers {
   public totalRequestCount(): Promise<BigNumberish> {
     return this.oracle.totalRequestCount();
   }
-
-  /**
-   * Gets the full request and metadata for the given request id
-   * @param requestId - the request id
-   * @returns the full request and metadata for the given request id
-   **/
-  /*
-  public async getFullRequestWithMetadata(requestId: BytesLike): Promise<FullRequestWithMetadata> {
-    const fullRequest = await this.getFullRequest(requestId);
-    const metadata = await this.getRequestMetadata(fullRequest.ipfsHash);
-    return {
-      fullRequest: fullRequest,
-      metadata: metadata,
-    };
-  }*/
 
   /**
    * Returns the request id for the given nonce
@@ -404,6 +391,22 @@ export class Helpers {
       )
         throw new Error(`${requestModule.name}: ${requestModule.address} is not a known module`);
     });
+  }
+
+  private mapEventArgsToRequestWithId(event: any[]): RequestWithId {
+    return {
+      requestId: event[0],
+      request: event[1],
+      blockNumber: event[2],
+    };
+  }
+
+  private mapEventArgsToResponseWithId(event: any[]): ResponseWithId {
+    return {
+      requestId: event[0],
+      response: event[1],
+      responseId: event[2],
+    };
   }
 }
 

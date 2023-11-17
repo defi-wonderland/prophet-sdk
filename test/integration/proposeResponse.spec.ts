@@ -142,7 +142,7 @@ describe('Create Requests', () => {
       await sdk.helpers.createRequest(newRequest, requestMetadataSample);
     });
     it('should propose a response', async () => {
-      const requestId = await sdk.helpers.getRequestId(await sdk.helpers.totalRequestCount());
+      const requestId = await sdk.helpers.getRequestId(Number(await sdk.helpers.totalRequestCount()));
       const response: IOracle.ResponseStruct = {
         proposer: runner['address'],
         requestId: requestId,

@@ -44,10 +44,8 @@ export class Modules {
 
   private async getReturnTypes(moduleAddress: string, named: boolean): Promise<any[]> {
     const decodeFunction = this.getDecodeRequestFunction(moduleAddress);
-    // If the module doesn't have a decodeRequestData function, return null
-    if (!decodeFunction) {
-      return null;
-    }
+    if (!decodeFunction)
+      throw new Error(`Module ${moduleAddress} doesn't have a decodeRequestData function, or module was not set`);
 
     const returnTypes: any[] = [];
 
@@ -63,6 +61,7 @@ export class Modules {
     const decodeFunction = module.moduleContract.interface['fragments'].find(
       (f: FunctionFragment) => f.name === 'decodeRequestData' && f.type === 'function'
     );
+    if (!decodeFunction) throw new Error(`Module ${moduleAddress} doesn't have a decodeRequestData function`);
     return decodeFunction;
   }
 

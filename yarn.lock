@@ -517,10 +517,10 @@
   resolved "https://registry.yarnpkg.com/@defi-wonderland/prophet-batching-abi/-/prophet-batching-abi-0.0.0-421b4b24.tgz#03aae97c4f1d5a3697f621cba913038d8135792a"
   integrity sha512-EGZAJ7f8rObPkYS/sEqIVvQ8Q1sb3BBm01ERTCaIelnRpFaquzHaPjrv7+7YUJhavdP/dAqU8Dx1T3e8QVzJQg==
 
-"@defi-wonderland/prophet-core-abi@0.0.0-1ae08a81":
-  version "0.0.0-1ae08a81"
-  resolved "https://registry.yarnpkg.com/@defi-wonderland/prophet-core-abi/-/prophet-core-abi-0.0.0-1ae08a81.tgz#d8233b2a805a0dad8d49a66566dd91de5f7aeb8c"
-  integrity sha512-DT8jfpgZ8x8xesUxSlG1zzUhzqDTzAJMivDxmdtDmeIbJsC9qIn1eAPMIBcdfbDt7xhdR71BzmiekBZiBcGdqQ==
+"@defi-wonderland/prophet-core-abi@0.0.0-59a5e3ee":
+  version "0.0.0-59a5e3ee"
+  resolved "https://registry.yarnpkg.com/@defi-wonderland/prophet-core-abi/-/prophet-core-abi-0.0.0-59a5e3ee.tgz#635a0ee6d74c3f5496891daee29a68904a0980cd"
+  integrity sha512-MpTZr6BHC7e5vCq96BxDracCdyNZSPn+qSaSOGeqa9vWkwJn5x4Ke9s4jZekFaUu5vYjfy+i0v6v7iM+2e60pw==
   dependencies:
     "@defi-wonderland/solidity-utils" "0.0.0-3e9c8e8b"
     "@openzeppelin/contracts" "^4.9.3"
@@ -3880,10 +3880,6 @@ dotenv@16.3.1:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
   integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
 
-"ds-test@git+https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0":
-  version "1.0.0"
-  resolved "git+https://github.com/dapphub/ds-test.git#e282159d5170298eb2455a6c05280ab5a73a4ef0"
-
 "ds-test@https://github.com/dapphub/ds-test":
   version "1.0.0"
   resolved "https://github.com/dapphub/ds-test#e282159d5170298eb2455a6c05280ab5a73a4ef0"
@@ -4426,10 +4422,6 @@ foreground-child@^2.0.0:
   dependencies:
     cross-spawn "^7.0.0"
     signal-exit "^3.0.2"
-
-"forge-std@git+https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e":
-  version "1.5.6"
-  resolved "git+https://github.com/foundry-rs/forge-std.git#e8a047e3f40f13fa37af6fe14e6e06283d9a060e"
 
 "forge-std@https://github.com/foundry-rs/forge-std":
   version "1.6.0"
@@ -7823,10 +7815,6 @@ solc@0.7.3:
     require-from-string "^2.0.0"
     semver "^5.5.0"
     tmp "0.0.33"
-
-"solmate@git+https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c":
-  version "6.1.0"
-  resolved "git+https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c"
 
 "solmate@https://github.com/transmissions11/solmate.git#bfc9c25865a274a7827fea5abf6e4fb64fc64e6c":
   version "6.1.0"
