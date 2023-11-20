@@ -1,4 +1,4 @@
-import { AddressLike, BigNumberish, BytesLike, ContractTransactionResponse } from 'ethers';
+import { AddressLike, BigNumberish, BytesLike, ContractTransaction } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { IpfsApi } from '../ipfsApi';
 import { Address, RequestMetadata, RequestWithId, RequestWithMetadata, ResponseWithId } from '../types/types';
@@ -36,7 +36,7 @@ export class Helpers {
   public createRequestWithoutMetadata(
     request: IOracle.RequestStruct,
     ipfsHash: BytesLike
-  ): Promise<ContractTransactionResponse> {
+  ): Promise<ContractTransaction> {
     // TODO add ipfs hash to the parameters
     return this.oracle.createRequest(request);
   }
@@ -52,11 +52,14 @@ export class Helpers {
   public async createRequest(
     request: IOracle.RequestStruct,
     requestMetadata: RequestMetadata
-  ): Promise<ContractTransactionResponse> {
+  ): Promise<ContractTransaction> {
     if (!this.validateResponseType(requestMetadata.responseType))
       throw new Error(`Invalid response type: ${requestMetadata.responseType}`);
-    await this.uploadMetadata(requestMetadata);
 
+    this.decodedReturnTypesForModuleExists(request);
+    const ipfsHash = await this.uploadMetadata(requestMetadata);
+
+    // TODO: use ipfs hash for request creation
     return this.oracle.createRequest(request);
   }
 
@@ -69,7 +72,7 @@ export class Helpers {
   public async createRequests(
     requests: IOracle.RequestStruct[],
     requestMetadata: RequestMetadata[]
-  ): Promise<ContractTransactionResponse> {
+  ): Promise<ContractTransaction> {
     if (requests.length !== requestMetadata.length)
       throw new Error('Requests data and metadata must be the same length');
 
@@ -100,7 +103,7 @@ export class Helpers {
   public proposeResponse(
     request: IOracle.RequestStruct,
     response: IOracle.ResponseStruct
-  ): Promise<ContractTransactionResponse> {
+  ): Promise<ContractTransaction> {
     return this.oracle.proposeResponse(request, response);
   }
 
@@ -159,7 +162,7 @@ export class Helpers {
     request: IOracle.RequestStruct,
     response: IOracle.ResponseStruct,
     dispute: IOracle.DisputeStruct
-  ): Promise<ContractTransactionResponse> {
+  ): Promise<ContractTransaction> {
     return this.oracle.disputeResponse(request, response, dispute);
   }
 
@@ -220,7 +223,7 @@ export class Helpers {
     request: IOracle.RequestStruct,
     response: IOracle.ResponseStruct,
     dispute: IOracle.DisputeStruct
-  ): Promise<ContractTransactionResponse> {
+  ): Promise<ContractTransaction> {
     return this.oracle.escalateDispute(request, response, dispute);
   }
 
@@ -235,7 +238,7 @@ export class Helpers {
     request: IOracle.RequestStruct,
     response: IOracle.ResponseStruct,
     dispute: IOracle.DisputeStruct
-  ): Promise<ContractTransactionResponse> {
+  ): Promise<ContractTransaction> {
     return this.oracle.resolveDispute(request, response, dispute);
   }
 
@@ -252,7 +255,7 @@ export class Helpers {
     response: IOracle.ResponseStruct,
     dispute: IOracle.DisputeStruct,
     status: number
-  ): Promise<ContractTransactionResponse> {
+  ): Promise<ContractTransaction> {
     return this.oracle.updateDisputeStatus(request, response, dispute, status);
   }
 
@@ -275,7 +278,7 @@ export class Helpers {
   public async finalize(
     request: IOracle.RequestStruct,
     response: IOracle.ResponseStruct
-  ): Promise<ContractTransactionResponse> {
+  ): Promise<ContractTransaction> {
     return this.oracle.finalize(request, response);
   }
 

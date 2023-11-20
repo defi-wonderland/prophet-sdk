@@ -23,6 +23,7 @@ export class Module {
    * @param requestId - The request id to get the data for
    * @returns the decoded data for the request
    **/
+  // TODO: delete this method ?
   public async decodeRequestData<T>(requestId: string): Promise<T> {
     let data: T;
     try {

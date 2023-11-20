@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import config from '../../src/config/config';
 import { abi as IAbiOracle } from '@defi-wonderland/prophet-core-abi/abi/IOracle.json';
 import { expect } from 'chai';
-import { address } from './utils/constants';
+import { address } from '../constants';
 
 /*
 describe('Batching', () => {

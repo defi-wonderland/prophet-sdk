@@ -2,7 +2,7 @@ import { getBatchRequestForFinalizeData } from '../../src/batching/getBatchReque
 import { expect } from 'chai';
 import config from '../../src/config/config';
 import { ethers } from 'ethers';
-import { address } from './utils/constants';
+import { address } from '../constants';
 
 const FIRST_REQUEST_ID = '0xbda69502828fcd5b0b95d851ee5405efd2b2be720ce546efa55f79b4d9f6da68';
 const FIRST_RESPONSE_ID = '0x6578e5ad13c830c19276c6b7d30ae65d9b2c8cb986e5fcb718d1c11d3f61b51b';

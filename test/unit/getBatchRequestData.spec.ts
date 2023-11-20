@@ -2,7 +2,7 @@ import { getBatchRequestData } from '../../src/batching/getBatchRequestData';
 import { expect } from 'chai';
 import config from '../../src/config/config';
 import { ethers } from 'ethers';
-import { address } from './utils/constants';
+import { address } from '../constants';
 
 /*
 describe('getBatchRequestData', () => {

@@ -32,6 +32,7 @@
     "package.json": "sort-package-json"
   },
   "resolutions": {
+    "@defi-wonderland/prophet-sdk/ethers": "6.7.0",
     "@nomiclabs/hardhat-ethers/ethers": "5.7.2"
   },
   "dependencies": {

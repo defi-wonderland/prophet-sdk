@@ -5,7 +5,7 @@ import IHttpRequestModule from '@defi-wonderland/prophet-modules-abi/abi/IHttpRe
 import IBondedResponseModule from '@defi-wonderland/prophet-modules-abi/abi/IBondedResponseModule.json';
 import './setup';
 import config from '../../src/config/config';
-import { address } from './utils/constants';
+import { address } from '../constants';
 
 describe('Module', () => {
   let module: Module;

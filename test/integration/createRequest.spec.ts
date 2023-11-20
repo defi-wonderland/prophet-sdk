@@ -9,7 +9,7 @@ import ICallbackModule from '@defi-wonderland/prophet-modules-abi/abi/ICallbackM
 import IBondedResponseModule from '@defi-wonderland/prophet-modules-abi/abi/IBondedResponseModule.json';
 import IBondedDisputeModule from '@defi-wonderland/prophet-modules-abi/abi/IBondedDisputeModule.json';
 
-import { address } from './constants';
+import { address } from '../constants';
 import { ModulesMap } from '../../src/types/Module';
 import { IOracle } from '../../src/types/typechain/IOracle';
 import { getDecodeRequestDataFunctionReturnTypes } from '../../src/helpers/helpers';
