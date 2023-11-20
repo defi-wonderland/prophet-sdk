@@ -15,14 +15,10 @@ export type ModuleInstance = {
 
 export type Address = string | Contract;
 
-export type FullRequestWithMetadata = {
-  fullRequest: IOracle.RequestStruct;
-  metadata: RequestMetadata;
-};
-
 export interface RequestWithId {
   requestId: BytesLike;
   request: IOracle.RequestStruct;
+  ipfsHash: string;
   blockNumber: bigint;
 }
 
@@ -30,4 +26,9 @@ export interface ResponseWithId {
   requestId: BytesLike;
   response: IOracle.ResponseStruct;
   responseId: BytesLike;
+}
+
+export interface RequestWithMetadata {
+  request: RequestWithId;
+  metadata: RequestMetadata;
 }

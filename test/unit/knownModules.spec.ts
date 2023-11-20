@@ -7,7 +7,6 @@ import './setup';
 import config from '../../src/config/config';
 import { ModulesMap } from '../../src/types/Module';
 
-/*
 describe('Known modules', () => {
   let module: Module;
   let otherModule: Module;
@@ -36,5 +35,3 @@ describe('Known modules', () => {
     expect(knownModules[otherModuleAddress]).to.be.equal(otherModule);
   });
 });
-
-*/

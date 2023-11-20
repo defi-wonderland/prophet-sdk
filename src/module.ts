@@ -19,22 +19,6 @@ export class Module {
   }
 
   /**
-   * Returns the raw data for a request
-   * @param requestId - The request id to get the data for
-   * @returns the raw data for the request
-   */
-  public async requestData(requestId: string): Promise<string> {
-    let data: string;
-    try {
-      // TODO: Fix this
-      //data = await this.moduleContract.requestData(requestId);
-    } catch (e) {
-      throw new Error(`Failed to get request data for ${requestId}: ${e}`);
-    }
-    return data;
-  }
-
-  /**
    * Returns decoded the data for a request
    * @param requestId - The request id to get the data for
    * @returns the decoded data for the request

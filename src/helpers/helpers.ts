@@ -1,7 +1,7 @@
 import { AddressLike, BigNumberish, BytesLike, ContractTransactionResponse } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { IpfsApi } from '../ipfsApi';
-import { Address, RequestMetadata, RequestWithId, ResponseWithId } from '../types/types';
+import { Address, RequestMetadata, RequestWithId, RequestWithMetadata, ResponseWithId } from '../types/types';
 import { CONSTANTS } from '../utils/constants';
 import { bytes32ToCid } from '../utils/cid';
 import { Modules } from '../modules/modules';
@@ -174,17 +174,6 @@ export class Helpers {
   }
 
   /**
-   * Gets the dispute for the given dispute id
-   * @param disputeId - the dispute id
-   * @returns the dispute for the given dispute id
-   **/
-  /*
-  public getDispute(disputeId: BytesLike): Promise<IOracle.DisputeStruct> {
-    // TODO: FIX
-    // return this.oracle.getDispute(disputeId);
-  }*/
-
-  /**
    * Returns the dispute status for a given dispute
    * @param disputeId - the dispute id
    * @returns the dispute status
@@ -300,6 +289,11 @@ export class Helpers {
     return this.ipfsApi.getMetadata(cid);
   }
 
+  /**
+   * Gets the request for the given request id
+   * @param requestId  - the request id
+   * @returns the request for the given request id
+   */
   public async getRequest(requestId: BytesLike): Promise<RequestWithId> {
     const blockNumber = Number(await this.oracle.createdAt(requestId));
     const result = (await this.oracle.queryFilter(this.oracle.filters.RequestCreated, blockNumber, blockNumber + 1))
@@ -307,6 +301,15 @@ export class Helpers {
       .find((request) => request.requestId === requestId);
     if (!result) throw new Error(`Request with id ${requestId} not found`);
     return result;
+  }
+
+  public async getRequestWithMetadata(requestId: BytesLike): Promise<RequestWithMetadata> {
+    const request = await this.getRequest(requestId);
+    const metadata = await this.getRequestMetadata(request.ipfsHash);
+    return {
+      request,
+      metadata,
+    };
   }
 
   /**
@@ -398,6 +401,7 @@ export class Helpers {
       requestId: event[0],
       request: event[1],
       blockNumber: event[2],
+      ipfsHash: event[3], // TODO: check where should ipfsHash should be located
     };
   }
 

@@ -6,7 +6,6 @@ import { IpfsApi } from '../../src/ipfsApi';
 import { cidToBytes32 } from '../../src/utils/cid';
 import { ethers } from 'ethers';
 import { Modules } from '../../src/modules/modules';
-import exp from 'constants';
 
 describe('Helpers', () => {
   const createRequestResult = 'createRequestResult';
@@ -35,9 +34,6 @@ describe('Helpers', () => {
   const getRequestByNonceResult = 'getRequestByNonceResult';
   const getRequestIdResult = 'getRequestIdResult';
   const isParticipantResult = 'isParticipantResult';
-  const queryFilterMappedResult = {
-    find: sinon.stub(),
-  };
   const createdAtResult = 1;
   const updateDisputeStatusResult = 'updateDisputeStatusResult';
   const finalizedAtResult = 'finalizedAtResult';
@@ -63,12 +59,10 @@ describe('Helpers', () => {
   const totalRequestCountStub: SinonStub = sinon.stub();
   const getNamedDecodeRequestReturnTypesStub: SinonStub = sinon.stub();
   const deleteResponseStub: SinonStub = sinon.stub();
-  const finalizeWithoutResponseStub: SinonStub = sinon.stub();
   const getFinalizedResponseIdStub: SinonStub = sinon.stub();
   const getRequestByNonceStub: SinonStub = sinon.stub();
   const getRequestIdsStub: SinonStub = sinon.stub();
   const isParticipantStub: SinonStub = sinon.stub();
-  const queryFilterStubResultStub: SinonStub = sinon.stub();
   const createdAtStub: SinonStub = sinon.stub();
   const updateStatusStub: SinonStub = sinon.stub();
   const finalizedAtStub: SinonStub = sinon.stub();
@@ -155,9 +149,8 @@ describe('Helpers', () => {
     getResponse: getResponseStub.resolves(getResponseResult),
     getResponseIds: getResponseIdsStub.resolves(getResponseIdsResult),
     getFinalizedResponse: getFinalizedResponseStub.resolves(getFinalizedResponseResult),
-    //queryFilter: queryFilterStub.resolves({ map: queryFilterStubResultStub.resolves(queryFilterMappedResult) }),
     queryFilter: queryFilterStub.resolves(queryFilterMapMock),
-    filters: { RequestCreated: 'RequestCreated' },
+    filters: { RequestCreated: 'RequestCreated', ResponseProposed: 'ResponseProposed' },
     disputeResponse: disputeResponseStub.resolves(disputeResponseResult),
     createRequests: createRequestsStub.resolves(createRequestsResult),
     allowedModule: allowedModuleStub.resolves(allowedModuleResult),
@@ -243,7 +236,7 @@ describe('Helpers', () => {
         knownModules: {
           [ARBITRATOR_MODULE]: [],
           [BONDED_DISPUTE_MODULE]: [],
-          // [BONDED_RESPONSE_MODULE]: [], // Commented out to test the error
+          [BONDED_RESPONSE_MODULE]: [],
           [CALLBACK_MODULE]: [],
           [HTTP_REQUEST_MODULE]: [],
         },
@@ -304,17 +297,6 @@ describe('Helpers', () => {
       expect(result).to.equal(proposeResponseResult);
     });
   });
-
-  // TODO: check if needs to be removed
-  /*
-  describe('getResponse', () => {
-    it('call to getResponse', async () => {
-      const result = await helpers.getResponse('1');
-      expect(getResponseStub.calledWith('1')).to.be.true;
-      expect(result).to.equal(getResponseResult);
-    });
-  });
-  */
 
   describe('getResponseIds', () => {
     it('call to getResponseIds', async () => {
@@ -398,16 +380,6 @@ describe('Helpers', () => {
     });
   });
 
-  /* TODO: check
-  describe('getDispute', () => {
-    it('calls to getDispute', async () => {
-      const result = await helpers.getDispute(sampleBytes32);
-      expect(getDisputeStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(getDisputeResult);
-    });
-  });
-  */
-
   /*
   describe('getFullRequest', () => {
     it('calls to getFullRequest', async () => {
@@ -466,22 +438,20 @@ describe('Helpers', () => {
     });
   });
 
-  // TODO: implement?
-  /*
-  describe('finalizeWithoutResponse', () => {
-    it('calls to finalize without response', async () => {
-      const result = await helpers.finalize(sampleBytes32);
-      expect(finalizeWithoutResponseStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(finalizeResultWithoutResponse);
-    });
-  });
-  */
-
   describe('getRequest', () => {
-    it('calls to createdAt and calls to getRequest', async () => {
+    it('calls to createdAt and calls to queryFilter', async () => {
       const result = await helpers.getRequest(sampleBytes32);
       expect(createdAtStub.calledWith(sampleBytes32)).to.be.true;
       expect(queryFilterStub.calledWith('RequestCreated', createdAtResult, createdAtResult + 1)).to.be.true;
+      expect(result).to.equal(queryFilterFindMockResult);
+    });
+  });
+
+  describe('getResponse', () => {
+    it('calls to createdAt and calls to queryFilter', async () => {
+      const result = await helpers.getResponse(sampleBytes32);
+      expect(createdAtStub.calledWith(sampleBytes32)).to.be.true;
+      expect(queryFilterStub.calledWith('ResponseProposed', createdAtResult, createdAtResult + 1)).to.be.true;
       expect(result).to.equal(queryFilterFindMockResult);
     });
   });
@@ -494,31 +464,28 @@ describe('Helpers', () => {
     });
   });
 
-  // TODO: implement
-  /*
   describe('getFullRequestWithMetadata', () => {
     it('calls to getFullRequest and getRequestMetadata', async () => {
-      const fullRequestSample = { ipfsHash: cidBytes32 }; // we just care about ipfs hash here
+      const requestSample = { ipfsHash: cidBytes32 }; // we just care about ipfs hash here
       const requestMetadataSample = { responseType: 'uint', description: 'uint' };
 
-      const helpersGetFullRequestStub = sinon.stub(helpers, 'getFullRequest');
-      helpersGetFullRequestStub.withArgs(sampleBytes32).resolves(fullRequestSample);
+      const getRequestStub = sinon.stub(helpers, 'getRequest');
+      getRequestStub.withArgs(sampleBytes32).resolves(requestSample);
 
-      const helpersGetRequestMetadataStub = sinon.stub(helpers, 'getRequestMetadata');
-      helpersGetRequestMetadataStub.withArgs(cidBytes32).resolves(requestMetadataSample);
+      const getRequestMetadataStub = sinon.stub(helpers, 'getRequestMetadata');
+      getRequestMetadataStub.withArgs(cidBytes32).resolves(requestMetadataSample);
 
-      const result = await helpers.getFullRequestWithMetadata(sampleBytes32);
+      const result = await helpers.getRequestWithMetadata(sampleBytes32);
 
-      expect(helpersGetFullRequestStub.calledWith(sampleBytes32)).to.be.true;
-      expect(helpersGetRequestMetadataStub.calledWith(cidBytes32)).to.be.true;
+      expect(getRequestStub.calledWith(sampleBytes32)).to.be.true;
+      expect(getRequestMetadataStub.calledWith(cidBytes32)).to.be.true;
 
       expect(result).to.deep.equal({
-        fullRequest: fullRequestSample,
+        request: requestSample,
         metadata: requestMetadataSample,
       });
     });
   });
-  */
 
   describe('totalRequestCount', () => {
     it('calls to totalRequestCount', async () => {
@@ -527,17 +494,6 @@ describe('Helpers', () => {
       expect(result).to.equal(totalRequestCountResult);
     });
   });
-
-  // TODO: remove?
-  /*
-  describe('deleteResponse', () => {
-    it('calls to deleteResponse', async () => {
-      const result = await helpers.deleteResponse(sampleBytes32);
-      expect(deleteResponseStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(deleteResponseResult);
-    });
-  });
-  */
 
   describe('call static methods', () => {
     // Just defined some of the methods to test the callStatic method

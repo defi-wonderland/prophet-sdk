@@ -8,7 +8,6 @@ import config from '../../src/config/config';
 import { ModulesMap } from '../../src/types/Module';
 import { Modules } from '../../src/modules/modules';
 
-/*
 describe('Modules', () => {
   let module: Module;
   let otherModule: Module;
@@ -349,5 +348,3 @@ describe('Modules', () => {
     );
   });
 });
-
-*/

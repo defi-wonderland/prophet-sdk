@@ -5,7 +5,6 @@ import { cidToBytes32 } from '../../src/utils/cid';
 import config from '../../src/config/config';
 import { CONSTANTS } from '../../src/utils';
 
-/*
 describe('Ipfssdk', () => {
   let ipfsApi: IpfsApi;
   let pinFileToIPFSStub: sinon.SinonStub;
@@ -64,4 +63,3 @@ describe('Ipfssdk', () => {
     });
   });
 });
-*/
