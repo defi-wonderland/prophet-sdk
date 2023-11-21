@@ -1,7 +1,14 @@
 import { AddressLike, BigNumberish, BytesLike, ContractTransaction } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { IpfsApi } from '../ipfsApi';
-import { Address, RequestMetadata, RequestWithId, RequestWithMetadata, ResponseWithId } from '../types/types';
+import {
+  Address,
+  DisputeWithId,
+  RequestMetadata,
+  RequestWithId,
+  RequestWithMetadata,
+  ResponseWithId,
+} from '../types/types';
 import { CONSTANTS } from '../utils/constants';
 import { bytes32ToCid } from '../utils/cid';
 import { Modules } from '../modules/modules';
@@ -26,22 +33,6 @@ export class Helpers {
   }
 
   /**
-   * Creates a new request without uploading the metadata to IPFS
-   * @dev This function is useful when the metadata is already uploaded to IPFS and the
-   *        IPFS hash is set in the request data
-   * @param request - the request to be created
-   * @param ipfsHash - the IPFS hash of the metadata
-   * @returns the contract transaction response
-   */
-  public createRequestWithoutMetadata(
-    request: IOracle.RequestStruct,
-    ipfsHash: BytesLike
-  ): Promise<ContractTransaction> {
-    // TODO add ipfs hash to the parameters
-    return this.oracle.createRequest(request);
-  }
-
-  /**
    * Creates a new request with the given request data and metadata
    * @dev This function uploads the metadata to IPFS using the RequestMetadata
    *        and sets the IPFS hash in the request data
@@ -51,13 +42,16 @@ export class Helpers {
    */
   public async createRequest(
     request: IOracle.RequestStruct,
-    requestMetadata: RequestMetadata
+    requestMetadata?: RequestMetadata,
+    ipfsHash?: BytesLike
   ): Promise<ContractTransaction> {
+    if (!requestMetadata && !ipfsHash) throw new Error('Request metadata or ipfs hash must be provided');
+
     if (!this.validateResponseType(requestMetadata.responseType))
       throw new Error(`Invalid response type: ${requestMetadata.responseType}`);
 
     this.decodedReturnTypesForModuleExists(request);
-    const ipfsHash = await this.uploadMetadata(requestMetadata);
+    if (!ipfsHash) ipfsHash = await this.uploadMetadata(requestMetadata);
 
     // TODO: use ipfs hash for request creation
     return this.oracle.createRequest(request);
@@ -110,14 +104,30 @@ export class Helpers {
   /**
    * Gets a response for the given response id
    * @param responseId - the response id
+   * @param blockNumber - the block number to get the response from (optional)
    * @returns the response for the given response id
    **/
-  public async getResponse(responseId: BytesLike): Promise<ResponseWithId> {
-    const blockNumber = Number(await this.oracle.createdAt(responseId));
+  public async getResponse(responseId: BytesLike, blockNumber?: number): Promise<ResponseWithId> {
+    if (!blockNumber) blockNumber = Number(await this.oracle.createdAt(responseId));
     const result = (await this.oracle.queryFilter(this.oracle.filters.ResponseProposed, blockNumber, blockNumber + 1))
       .map((event) => this.mapEventArgsToResponseWithId(event.args))
       .find((response) => response.responseId === responseId);
     if (!result) throw new Error(`Response with id ${responseId} not found`);
+    return result;
+  }
+
+  /**
+   * Gets a dispute for the given dispute id
+   * @param disputeId - the dispute id
+   * @param blockNumber - the block number to get the dispute from (optional)
+   * @returns the dispute for the given dispute id
+   */
+  public async getDispute(disputeId: BytesLike, blockNumber?: number): Promise<DisputeWithId> {
+    if (!blockNumber) blockNumber = Number(await this.oracle.createdAt(disputeId));
+    const result = (await this.oracle.queryFilter(this.oracle.filters.ResponseDisputed, blockNumber, blockNumber + 1))
+      .map((event) => this.mapEventArgsToDisputeWithId(event.args))
+      .find((dispute) => dispute.disputeId === disputeId);
+    if (!result) throw new Error(`Dispute with id ${disputeId} not found`);
     return result;
   }
 
@@ -140,10 +150,10 @@ export class Helpers {
   }
 
   /**
-   * Gets the list of full requests for the given startFrom and amount
+   * Gets the list of requests in the given startBlock and endBlock range
    * @param startBlock - the start block to list requests from
    * @param endBlock - the end block to list requests to
-   * @returns the list of full requests for the given startBlock and endBlock
+   * @returns the list of requests in the range
    **/
   public async listRequests(startBlock: number, endBlock: number): Promise<RequestWithId[]> {
     return (await this.oracle.queryFilter(this.oracle.filters.RequestCreated, startBlock, endBlock)).map(
@@ -295,10 +305,11 @@ export class Helpers {
   /**
    * Gets the request for the given request id
    * @param requestId  - the request id
+   * @param blockNumber - the block number to get the request from (optional)
    * @returns the request for the given request id
    */
-  public async getRequest(requestId: BytesLike): Promise<RequestWithId> {
-    const blockNumber = Number(await this.oracle.createdAt(requestId));
+  public async getRequest(requestId: BytesLike, blockNumber?: number): Promise<RequestWithId> {
+    if (!blockNumber) blockNumber = Number(await this.oracle.createdAt(requestId));
     const result = (await this.oracle.queryFilter(this.oracle.filters.RequestCreated, blockNumber, blockNumber + 1))
       .map((event) => this.mapEventArgsToRequestWithId(event.args))
       .find((request) => request.requestId === requestId);
@@ -413,6 +424,16 @@ export class Helpers {
       requestId: event[0],
       response: event[1],
       responseId: event[2],
+      blockNumber: event[3],
+    };
+  }
+
+  private mapEventArgsToDisputeWithId(event: any[]): DisputeWithId {
+    return {
+      responseId: event[0],
+      disputeId: event[1],
+      dispute: event[2],
+      blockNumber: event[3],
     };
   }
 }

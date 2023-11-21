@@ -8,23 +8,19 @@ import { bytecode } from '@defi-wonderland/prophet-batching-abi/abi/BatchRespons
 const responseAbi: any[] = [
   {
     components: [
+      { name: 'responseId', type: 'bytes32' },
       { name: 'createdAt', type: 'uint256' },
-      { name: 'proposer', type: 'address' },
-      { name: 'requestId', type: 'bytes32' },
       { name: 'disputeId', type: 'bytes32' },
-      { name: 'response', type: 'bytes' },
     ],
-    name: 'Response',
+    name: 'ResponseData',
     type: 'tuple[]',
   },
 ];
 
 export interface ResponseData {
+  responseId: BytesLike;
   createdAt: number;
-  proposer: string;
-  requestId: string;
-  disputeId: string;
-  response: string;
+  disputeId: BytesLike;
 }
 
 /**

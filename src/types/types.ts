@@ -26,6 +26,14 @@ export interface ResponseWithId {
   requestId: BytesLike;
   response: IOracle.ResponseStruct;
   responseId: BytesLike;
+  blockNumber: bigint;
+}
+
+export interface DisputeWithId {
+  responseId: BytesLike;
+  disputeId: BytesLike;
+  dispute: IOracle.DisputeStruct;
+  blockNumber: bigint;
 }
 
 export interface RequestWithMetadata {

@@ -150,7 +150,11 @@ describe('Helpers', () => {
     getResponseIds: getResponseIdsStub.resolves(getResponseIdsResult),
     getFinalizedResponse: getFinalizedResponseStub.resolves(getFinalizedResponseResult),
     queryFilter: queryFilterStub.resolves(queryFilterMapMock),
-    filters: { RequestCreated: 'RequestCreated', ResponseProposed: 'ResponseProposed' },
+    filters: {
+      RequestCreated: 'RequestCreated',
+      ResponseProposed: 'ResponseProposed',
+      ResponseDisputed: 'ResponseDisputed',
+    },
     disputeResponse: disputeResponseStub.resolves(disputeResponseResult),
     createRequests: createRequestsStub.resolves(createRequestsResult),
     allowedModule: allowedModuleStub.resolves(allowedModuleResult),
@@ -195,15 +199,6 @@ describe('Helpers', () => {
     helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi, mockModules as unknown as Modules);
   });
 
-  describe('createRequestWithoutMetadata', () => {
-    it('call to createRequest', async () => {
-      const result = await helpers.createRequestWithoutMetadata(sampleRequest, cidBytes32);
-      // TODO: should call it with ipfs hash too
-      expect(result).to.equal(createRequestResult);
-      expect(createRequestStub.calledWith(sampleRequest)).to.be.true;
-    });
-  });
-
   describe('createRequest', () => {
     it('call to createRequest', async () => {
       const result = await helpers.createRequest(sampleRequest, sampleRequestMetadata);
@@ -228,6 +223,14 @@ describe('Helpers', () => {
         await helpers.createRequest(sampleRequest, invalidRequestMetadata);
       } catch (e) {
         expect(e.message).to.equal('Invalid response type: uint7');
+      }
+    });
+
+    it('throws error if ipfs hash and request metadata are not provided', async () => {
+      try {
+        await helpers.createRequest(sampleRequest);
+      } catch (e) {
+        expect(e.message).to.equal('Request metadata or ipfs hash must be provided');
       }
     });
 
@@ -452,6 +455,15 @@ describe('Helpers', () => {
       const result = await helpers.getResponse(sampleBytes32);
       expect(createdAtStub.calledWith(sampleBytes32)).to.be.true;
       expect(queryFilterStub.calledWith('ResponseProposed', createdAtResult, createdAtResult + 1)).to.be.true;
+      expect(result).to.equal(queryFilterFindMockResult);
+    });
+  });
+
+  describe('getDispute', () => {
+    it('calls to createdAt and calls to queryFilter', async () => {
+      const result = await helpers.getDispute(sampleBytes32);
+      expect(createdAtStub.calledWith(sampleBytes32)).to.be.true;
+      expect(queryFilterStub.calledWith('ResponseDisputed', createdAtResult, createdAtResult + 1)).to.be.true;
       expect(result).to.equal(queryFilterFindMockResult);
     });
   });

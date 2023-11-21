@@ -36,10 +36,10 @@ export class ProphetSDK {
     try {
       this.oracle = new ethers.Contract(oracleAddress, IAbiOracle, this.runner) as unknown as IOracle;
 
-      this.batching = new Batching(this.oracle);
       const ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);
       this.modules = new Modules(knownModules);
       this.helpers = new Helpers(this.oracle, ipfsApi, this.modules);
+      this.batching = new Batching(this.oracle, this.helpers);
       this.ipfs = new Ipfs(ipfsApi);
     } catch (e) {
       throw new Error(`Failed to create oracle contract ${e}`);

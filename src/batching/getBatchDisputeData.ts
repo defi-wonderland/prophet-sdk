@@ -1,5 +1,5 @@
 import { bytecode } from '@defi-wonderland/prophet-batching-abi/abi/BatchDisputesData.json';
-import { AbiCoder, ContractRunner } from 'ethers';
+import { AbiCoder, BytesLike, ContractRunner } from 'ethers';
 
 const disputeDataAbi: any[] = [
   {
@@ -14,10 +14,7 @@ const disputeDataAbi: any[] = [
         components: [
           { name: 'disputeId', type: 'bytes32' },
           { name: 'createdAt', type: 'uint256' },
-          { name: 'disputer', type: 'address' },
-          { name: 'proposer', type: 'address' },
           { name: 'responseId', type: 'bytes32' },
-          { name: 'requestId', type: 'bytes32' },
           { name: 'status', type: 'uint8' },
         ],
       },
@@ -26,15 +23,12 @@ const disputeDataAbi: any[] = [
 ];
 
 export interface DisputeData {
-  requestId: string;
+  requestId: BytesLike;
   isFinalized: boolean;
   disputes: {
-    disputeId: string;
+    disputeId: BytesLike;
     createdAt: number;
-    disputer: string;
-    proposer: string;
-    responseId: string;
-    requestId: string;
+    responseId: BytesLike;
     status: number;
   }[];
 }

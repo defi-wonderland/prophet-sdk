@@ -1,5 +1,6 @@
 import { bytecode } from '@defi-wonderland/prophet-batching-abi/abi/BatchRequestsData.json';
-import { AbiCoder, ContractRunner } from 'ethers';
+import { AbiCoder, BytesLike, ContractRunner } from 'ethers';
+import { ResponseData } from './getBatchResponseData';
 
 /**
  * Represents the data returned from the BatchRequestsData contract
@@ -9,104 +10,30 @@ const requestDataAbi: any[] = [
     components: [
       { name: 'requestId', type: 'bytes32' },
       {
-        name: 'request',
-        type: 'tuple',
-        components: [
-          { name: 'requestModuleData', type: 'bytes' },
-          { name: 'responseModuleData', type: 'bytes' },
-          { name: 'disputeModuleData', type: 'bytes' },
-          { name: 'resolutionModuleData', type: 'bytes' },
-          { name: 'finalityModuleData', type: 'bytes' },
-          { name: 'ipfsHash', type: 'bytes32' },
-          { name: 'requestModule', type: 'address' },
-          { name: 'responseModule', type: 'address' },
-          { name: 'disputeModule', type: 'address' },
-          { name: 'resolutionModule', type: 'address' },
-          { name: 'finalityModule', type: 'address' },
-          { name: 'requester', type: 'address' },
-          { name: 'nonce', type: 'uint256' },
-          { name: 'createdAt', type: 'uint256' },
-          { name: 'finalizedAt', type: 'uint256' },
-          { name: 'requestId', type: 'bytes32' },
-        ],
-      },
-      {
         name: 'responses',
         type: 'tuple[]',
         components: [
           { name: 'responseId', type: 'bytes32' },
           { name: 'createdAt', type: 'uint256' },
-          { name: 'proposer', type: 'address' },
-          { name: 'requestId', type: 'bytes32' },
           { name: 'disputeId', type: 'bytes32' },
-          { name: 'response', type: 'bytes' },
         ],
       },
       {
-        name: 'finalizedResponse',
-        type: 'tuple',
-        components: [
-          { name: 'createdAt', type: 'uint256' },
-          { name: 'proposer', type: 'address' },
-          { name: 'requestId', type: 'bytes32' },
-          { name: 'disputeId', type: 'bytes32' },
-          { name: 'response', type: 'bytes' },
-        ],
+        name: 'finalizedResponseId',
+        type: 'bytes32',
       },
       { name: 'disputeStatus', type: 'uint8' },
-
-      { name: 'requestModuleName', type: 'string' },
-      { name: 'responseModuleName', type: 'string' },
-      { name: 'disputeModuleName', type: 'string' },
-      { name: 'resolutionModuleName', type: 'string' },
-      { name: 'finalityModuleName', type: 'string' },
     ],
     name: 'RequestData',
     type: 'tuple[]',
   },
 ];
 
-export interface RequestFullData {
-  requestId: string;
-  request: {
-    requestModuleData: string;
-    responseModuleData: string;
-    disputeModuleData: string;
-    resolutionModuleData: string;
-    finalityModuleData: string;
-    ipfsHash: string;
-    requestModule: string;
-    responseModule: string;
-    disputeModule: string;
-    resolutionModule: string;
-    finalityModule: string;
-    requester: string;
-    nonce: number;
-    createdAt: number;
-    finalizedAt: number;
-    requestId: string;
-  };
-  responses: {
-    responseId: string;
-    createdAt: number;
-    proposer: string;
-    requestId: string;
-    disputeId: string;
-    response: string;
-  }[];
-  finalizedResponse: {
-    createdAt: number;
-    proposer: string;
-    requestId: string;
-    disputeId: string;
-    response: string;
-  };
+export interface RequestData {
+  requestId: BytesLike;
+  responses: ResponseData[];
+  finalizedResponseId: BytesLike;
   disputeStatus: number;
-  requestModuleName: string;
-  responseModuleName: string;
-  disputeModuleName: string;
-  resolutionModuleName: string;
-  finalityModuleName: string;
 }
 
 /**
@@ -123,7 +50,7 @@ export const getBatchRequestData = async (
   oracleAddress: string,
   startFrom: number,
   amount: number
-): Promise<RequestFullData[]> => {
+): Promise<RequestData[]> => {
   const inputData = AbiCoder.defaultAbiCoder().encode(
     ['address', 'uint256', 'uint256'],
     [oracleAddress, startFrom, amount]
@@ -133,5 +60,5 @@ export const getBatchRequestData = async (
   const returnedData = await provider.call({ data: contractCreationCode });
   const decodedData = AbiCoder.defaultAbiCoder().decode(requestDataAbi, returnedData);
 
-  return decodedData[0] as RequestFullData[];
+  return decodedData[0] as RequestData[];
 };

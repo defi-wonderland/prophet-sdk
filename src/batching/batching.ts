@@ -1,9 +1,11 @@
 import { BytesLike } from 'ethers';
 import { IOracle } from '../types/typechain';
-import { RequestFullData, getBatchRequestData } from './getBatchRequestData';
-import { ResponseData, getBatchResponseData } from './getBatchResponseData';
+import { getBatchRequestData } from './getBatchRequestData';
 import { DisputeData, getBatchDisputeData } from './getBatchDisputeData';
 import { RequestForFinalizeData, getBatchRequestForFinalizeData } from './getBatchRequestForFinalizeData';
+import { Helpers } from '../helpers';
+import { RequestWithId, ResponseWithId } from '../types/types';
+import { getBatchModuleNameData } from './getBatchModuleNameData';
 
 /**
  * @title Batching class
@@ -12,20 +14,11 @@ import { RequestForFinalizeData, getBatchRequestForFinalizeData } from './getBat
  **/
 export class Batching {
   private oracle: IOracle;
+  private helpers: Helpers;
 
-  constructor(oracle: IOracle) {
+  constructor(oracle: IOracle, helpers: Helpers) {
     this.oracle = oracle;
-  }
-
-  /**
-   * Lists responses for a given request id
-   * @dev uses getBatchResponseData to get responses which is a batched call for the BatchResponsesData contract
-   * @param requestId - request id to get responses for
-   * @returns array of responses
-   **/
-  public async listResponses(requestId: BytesLike): Promise<ResponseData[]> {
-    const result = await getBatchResponseData(this.oracle.runner, await this.oracle.getAddress(), requestId);
-    return result;
+    this.helpers = helpers;
   }
 
   /**
@@ -35,8 +28,56 @@ export class Batching {
    * @returns array of RequestFullData objects that include the request, its responses, and dispute status
    **/
   public async listRequests(startFrom: number, amount: number): Promise<RequestFullData[]> {
-    const result = await getBatchRequestData(this.oracle.runner, await this.oracle.getAddress(), startFrom, amount);
-    return result;
+    const oracleAddress = await this.oracle.getAddress();
+    const result = await getBatchRequestData(this.oracle.runner, oracleAddress, startFrom, amount);
+
+    const requestPromises = result.map(async (request) => {
+      const requestWithId: RequestWithId = await this.helpers.getRequest(request.requestId);
+
+      const responsePromises = request.responses.map(async (response) => {
+        return await this.helpers.getResponse(response.responseId, response.createdAt);
+      });
+
+      const moduleNames = await getBatchModuleNameData(this.oracle.runner, oracleAddress, [
+        requestWithId.request.requestModule,
+        requestWithId.request.responseModule,
+        requestWithId.request.disputeModule,
+        requestWithId.request.resolutionModule,
+        requestWithId.request.finalityModule,
+      ]);
+
+      const responses = await Promise.all(responsePromises);
+
+      return {
+        requestWithId: requestWithId,
+        responses: responses,
+        finalizedResponse: responses.find((response) => response.responseId === request.finalizedResponseId),
+        disputeStatus: request.disputeStatus,
+        requestModuleName: moduleNames[0],
+        responseModuleName: moduleNames[1],
+        disputeModuleName: moduleNames[2],
+        resolutionModuleName: moduleNames[3],
+        finalityModuleName: moduleNames[4],
+      };
+    });
+
+    const fullRequestData = await Promise.all(requestPromises);
+
+    return fullRequestData;
+  }
+
+  /**
+   * Lists responses for a given request id
+   * @param requestId - request id to get responses for
+   * @returns array of responses
+   **/
+  public async listResponses(requestId: BytesLike): Promise<ResponseWithId[]> {
+    const responseIds = await this.helpers.getResponseIds(requestId);
+
+    const responsePromises = responseIds.map((responseId) => this.helpers.getResponse(responseId));
+    const responses = await Promise.all(responsePromises);
+
+    return responses;
   }
 
   /**
@@ -54,7 +95,7 @@ export class Batching {
    * Paginates requests starting from the given index
    * @param startFrom - index to start from
    * @param amount - amount of requests to get
-   * @returns array of RequestForFinalizeData objects that include the request, its responses, and dispute status
+   * @returns array of RequestForFinalizeData objects that include the request and its response ids
    **/
   public async listRequestsForFinalize(startFrom: number, amount: number): Promise<RequestForFinalizeData[]> {
     const result = await getBatchRequestForFinalizeData(
@@ -65,4 +106,16 @@ export class Batching {
     );
     return result;
   }
+}
+
+export interface RequestFullData {
+  requestWithId: RequestWithId;
+  responses: ResponseWithId[];
+  finalizedResponse: ResponseWithId;
+  disputeStatus: number;
+  requestModuleName: string;
+  responseModuleName: string;
+  disputeModuleName: string;
+  resolutionModuleName: string;
+  finalityModuleName: string;
 }
