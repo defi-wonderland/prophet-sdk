@@ -205,12 +205,12 @@ export class Helpers {
   }
 
   /**
-   * Gets the block number for the given request id
-   * @param requestId - the request id
+   * Gets the block number for the given id
+   * @param id - the request, response, or dispute id
    * @returns the block number given request id
    */
-  public createdAt(requestId: BytesLike): Promise<BigNumberish> {
-    return this.oracle.createdAt(requestId);
+  public createdAt(id: BytesLike): Promise<BigNumberish> {
+    return this.oracle.createdAt(id);
   }
 
   /**
@@ -308,6 +308,11 @@ export class Helpers {
     return result;
   }
 
+  /**
+   * Gets the request and metadata for the given request id
+   * @param requestId - the request id
+   * @returns the request and metadata for the given request id
+   */
   public async getRequestWithMetadata(requestId: BytesLike): Promise<RequestWithMetadata> {
     const request = await this.getRequest(requestId);
     const metadata = await this.getRequestMetadata(request.ipfsHash);

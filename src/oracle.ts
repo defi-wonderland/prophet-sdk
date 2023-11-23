@@ -6,7 +6,6 @@ import { Helpers } from './helpers';
 import { IIpfsApi, IpfsApi } from './ipfsApi';
 import { Ipfs } from './ipfs';
 import config from './config/config';
-import { CONSTANTS } from './utils';
 import { ModulesMap } from './types/Module';
 import { Modules } from './modules/modules';
 
