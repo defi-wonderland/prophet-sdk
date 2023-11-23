@@ -5,7 +5,7 @@
   "repository": "git@github.com:defi-wonderland/prophet-sdk-private.git",
   "license": "MIT",
   "author": "Wonderland",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "files": [
     "dist",
     "README.md"
