@@ -4,7 +4,7 @@ import { getBatchRequestData } from './getBatchRequestData';
 import { DisputeData, getBatchDisputeData } from './getBatchDisputeData';
 import { RequestForFinalizeData, getBatchRequestForFinalizeData } from './getBatchRequestForFinalizeData';
 import { Helpers } from '../helpers';
-import { RequestWithId, ResponseWithId } from '../types/types';
+import { FullResponse, RequestWithId, ResponseWithId } from '../types/types';
 import { getBatchModuleNameData } from './getBatchModuleNameData';
 
 /**
@@ -47,11 +47,19 @@ export class Batching {
 
       const [responses, moduleNames] = await Promise.all([Promise.all(responsePromises), moduleNamesPromise]);
 
-      const finalizedResponse = responses.find((response) => response.responseId === request.finalizedResponseId);
+      const fullResponses: FullResponse[] = responses.map((response, i) => ({
+        requestId: request.requestId,
+        responseId: request.responses[i].responseId,
+        response: response.response,
+        blockNumber: response.blockNumber,
+        disputeId: request.responses[i].disputeId,
+      }));
+
+      const finalizedResponse = fullResponses.find((response) => response.responseId === request.finalizedResponseId);
 
       return {
         requestWithId: requestWithId,
-        responses: responses,
+        responses: fullResponses,
         finalizedResponse: finalizedResponse ? finalizedResponse : null,
         disputeStatus: request.disputeStatus,
         requestModuleName: moduleNames[0],
@@ -111,8 +119,8 @@ export class Batching {
 
 export interface RequestFullData {
   requestWithId: RequestWithId;
-  responses: ResponseWithId[];
-  finalizedResponse: ResponseWithId;
+  responses: FullResponse[];
+  finalizedResponse: FullResponse;
   disputeStatus: number;
   requestModuleName: string;
   responseModuleName: string;

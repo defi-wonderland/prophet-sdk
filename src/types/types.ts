@@ -1,4 +1,4 @@
-import { BaseContract, BytesLike, Contract } from 'ethers';
+import { BaseContract, BytesLike } from 'ethers';
 import { IOracle } from './typechain/IOracle';
 
 // @dev when creating a new request by the user, returnedTypes should be null
@@ -25,6 +25,14 @@ export interface ResponseWithId {
   responseId: BytesLike;
   response: IOracle.ResponseStruct;
   blockNumber: bigint;
+}
+
+export interface FullResponse {
+  requestId: BytesLike;
+  responseId: BytesLike;
+  response: IOracle.ResponseStruct;
+  blockNumber: bigint;
+  disputeId: BytesLike;
 }
 
 export interface DisputeWithId {
