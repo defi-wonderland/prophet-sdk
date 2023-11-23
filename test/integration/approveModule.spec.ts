@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Contract, ContractRunner, ethers } from 'ethers';
+import { Contract, ContractRunner } from 'ethers';
 import { ProphetSDK } from '../../src/oracle';
 import { Module } from '../../src/module';
 
@@ -12,7 +12,6 @@ import IBondedDisputeModule from '@defi-wonderland/prophet-modules-abi/abi/IBond
 import { address } from '../constants';
 import { ModulesMap } from '../../src/types/Module';
 import { IOracle } from '../../src/types/typechain/IOracle';
-import { getDecodeRequestDataFunctionReturnTypes } from '../../src/helpers/helpers';
 import IAccountingExtension from '@defi-wonderland/prophet-modules-abi/abi/IAccountingExtension.json';
 import { ethers as ethersHardhat } from 'hardhat';
 
@@ -66,20 +65,32 @@ describe('Create Requests', () => {
     );
 
     sdk = new ProphetSDK(runner, address.deployed.ORACLE, knownModules);
-
-    const tokenAddress = address.usdt;
-    const BOND_SIZE = 100;
-    const deadline = Math.floor(Date.now() / 1000) + 120;
   });
 
   describe('approveModules', () => {
-    it('should approve the modules', async () => {
-      // console.log( await accountingExtension.approveModule(address.deployed.HTTP_REQUEST_MODULE));
-      // console.log(await accountingExtension.approveModule(address.deployed.BONDED_RESPONSE_MODULE));
-      //console.log(await accountingExtension.approveModule(address.deployed.BONDED_DISPUTE_MODULE));
-      //console.log(await accountingExtension.approveModule(address.deployed.ARBITRATOR_MODULE));
-      //console.log(await accountingExtension.approveModule(address.deployed.CALLBACK_MODULE));
-      await accountingExtension.deposit('0x94b008aA00579c1307B0EF2c499aD98a8ce58e58', 10000);
+    it('should approve the modules the HttpRequestModule', async () => {
+      const result = await accountingExtension.approveModule(address.deployed.HTTP_REQUEST_MODULE);
+      expect(result.nonce).to.be.greaterThan(0);
+    });
+
+    it('should approve the modules the BondedResponseModule', async () => {
+      const result = await accountingExtension.approveModule(address.deployed.BONDED_RESPONSE_MODULE);
+      expect(result.nonce).to.be.greaterThan(0);
+    });
+
+    it('should approve the modules the BondedDisputeModule', async () => {
+      const result = await accountingExtension.approveModule(address.deployed.BONDED_DISPUTE_MODULE);
+      expect(result.nonce).to.be.greaterThan(0);
+    });
+
+    it('should approve the modules the ArbitratorModule', async () => {
+      const result = await accountingExtension.approveModule(address.deployed.ARBITRATOR_MODULE);
+      expect(result.nonce).to.be.greaterThan(0);
+    });
+
+    it('should approve the modules the CallbackModule', async () => {
+      const result = await accountingExtension.approveModule(address.deployed.CALLBACK_MODULE);
+      expect(result.nonce).to.be.greaterThan(0);
     });
   });
 });

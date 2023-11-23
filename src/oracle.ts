@@ -31,7 +31,6 @@ export class ProphetSDK {
    */
   constructor(runner: ContractRunner, oracleAddress: string, knownModules: ModulesMap) {
     this.runner = runner;
-    oracleAddress = oracleAddress ? oracleAddress : CONSTANTS.ORACLE;
 
     try {
       this.oracle = new ethers.Contract(oracleAddress, IAbiOracle, this.runner) as unknown as IOracle;

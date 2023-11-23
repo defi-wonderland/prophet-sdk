@@ -2,10 +2,9 @@ import { expect } from 'chai';
 import { ethers, Provider } from 'ethers';
 import { ProphetSDK } from '../../src/oracle';
 import config from '../../src/config/config';
-import { CONSTANTS } from '../../src/utils/constants';
 import { address } from '../constants';
 import { ModulesMap } from '../../src/types/Module';
-import sinon, { SinonStub } from 'sinon';
+import sinon from 'sinon';
 
 describe('ProphetSDK', () => {
   let sdk: ProphetSDK;

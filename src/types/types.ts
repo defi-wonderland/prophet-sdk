@@ -13,8 +13,6 @@ export type ModuleInstance = {
   moduleClass: string;
 };
 
-export type Address = string | Contract;
-
 export interface RequestWithId {
   requestId: BytesLike;
   request: IOracle.RequestStruct;

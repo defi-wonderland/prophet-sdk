@@ -9,7 +9,7 @@ import ICallbackModule from '@defi-wonderland/prophet-modules-abi/abi/ICallbackM
 import IBondedResponseModule from '@defi-wonderland/prophet-modules-abi/abi/IBondedResponseModule.json';
 import IBondedDisputeModule from '@defi-wonderland/prophet-modules-abi/abi/IBondedDisputeModule.json';
 
-import { address } from '../constants';
+import { BOND_SIZE, DEADLINE, address } from '../constants';
 import { ModulesMap } from '../../src/types/Module';
 import { IOracle } from '../../src/types/typechain/IOracle';
 import { getDecodeRequestDataFunctionReturnTypes } from '../../src/helpers/helpers';
@@ -67,31 +67,27 @@ describe('Create Requests', () => {
 
     sdk = new ProphetSDK(runner, address.deployed.ORACLE, knownModules);
 
-    const tokenAddress = '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58';
-    const BOND_SIZE = 100;
-    const deadline = Math.floor(Date.now() / 1000) + 120;
-
     // Define the data to be sent for each module
     const requestModuleData = Object.values({
       url: 'https://jsonplaceholder.typicode.com/comments',
       body: 'postId=1',
       method: 0, // GET, see HttpRequestModule
       accountingExtension: address.deployed.ACCOUNTING_EXTENSION,
-      paymentToken: tokenAddress,
+      paymentToken: address.usdt,
       paymentAmount: BOND_SIZE,
     });
 
     const responseModuleData = Object.values({
       accountingExtension: address.deployed.ACCOUNTING_EXTENSION,
-      bondToken: tokenAddress,
+      bondToken: address.usdt,
       bondSize: BOND_SIZE,
-      deadline: deadline,
+      deadline: DEADLINE,
       disputeWindow: 5000,
     });
 
     const disputeModuleData = Object.values({
       accountingExtension: address.deployed.ACCOUNTING_EXTENSION,
-      bondToken: tokenAddress,
+      bondToken: address.usdt,
       bondSize: BOND_SIZE,
     });
 
@@ -122,7 +118,7 @@ describe('Create Requests', () => {
       ),
       resolutionModuleData: ethers.AbiCoder.defaultAbiCoder().encode(
         getDecodeRequestDataFunctionReturnTypes(IArbitratorModule.abi),
-        resolutionModuleData
+        [resolutionModuleData]
       ),
       finalityModuleData: ethers.AbiCoder.defaultAbiCoder().encode(
         getDecodeRequestDataFunctionReturnTypes(ICallbackModule.abi),
@@ -133,18 +129,14 @@ describe('Create Requests', () => {
       disputeModule: address.deployed.BONDED_DISPUTE_MODULE,
       resolutionModule: address.deployed.ARBITRATOR_MODULE,
       finalityModule: address.deployed.CALLBACK_MODULE,
-      requester: '0x102EEA73631BaB024C55540B048FEA1e43271962',
+      requester: sdk.runner['address'],
     };
   });
 
   describe('createRequest', () => {
     it('should create a request', async () => {
-      /*
-      console.log(sdk.helpers.getSignerAddress());
       const result = await sdk.helpers.createRequest(newRequest, requestMetadataSample);
-      expect(result.nonce).to.be.greaterThan(0);*/
-      //const result = await sdk.helpers.listRequestIds(0, 1);
-      //console.log(result);
+      expect(result.nonce).to.be.greaterThan(0);
     });
   });
 

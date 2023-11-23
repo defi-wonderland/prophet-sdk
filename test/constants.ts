@@ -51,3 +51,4 @@ export const address = {
 
 export const FINALIZE_SOON = false;
 export const BOND_SIZE = 100;
+export const DEADLINE = Math.floor(Date.now() / 1000) + 120;

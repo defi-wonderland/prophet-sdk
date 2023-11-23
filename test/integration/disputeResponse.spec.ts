@@ -67,19 +67,21 @@ describe('Create Requests', () => {
 
     sdk = new ProphetSDK(runner, address.deployed.ORACLE, knownModules);
 
+    const tokenAddress = address.usdt;
+
     // Define the data to be sent for each module
     const requestModuleData = Object.values({
       url: 'https://jsonplaceholder.typicode.com/comments',
       body: 'postId=1',
       method: 0, // GET, see HttpRequestModule
       accountingExtension: address.deployed.ACCOUNTING_EXTENSION,
-      paymentToken: address.usdt,
+      paymentToken: tokenAddress,
       paymentAmount: BOND_SIZE,
     });
 
     const responseModuleData = Object.values({
       accountingExtension: address.deployed.ACCOUNTING_EXTENSION,
-      bondToken: address.usdt,
+      bondToken: tokenAddress,
       bondSize: BOND_SIZE,
       deadline: DEADLINE,
       disputeWindow: 5000,
@@ -87,7 +89,7 @@ describe('Create Requests', () => {
 
     const disputeModuleData = Object.values({
       accountingExtension: address.deployed.ACCOUNTING_EXTENSION,
-      bondToken: address.usdt,
+      bondToken: tokenAddress,
       bondSize: BOND_SIZE,
     });
 
@@ -133,7 +135,7 @@ describe('Create Requests', () => {
     };
   });
 
-  describe('proposeResponse', () => {
+  describe('disputeResponse', () => {
     beforeEach(async () => {
       await sdk.helpers.createRequest(newRequest, requestMetadataSample);
     });
@@ -147,8 +149,20 @@ describe('Create Requests', () => {
         requestId: requestId,
         response: ethers.AbiCoder.defaultAbiCoder().encode(['uint'], [1]),
       };
-      const result = await sdk.helpers.proposeResponse(newRequest, response);
-      expect(result.nonce).to.be.greaterThan(0);
+
+      await sdk.helpers.proposeResponse(newRequest, response);
+
+      const responseId = (await sdk.helpers.getResponseIds(requestId))[0];
+
+      const dispute: IOracle.DisputeStruct = {
+        disputer: runner['address'],
+        proposer: runner['address'],
+        responseId: responseId,
+        requestId: requestId,
+      };
+
+      const disputeResult = await sdk.helpers.disputeResponse(newRequest, response, dispute);
+      expect(disputeResult.nonce).to.be.greaterThan(0);
     });
   });
 });

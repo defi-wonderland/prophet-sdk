@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Contract, ContractRunner, ethers } from 'ethers';
+import { ContractRunner } from 'ethers';
 import { ProphetSDK } from '../../src/oracle';
 import { Module } from '../../src/module';
 
@@ -11,18 +11,13 @@ import IBondedDisputeModule from '@defi-wonderland/prophet-modules-abi/abi/IBond
 
 import { address } from '../constants';
 import { ModulesMap } from '../../src/types/Module';
-import { IOracle } from '../../src/types/typechain/IOracle';
-import IAccountingExtension from '@defi-wonderland/prophet-modules-abi/abi/IAccountingExtension.json';
 import { ethers as ethersHardhat } from 'hardhat';
-import { RequestWithId } from '../../src/types/types';
 
 describe('Create Requests', () => {
   let sdk: ProphetSDK;
   let runner: ContractRunner;
 
   beforeEach(async () => {
-    // We want to define the ProphetSDK and the provider here
-
     const [signer] = await ethersHardhat.getSigners();
     runner = signer as unknown as ContractRunner;
 
@@ -62,17 +57,18 @@ describe('Create Requests', () => {
   describe('list the requests ids', () => {
     it('list the requests ids', async () => {
       const result = await sdk.helpers.listRequestIds(1, 10);
+
       const requestsIds = [
-        '0xecf0806d125a1e9cb75eeb7fddad839139910ae32d686a2c36d4fc669c5790a2',
-        '0x9842e4ea251791f0f8110ee02d49a3359e86375cec3b1692b7b884ad9181879e',
-        '0x40b85527d4a2f0ad54e78f3ac3f22e752eaef17eb1ad8faa9d95acef423d1ccd',
-        '0x892881a26552de5973645a16d74901c5cea44176ce1995d37afc4c15da6f8cf7',
-        '0x24e8f1789e9a8dcc6323d5c489b4aaff01de836000bdaa9f40f3ded638e5befb',
-        '0x0838a4b5e15dcbc38c0bdce9e16639ba6c9cba58359dd7c7274308fc362769df',
-        '0x131fe740427f8baeb334543ba597e1889fd721fe1dcc195a30a37b2400f1a2e9',
-        '0xc620cf238a051f696c79b1490b7c956fa698cc8bbd7aa01d83c7fead63960f7b',
-        '0xbe1cda43961b37697903e47fafef9efa6db5b833e2d947b82350bc6151d4e7a5',
-        '0xbd88c180740405bcc9b71f54d7d228901cece533e6e9e73fc5814c360c28f9a1',
+        '0xf78a5f41aa0cfc974adfff66f7058ca9c2ff3243d521a0d239ef57c889d16aa1',
+        '0x357045d3c381382abbc44e069711bc00b3e767e5679791edf50aabd94ba5b4dc',
+        '0xe69fca4aa31a2ddebc60dfa09ce6acc5fc02a58ff302f8686916c8da17a8b9c6',
+        '0xf74f65d42b6975b24335e3bd86bdbd60ddfafe2f5ba5ac4cced213d39aa56fb4',
+        '0x2a7b36fc72644328e7526a3d455b1cf9462bb0dc4a26d0777a6a6016a361ee08',
+        '0xc87bc2312bb97d7413c4c929dbccf2c645e4ddb660f321bf3e34cc46800ee6ee',
+        '0x14cc0b61491e41afced4b24624c69f5d24aec7491631e9047a84c38df27e15b0',
+        '0xe52589e27c761cdf7a3db9164060294790a953b28af602386ee6700e519a0777',
+        '0xbf6483398ce022ee7f8f1a5b86a1510cbace58df533f83fc07c6b57ce658a0eb',
+        '0x346329bee294d95bc868a025646651867e2e6262d0ddbe2e3b36557494040b99',
       ];
       expect(result).to.be.deep.equal(requestsIds);
     });
@@ -80,20 +76,11 @@ describe('Create Requests', () => {
 
   describe('getRequest', () => {
     it('should get the request', async () => {
-      //console.log(await sdk.helpers.getRequestId(1));
-      //console.log(await sdk.helpers.createdAt('0xeb110f2083f06431aadf965d552c7048fef192ed71aa5ea9d27d508f6e622e16'));
-      //console.log((result[0] as RequestWithId).requestId);
-      //const result = await sdk.helpers.listRequests(111060419, 111060425);
+      const requestsIds = await sdk.helpers.listRequestIds(1, 10);
 
-      //await sdk.helpers.getResponse('0xeb110f2083f06431aadf965d552c7048fef192ed71aa5ea9d27d508f6e622e16');
-      const result = await sdk.helpers.getResponse(
-        '0x28669e20cd81c12f9cbd712a7c93d3dfdd8a58ef134bccad399a0a2f0d77db44'
-      );
+      const result = await sdk.helpers.getRequest(requestsIds[0]);
 
-      const result2 = await sdk.helpers.finalizedAt(
-        '0x9db7c902aae32faec367c304e25a61a5ba8271509f7599440052258d5a623c61'
-      );
-      console.log(result);
+      expect(result.blockNumber).to.be.equal(BigInt(111060507));
     });
   });
 });

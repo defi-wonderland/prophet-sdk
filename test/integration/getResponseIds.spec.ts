@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { Contract, ContractRunner, ethers } from 'ethers';
+import { ContractRunner } from 'ethers';
 import { ProphetSDK } from '../../src/oracle';
 import { Module } from '../../src/module';
 
@@ -11,8 +11,6 @@ import IBondedDisputeModule from '@defi-wonderland/prophet-modules-abi/abi/IBond
 
 import { address } from '../constants';
 import { ModulesMap } from '../../src/types/Module';
-import { IOracle } from '../../src/types/typechain/IOracle';
-import IAccountingExtension from '@defi-wonderland/prophet-modules-abi/abi/IAccountingExtension.json';
 import { ethers as ethersHardhat } from 'hardhat';
 
 describe('Create Requests', () => {
@@ -60,8 +58,9 @@ describe('Create Requests', () => {
 
   describe('getResponseIds', () => {
     it('should get the response ids', async () => {
-      // TODO: complete the test when real contracts deployed
-      const result = await sdk.helpers.getResponseIds('');
+      const request = await sdk.helpers.listRequestIds(22, 1);
+      const result = await sdk.helpers.getResponseIds(request[0]);
+      expect(result.length).to.be.greaterThan(0);
     });
   });
 });

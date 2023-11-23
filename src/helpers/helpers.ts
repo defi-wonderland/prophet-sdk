@@ -1,14 +1,7 @@
-import { AddressLike, BigNumberish, BytesLike, ContractRunner, ContractTransaction } from 'ethers';
+import { AddressLike, BigNumberish, BytesLike, ContractTransaction } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { IpfsApi } from '../ipfsApi';
-import {
-  Address,
-  DisputeWithId,
-  RequestMetadata,
-  RequestWithId,
-  RequestWithMetadata,
-  ResponseWithId,
-} from '../types/types';
+import { DisputeWithId, RequestMetadata, RequestWithId, RequestWithMetadata, ResponseWithId } from '../types/types';
 import { CONSTANTS } from '../utils/constants';
 import { bytes32ToCid } from '../utils/cid';
 import { Modules } from '../modules/modules';
@@ -338,7 +331,7 @@ export class Helpers {
    * @param user - the user address
    * @returns boolean if the user is a participant in the given request
    */
-  public async isParticipant(requestId: BytesLike, user: Address): Promise<boolean> {
+  public async isParticipant(requestId: BytesLike, user: AddressLike): Promise<boolean> {
     return this.oracle.isParticipant(requestId, user);
   }
 

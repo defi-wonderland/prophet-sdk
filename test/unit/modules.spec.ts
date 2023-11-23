@@ -7,7 +7,7 @@ import './setup';
 import config from '../../src/config/config';
 import { ModulesMap } from '../../src/types/Module';
 import { Modules } from '../../src/modules/modules';
-import { BOND_SIZE, address } from '../constants';
+import { address } from '../constants';
 
 describe('Modules', () => {
   let module: Module;
