@@ -4,31 +4,19 @@ import config from '../../src/config/config';
 import { ethers } from 'ethers';
 import { address } from '../constants';
 
-/*
 describe('getBatchRequestData', () => {
   const provider = new ethers.JsonRpcProvider(config.RPC_URL);
   it('returns the correct requestId', async () => {
-    const result = await getBatchRequestData(provider, address.deployed.ORACLE, 10, 1);
+    const result = await getBatchRequestData(provider, address.deployed.ORACLE, 12, 10);
 
-    expect(result[0].requestId).to.equal('0xbda69502828fcd5b0b95d851ee5405efd2b2be720ce546efa55f79b4d9f6da68');
-  });
-
-  it('returns the correct module names', async () => {
-    const result = await getBatchRequestData(provider, address.deployed.ORACLE, 10, 1);
-
-    expect(result[0].requestModuleName).to.equal('HttpRequestModule');
-    expect(result[0].responseModuleName).to.equal('BondedResponseModule');
-    expect(result[0].disputeModuleName).to.equal('BondedDisputeModule');
-    expect(result[0].resolutionModuleName).to.equal('BondEscalationResolutionModule');
-    expect(result[0].finalityModuleName).to.equal('CallbackModule');
+    expect(result[0].requestId).to.equal('0x8dbdf79925e7fbfefb8398430d267d12406c59b3c37a4de5cd2f3989f6d2b5b2');
   });
 
   it('returns the ids of the responses', async () => {
-    const result = await getBatchRequestData(provider, address.deployed.ORACLE, 10, 1);
+    const result = await getBatchRequestData(provider, address.deployed.ORACLE, 12, 10);
 
     expect(result[0].responses[0].responseId).to.equal(
-      '0x6578e5ad13c830c19276c6b7d30ae65d9b2c8cb986e5fcb718d1c11d3f61b51b'
+      '0x42ef2329cb6a422043e64acd96eee7381a3536dce590a1a590f350576bab52cc'
     );
   });
 });
-*/

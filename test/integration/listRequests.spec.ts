@@ -58,13 +58,6 @@ describe('Create Requests', () => {
     sdk = new ProphetSDK(runner, address.deployed.ORACLE, knownModules);
   });
 
-  describe('get the request id', () => {
-    it('should get the request id', async () => {
-      const result = await sdk.helpers.getRequestId(2);
-      console.log(result);
-    });
-  });
-
   describe('list the requests ids', () => {
     it('list the requests ids', async () => {
       //const result = await sdk.helpers.listRequests(0, 10000);

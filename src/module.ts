@@ -1,4 +1,4 @@
-import { ethers, Contract, ContractRunner } from 'ethers';
+import { ethers, Contract, ContractRunner, BytesLike } from 'ethers';
 import { IModuleBase } from './types/Module';
 
 /**
@@ -20,16 +20,15 @@ export class Module {
 
   /**
    * Returns decoded the data for a request
-   * @param requestId - The request id to get the data for
+   * @param requestData - The request data bytes
    * @returns the decoded data for the request
    **/
-  // TODO: delete this method ?
-  public async decodeRequestData<T>(requestId: string): Promise<T> {
+  public async decodeRequestData<T>(requestData: BytesLike): Promise<T> {
     let data: T;
     try {
-      data = await this.moduleContract.decodeRequestData(requestId);
+      data = await this.moduleContract.decodeRequestData(requestData);
     } catch (e) {
-      throw new Error(`Failed to decode request data for ${requestId}: ${e}`);
+      throw new Error(`Failed to decode request data for ${requestData}: ${e}`);
     }
     return data;
   }

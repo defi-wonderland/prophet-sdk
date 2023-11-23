@@ -62,4 +62,12 @@ export class ProphetSDK {
   public setIpfsApi(ipfsApi: IIpfsApi) {
     this.ipfs.setIpfsApi(ipfsApi);
   }
+
+  /**
+   * Gets the oracle contract
+   * @returns The oracle contract
+   */
+  public getOracleContract(): IOracle {
+    return this.oracle;
+  }
 }

@@ -103,7 +103,7 @@ describe('Create Requests', () => {
     });
 
     const totalRequestCount = await sdk.helpers.totalRequestCount();
-    const nonce = Number(totalRequestCount) + 1;
+    const nonce = Number(totalRequestCount);
 
     // Create the new request object
     newRequest = {
@@ -122,7 +122,7 @@ describe('Create Requests', () => {
       ),
       resolutionModuleData: ethers.AbiCoder.defaultAbiCoder().encode(
         getDecodeRequestDataFunctionReturnTypes(IArbitratorModule.abi),
-        resolutionModuleData
+        [resolutionModuleData]
       ),
       finalityModuleData: ethers.AbiCoder.defaultAbiCoder().encode(
         getDecodeRequestDataFunctionReturnTypes(ICallbackModule.abi),
@@ -141,8 +141,13 @@ describe('Create Requests', () => {
     beforeEach(async () => {
       await sdk.helpers.createRequest(newRequest, requestMetadataSample);
     });
-    it('should propose a response', async () => {
-      const requestId = await sdk.helpers.getRequestId(Number(await sdk.helpers.totalRequestCount()));
+    it.only('should propose a response', async () => {
+      console.log('response data', newRequest.responseModuleData);
+      const totalRequestCount = await sdk.helpers.totalRequestCount();
+      const requestId = (await sdk.helpers.listRequestIds(Number(totalRequestCount) - 1, totalRequestCount))[0];
+      console.log(requestId);
+      console.log(await sdk.helpers.getRequest(requestId));
+
       const response: IOracle.ResponseStruct = {
         proposer: runner['address'],
         requestId: requestId,
@@ -150,6 +155,27 @@ describe('Create Requests', () => {
       };
       const result = await sdk.helpers.proposeResponse(newRequest, response);
       expect(result.nonce).to.be.greaterThan(0);
+      const responseId = (await sdk.helpers.getResponseIds(requestId))[0];
+      console.log('the response id is: ', responseId);
+      console.log(await sdk.helpers.getResponse(responseId));
+
+      /*
+      DisputeStruct = {
+    disputer: AddressLike;
+    proposer: AddressLike;
+    responseId: BytesLike;
+    requestId: BytesLike;
+  };
+  */
+      const dispute: IOracle.DisputeStruct = {
+        disputer: runner['address'],
+        proposer: runner['address'],
+        responseId: responseId,
+        requestId: requestId,
+      };
+      const disputeResult = await sdk.helpers.disputeResponse(newRequest, response, dispute);
+      console.log(disputeResult);
+      console.log(totalRequestCount);
     });
   });
 });

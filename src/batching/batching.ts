@@ -28,17 +28,16 @@ export class Batching {
    * @returns array of RequestFullData objects that include the request, its responses, and dispute status
    **/
   public async listRequests(startFrom: number, amount: number): Promise<RequestFullData[]> {
-    const oracleAddress = await this.oracle.getAddress();
-    const result = await getBatchRequestData(this.oracle.runner, oracleAddress, startFrom, amount);
+    const result = await getBatchRequestData(this.oracle.runner, await this.oracle.getAddress(), startFrom, amount);
 
     const requestPromises = result.map(async (request) => {
       const requestWithId: RequestWithId = await this.helpers.getRequest(request.requestId);
 
       const responsePromises = request.responses.map(async (response) => {
-        return await this.helpers.getResponse(response.responseId, response.createdAt);
+        return await this.helpers.getResponse(response.responseId, Number(response.createdAt));
       });
 
-      const moduleNames = await getBatchModuleNameData(this.oracle.runner, oracleAddress, [
+      const moduleNamesPromise = getBatchModuleNameData(this.oracle.runner, [
         requestWithId.request.requestModule,
         requestWithId.request.responseModule,
         requestWithId.request.disputeModule,
@@ -46,12 +45,14 @@ export class Batching {
         requestWithId.request.finalityModule,
       ]);
 
-      const responses = await Promise.all(responsePromises);
+      const [responses, moduleNames] = await Promise.all([Promise.all(responsePromises), moduleNamesPromise]);
+
+      const finalizedResponse = responses.find((response) => response.responseId === request.finalizedResponseId);
 
       return {
         requestWithId: requestWithId,
         responses: responses,
-        finalizedResponse: responses.find((response) => response.responseId === request.finalizedResponseId),
+        finalizedResponse: finalizedResponse ? finalizedResponse : null,
         disputeStatus: request.disputeStatus,
         requestModuleName: moduleNames[0],
         responseModuleName: moduleNames[1],
@@ -61,9 +62,9 @@ export class Batching {
       };
     });
 
-    const fullRequestData = await Promise.all(requestPromises);
+    const resolvedRequests = await Promise.all(requestPromises);
 
-    return fullRequestData;
+    return resolvedRequests;
   }
 
   /**

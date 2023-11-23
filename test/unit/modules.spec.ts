@@ -7,6 +7,7 @@ import './setup';
 import config from '../../src/config/config';
 import { ModulesMap } from '../../src/types/Module';
 import { Modules } from '../../src/modules/modules';
+import { BOND_SIZE, address } from '../constants';
 
 describe('Modules', () => {
   let module: Module;
@@ -16,7 +17,7 @@ describe('Modules', () => {
   let iface: ethers.Interface;
   let otherIface: ethers.Interface;
 
-  const moduleAddress = '0x7969c5eD335650692Bc04293B07F5BF2e7A673C0';
+  const moduleAddress = address.deployed.HTTP_REQUEST_MODULE;
   const otherModuleAddress = '0xCD8a1C3ba11CF5ECfa6267617243239504a98d90';
   const tupleModuleAddres = '0xCD8a1C3ba11CF5ECfa6267617243239504a98d91';
 
@@ -26,6 +27,18 @@ describe('Modules', () => {
 
   module = new Module(moduleAddress, iface, provider);
   otherModule = new Module(otherModuleAddress, otherIface, provider);
+
+  const requestObject = [
+    'https://jsonplaceholder.typicode.com/comments',
+    'postId=1',
+    BigInt(0),
+    '0x04CA5FFe64f7E23BEBFC1af987DDAB5ddb287875',
+    '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
+    BigInt(100),
+  ];
+
+  const requestData =
+    '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004ca5ffe64f7e23bebfc1af987ddab5ddb28787500000000000000000000000094b008aa00579c1307b0ef2c499ad98a8ce58e580000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000002d68747470733a2f2f6a736f6e706c616365686f6c6465722e74797069636f64652e636f6d2f636f6d6d656e7473000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008706f737449643d31000000000000000000000000000000000000000000000000';
 
   // Test data
   const tupleModuleAbi = {
@@ -126,7 +139,7 @@ describe('Modules', () => {
   const tupleModule = new Module(tupleModuleAddres, new ethers.Interface(tupleModuleAbi.abi), provider);
 
   let knownModules: ModulesMap = {
-    '0x7969c5eD335650692Bc04293B07F5BF2e7A673C0': module,
+    [address.deployed.HTTP_REQUEST_MODULE]: module,
     '0xCD8a1C3ba11CF5ECfa6267617243239504a98d90': otherModule,
     '0xCD8a1C3ba11CF5ECfa6267617243239504a98d91': tupleModule,
   };
@@ -346,5 +359,21 @@ describe('Modules', () => {
     expect(await modules.getNamedDecodeRequestReturnTypes(tupleModuleAddres)).deep.equal(
       expectedTupleModuleNamedReturnTypes
     );
+  });
+
+  describe('encodeRequestData', () => {
+    it('should encode the request data correctly', async () => {
+      const encodedRequestData = await modules.encodeRequestData(moduleAddress, requestObject);
+
+      expect(encodedRequestData).to.be.equal(requestData);
+    });
+  });
+
+  describe('decodeRequestData', () => {
+    it('should decode the request data correctly', async () => {
+      const decodedRequestData = await modules.decodeRequestData(moduleAddress, requestData);
+
+      expect(decodedRequestData).to.deep.equal([requestObject]);
+    });
   });
 });

@@ -2,20 +2,17 @@ import { getBatchResponseData } from '../../src/batching/getBatchResponseData';
 import { expect } from 'chai';
 import config from '../../src/config/config';
 import { ethers } from 'ethers';
+import { address } from '../constants';
 
-/*
-describe('getBatchRequestData', () => {
+describe('getBatchResponseData', () => {
   const provider = new ethers.JsonRpcProvider(config.RPC_URL);
   it('returns the correct requestId', async () => {
     const result = await getBatchResponseData(
       provider,
-      '0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A',
-      '0x0e0ee666b35a92eda23f750ec6be6f3108b9fd5b34cee8bffaff99f474fa9de9'
+      address.deployed.ORACLE,
+      '0x4d4bd503b4b2a0f7fba536c0925ce2d168d86af947977b6b4ce4087e08a0b149'
     );
 
-    expect(result[0].response).to.equal(
-      '0x7465737420726573706f6e736520666f72207265717565737420307830653065653636366233356139326564613233663735306563366265366633313038623966643562333463656538626666616666393966343734666139646539'
-    );
+    expect(result[0].responseId).to.equal('0xe999ecee4bddbd12c0ee3f292a8090f863543b61eb5dede70c9f15d59cb9756a');
   });
 });
-*/

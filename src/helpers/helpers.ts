@@ -1,4 +1,4 @@
-import { AddressLike, BigNumberish, BytesLike, ContractTransaction } from 'ethers';
+import { AddressLike, BigNumberish, BytesLike, ContractRunner, ContractTransaction } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { IpfsApi } from '../ipfsApi';
 import {
@@ -53,8 +53,7 @@ export class Helpers {
     this.decodedReturnTypesForModuleExists(request);
     if (!ipfsHash) ipfsHash = await this.uploadMetadata(requestMetadata);
 
-    // TODO: use ipfs hash for request creation
-    return this.oracle.createRequest(request);
+    return this.oracle.createRequest(request, ipfsHash);
   }
 
   /**
@@ -84,8 +83,7 @@ export class Helpers {
 
     await Promise.all(uploadPromises);
 
-    // TODO: add ipfs hashes to the parameters
-    return this.oracle.createRequests(requests);
+    return this.oracle.createRequests(requests, ipfsHashes);
   }
 
   /**
@@ -335,15 +333,6 @@ export class Helpers {
   }
 
   /**
-   * Returns the request id for the given nonce
-   * @param nonce - the nonce
-   * @returns the request id for the given nonce
-   */
-  public async getRequestId(nonce: BigNumberish): Promise<BytesLike> {
-    return this.oracle.getRequestId(nonce);
-  }
-
-  /**
    * Returns true or false whether the given user is a participant in the given request
    * @param requestId - the request id
    * @param user - the user address
@@ -414,16 +403,16 @@ export class Helpers {
     return {
       requestId: event[0],
       request: event[1],
-      blockNumber: event[2],
-      ipfsHash: event[3], // TODO: check where should ipfsHash should be located
+      ipfsHash: event[2],
+      blockNumber: event[3],
     };
   }
 
   private mapEventArgsToResponseWithId(event: any[]): ResponseWithId {
     return {
       requestId: event[0],
-      response: event[1],
-      responseId: event[2],
+      responseId: event[1],
+      response: event[2],
       blockNumber: event[3],
     };
   }

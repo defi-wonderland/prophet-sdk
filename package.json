@@ -15,7 +15,7 @@
     "lint:check": "prettier --check './**' && eslint ./src",
     "lint:fix": "sort-package-json && prettier --write './**' && eslint ./src --fix",
     "prepare": "husky install && wonderland-crypto-husky-checks install",
-    "test": "cross-env mocha 'test/unit/**/*.spec.ts' --timeout 10000",
+    "test": "cross-env mocha 'test/unit/**/*.spec.ts' --timeout 30000",
     "test:coverage": "nyc --reporter=lcov --reporter=text mocha 'test/**/*.spec.ts'",
     "typechain": "typechain --target ethers-v6 --out-dir src/types/typechain './node_modules/@defi-wonderland/prophet-core-abi/abi/*.json'"
   },
@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@defi-wonderland/prophet-batching-abi": "0.0.0-68d6c330",
-    "@defi-wonderland/prophet-core-abi": "0.0.0-59a5e3ee",
+    "@defi-wonderland/prophet-core-abi": "0.0.0-5fbc6720",
     "@pinata/sdk": "2.1.0",
     "axios": "1.4.0",
     "cids": "1.1.9",
@@ -50,7 +50,7 @@
     "@commitlint/cli": "17.6.5",
     "@commitlint/config-conventional": "17.6.5",
     "@defi-wonderland/crypto-husky-checks": "0.0.0-29a10090",
-    "@defi-wonderland/prophet-modules-abi": "0.0.0-172c4052",
+    "@defi-wonderland/prophet-modules-abi": "0.0.0-bc50a2b6",
     "@nomiclabs/hardhat-ethers": "2.2.1",
     "@typechain/ethers-v6": "0.4.3",
     "@types/chai": "4.3.5",

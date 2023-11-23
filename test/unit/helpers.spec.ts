@@ -203,8 +203,7 @@ describe('Helpers', () => {
     it('call to createRequest', async () => {
       const result = await helpers.createRequest(sampleRequest, sampleRequestMetadata);
       expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
-      // TODO: should call it with ipfs hash too
-      expect(createRequestStub.calledWith(sampleRequest)).to.be.true;
+      expect(createRequestStub.calledWith(sampleRequest, cidBytes32)).to.be.true;
       expect(result).to.equal(createRequestResult);
     });
 
@@ -345,8 +344,7 @@ describe('Helpers', () => {
     it('call to createRequests', async () => {
       const result = await helpers.createRequests([sampleRequest], [sampleRequestMetadata]);
       expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
-      // TODO: should call it with ipfs hash too
-      expect(createRequestsStub.calledWith([sampleRequest])).to.be.true;
+      expect(createRequestsStub.calledWith([sampleRequest], [cidBytes32])).to.be.true;
       expect(result).to.equal(createRequestsResult);
     });
 
@@ -382,16 +380,6 @@ describe('Helpers', () => {
       expect(result).to.equal(finalizedAtResult);
     });
   });
-
-  /*
-  describe('getFullRequest', () => {
-    it('calls to getFullRequest', async () => {
-      const result = await helpers.getFullRequest(sampleBytes32);
-      expect(getFullRequestStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(getFullRequestResult);
-    });
-  });
-  */
 
   describe('disputeOf', () => {
     it('calls to disputeOf', async () => {
@@ -595,14 +583,6 @@ describe('Helpers', () => {
       const result = await helpers.getFinalizedResponseId(sampleBytes32);
       expect(getFinalizedResponseIdStub.calledWith(sampleBytes32)).to.be.true;
       expect(result).to.equal(getFinalizedResponseIdResult);
-    });
-  });
-
-  describe('getRequestId', () => {
-    it('calls to getRequestId', async () => {
-      const result = await helpers.getRequestId(1);
-      expect(getRequestIdsStub.calledWith(1)).to.be.true;
-      expect(result).to.equal(getRequestIdResult);
     });
   });
 

@@ -18,14 +18,14 @@ export type Address = string | Contract;
 export interface RequestWithId {
   requestId: BytesLike;
   request: IOracle.RequestStruct;
-  ipfsHash: string;
+  ipfsHash: BytesLike;
   blockNumber: bigint;
 }
 
 export interface ResponseWithId {
   requestId: BytesLike;
-  response: IOracle.ResponseStruct;
   responseId: BytesLike;
+  response: IOracle.ResponseStruct;
   blockNumber: bigint;
 }
 
