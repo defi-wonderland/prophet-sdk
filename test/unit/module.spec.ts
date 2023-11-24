@@ -5,7 +5,7 @@ import IHttpRequestModule from '@defi-wonderland/prophet-modules-abi/abi/IHttpRe
 import IBondedResponseModule from '@defi-wonderland/prophet-modules-abi/abi/IBondedResponseModule.json';
 import './setup';
 import config from '../../src/config/config';
-import { address } from './utils/constants';
+import { address } from '../constants';
 
 describe('Module', () => {
   let module: Module;
@@ -16,12 +16,10 @@ describe('Module', () => {
   let otherIface: ethers.Interface;
 
   const moduleName = 'HttpRequestModule';
-  const requestId = '0xbda69502828fcd5b0b95d851ee5405efd2b2be720ce546efa55f79b4d9f6da68';
   const requestData =
-    '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040a42baf86fc821f972ad2ac878729063ceef4030000000000000000000000007f5c764cbc14f9669b88837ca1490cca17c316070000000000000000000000000000000000000000000000000000000000000147000000000000000000000000000000000000000000000000000000000000002568747470733a2f2f72656374616e67756c61722d70726f6e756e63696174696f6e2e62697a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b51756f6420706f72726f2e000000000000000000000000000000000000000000';
-
-  const otherRequestData =
-    '0x00000000000000000000000040a42baf86fc821f972ad2ac878729063ceef4030000000000000000000000007f5c764cbc14f9669b88837ca1490cca17c31607000000000000000000000000000000000000000000000000000000000000014700000000000000000000000000000000000000000000000000000000653ce3e20000000000000000000000000000000000000000000000000000000000000ab4';
+    '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004ca5ffe64f7e23bebfc1af987ddab5ddb28787500000000000000000000000094b008aa00579c1307b0ef2c499ad98a8ce58e580000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000000000002d68747470733a2f2f6a736f6e706c616365686f6c6465722e74797069636f64652e636f6d2f636f6d6d656e7473000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008706f737449643d31000000000000000000000000000000000000000000000000';
+  const responseData =
+    '0x00000000000000000000000004ca5ffe64f7e23bebfc1af987ddab5ddb28787500000000000000000000000094b008aa00579c1307b0ef2c499ad98a8ce58e58000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000655f2f9b0000000000000000000000000000000000000000000000000000000000001388';
 
   beforeEach(async () => {
     provider = new ethers.JsonRpcProvider(config.RPC_URL);
@@ -43,22 +41,6 @@ describe('Module', () => {
     });
   });
 
-  describe('requestData', () => {
-    it('should throw an error if the request id is invalid', async () => {
-      await expect(module.requestData('0x0')).to.throw;
-    });
-
-    it('should return the request data for the HttpRequestModule', async () => {
-      const data = await module.requestData(requestId);
-      expect(data).to.equal(requestData);
-    });
-
-    it('should return the request data for the BondedResponseModule', async () => {
-      const data = await otherModule.requestData(requestId);
-      expect(data).to.equal(otherRequestData);
-    });
-  });
-
   describe('moduleName', () => {
     it('should return the module name', async () => {
       const name = await module.moduleName();
@@ -72,26 +54,26 @@ describe('Module', () => {
     });
 
     it('should return the decoded request data for the HttpRequestModule', async () => {
-      const data = await module.decodeRequestData(requestId);
+      const data = await module.decodeRequestData(requestData);
       const expectedData = [
-        'https://rectangular-pronunciation.biz',
-        'Quod porro.',
+        'https://jsonplaceholder.typicode.com/comments',
+        'postId=1',
         BigInt(0),
-        '0x40a42Baf86Fc821f972Ad2aC878729063CeEF403',
-        '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
-        BigInt(327),
+        '0x04CA5FFe64f7E23BEBFC1af987DDAB5ddb287875',
+        '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
+        BigInt(100),
       ];
       expect(data).to.deep.equal(expectedData);
     });
 
     it('should return the decoded request data for the BondedResponseModule', async () => {
-      const data = await otherModule.decodeRequestData(requestId);
+      const data = await otherModule.decodeRequestData(responseData);
       const expectedData = [
-        '0x40a42Baf86Fc821f972Ad2aC878729063CeEF403',
-        '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
-        BigInt(327),
-        BigInt(1698489314),
-        BigInt(2740),
+        '0x04CA5FFe64f7E23BEBFC1af987DDAB5ddb287875',
+        '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',
+        BigInt(100),
+        BigInt(1700736923),
+        BigInt(5000),
       ];
       expect(data).to.deep.equal(expectedData);
     });

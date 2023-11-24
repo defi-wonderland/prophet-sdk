@@ -1,4 +1,4 @@
-import { Fragment, FunctionFragment } from 'ethers';
+import { BytesLike, Fragment, FunctionFragment, ethers } from 'ethers';
 import { Module } from '../module';
 import { ModulesMap } from '../types/Module';
 
@@ -42,12 +42,36 @@ export class Modules {
     return this.getReturnTypes(moduleAddress, true);
   }
 
+  /**
+   * Decode the request data from a module
+   * @dev the module needs to be set in the known modules
+   * @param moduleAddress - the address of the module to decode the request data from
+   * @param requestData - the request data to decode
+   * @returns the decoded request data
+   */
+  public async decodeRequestData(moduleAddress: string, requestData: BytesLike): Promise<any> {
+    const decodeReturnTypes = await this.getDecodeRequestReturnTypes(moduleAddress);
+    const decodedRequestData = ethers.AbiCoder.defaultAbiCoder().decode(decodeReturnTypes, requestData);
+    return decodedRequestData;
+  }
+
+  /**
+   * Encode the request data for a module
+   * @dev the module needs to be set in the known modules
+   * @param moduleAddress - the address of the module to encode the request data for
+   * @param requestObject  - the request object to encode
+   * @returns the encoded request data
+   */
+  public async encodeRequestData(moduleAddress: string, requestObject: any): Promise<any> {
+    const decodeReturnTypes = await this.getDecodeRequestReturnTypes(moduleAddress);
+    const encodedRequestData = ethers.AbiCoder.defaultAbiCoder().encode(decodeReturnTypes, [requestObject]);
+    return encodedRequestData;
+  }
+
   private async getReturnTypes(moduleAddress: string, named: boolean): Promise<any[]> {
     const decodeFunction = this.getDecodeRequestFunction(moduleAddress);
-    // If the module doesn't have a decodeRequestData function, return null
-    if (!decodeFunction) {
-      return null;
-    }
+    if (!decodeFunction)
+      throw new Error(`Module ${moduleAddress} doesn't have a decodeRequestData function, or module was not set`);
 
     const returnTypes: any[] = [];
 
@@ -63,6 +87,7 @@ export class Modules {
     const decodeFunction = module.moduleContract.interface['fragments'].find(
       (f: FunctionFragment) => f.name === 'decodeRequestData' && f.type === 'function'
     );
+    if (!decodeFunction) throw new Error(`Module ${moduleAddress} doesn't have a decodeRequestData function`);
     return decodeFunction;
   }
 

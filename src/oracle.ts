@@ -6,7 +6,6 @@ import { Helpers } from './helpers';
 import { IIpfsApi, IpfsApi } from './ipfsApi';
 import { Ipfs } from './ipfs';
 import config from './config/config';
-import { CONSTANTS } from './utils';
 import { ModulesMap } from './types/Module';
 import { Modules } from './modules/modules';
 
@@ -29,19 +28,17 @@ export class ProphetSDK {
   /**
    * Constructor
    */
-  constructor(runner: ContractRunner, oracleAddress?: string, knownModules?: ModulesMap) {
+  constructor(runner: ContractRunner, oracleAddress: string, knownModules: ModulesMap) {
     this.runner = runner;
-    oracleAddress = oracleAddress ? oracleAddress : CONSTANTS.ORACLE;
 
     try {
       this.oracle = new ethers.Contract(oracleAddress, IAbiOracle, this.runner) as unknown as IOracle;
 
-      this.batching = new Batching(this.oracle);
       const ipfsApi = new IpfsApi(config.PINATA_API_KEY, config.PINATA_SECRET_API_KEY);
       this.modules = new Modules(knownModules);
       this.helpers = new Helpers(this.oracle, ipfsApi, this.modules);
+      this.batching = new Batching(this.oracle, this.helpers);
       this.ipfs = new Ipfs(ipfsApi);
-      this.modules = new Modules(knownModules);
     } catch (e) {
       throw new Error(`Failed to create oracle contract ${e}`);
     }

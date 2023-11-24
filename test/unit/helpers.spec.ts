@@ -14,18 +14,16 @@ describe('Helpers', () => {
   const getResponseResult = 'getResponseResult';
   const getResponseIdsResult = ['responseId1', 'responseId2'];
   const getFinalizedResponseResult = 'finalizedResponse';
-  const listRequestsResult = ['request2', 'request2'];
   const disputeResponseResult = 'disputeResponseResult';
   const createRequestsResult = 'createRequestsResult';
   const allowedModuleResult = 'allowedModuleResult';
   const getDisputeResult = 'getDisputeResult';
   const getFullRequestResult = 'getFullRequestResult';
   const disputeOfResult = 'disputeOfResult';
-  const escalationDisputeResult = 'escalationDisputeResult';
+  const escalateDisputeResult = 'escalationDisputeResult';
   const resolveDisputeResult = 'resolveDisputeResult';
   const listRequestIdsResult = ['requestId1', 'requestId2'];
   const finalizeResult = 'finalizeResult';
-  const finalizeResultWithoutResponse = 'finalizeResultWithoutResponse';
   const getRequestMetadataResult = 'getRequestMetadataResult';
   const totalRequestCountResult = 99;
   const getNamedDecodeRequestReturnTypesResult = '{ "0": "int256", "1": "int256" }';
@@ -34,7 +32,9 @@ describe('Helpers', () => {
   const getRequestByNonceResult = 'getRequestByNonceResult';
   const getRequestIdResult = 'getRequestIdResult';
   const isParticipantResult = 'isParticipantResult';
-
+  const createdAtResult = 1;
+  const updateDisputeStatusResult = 'updateDisputeStatusResult';
+  const finalizedAtResult = 'finalizedAtResult';
   const createRequestStub: SinonStub = sinon.stub();
   const getRequestStub: SinonStub = sinon.stub();
   const proposeResponseStub: SinonStub = sinon.stub();
@@ -42,14 +42,14 @@ describe('Helpers', () => {
   const uploadMetadataStub: SinonStub = sinon.stub();
   const getResponseIdsStub: SinonStub = sinon.stub();
   const getFinalizedResponseStub: SinonStub = sinon.stub();
-  const listRequestStub: SinonStub = sinon.stub();
+  const queryFilterStub: SinonStub = sinon.stub();
   const disputeResponseStub: SinonStub = sinon.stub();
   const createRequestsStub: SinonStub = sinon.stub();
   const allowedModuleStub: SinonStub = sinon.stub();
   const getDisputeStub: SinonStub = sinon.stub();
   const getFullRequestStub: SinonStub = sinon.stub();
   const disputeOfStub: SinonStub = sinon.stub();
-  const escalationDisputeStub: SinonStub = sinon.stub();
+  const escalateDisputeStub: SinonStub = sinon.stub();
   const resolveDisputeStub: SinonStub = sinon.stub();
   const listRequestIdsStub: SinonStub = sinon.stub();
   const finalizeStub: SinonStub = sinon.stub();
@@ -57,11 +57,13 @@ describe('Helpers', () => {
   const totalRequestCountStub: SinonStub = sinon.stub();
   const getNamedDecodeRequestReturnTypesStub: SinonStub = sinon.stub();
   const deleteResponseStub: SinonStub = sinon.stub();
-  const finalizeWithoutResponseStub: SinonStub = sinon.stub();
   const getFinalizedResponseIdStub: SinonStub = sinon.stub();
   const getRequestByNonceStub: SinonStub = sinon.stub();
   const getRequestIdsStub: SinonStub = sinon.stub();
   const isParticipantStub: SinonStub = sinon.stub();
+  const createdAtStub: SinonStub = sinon.stub();
+  const updateStatusStub: SinonStub = sinon.stub();
+  const finalizedAtStub: SinonStub = sinon.stub();
 
   const cid = 'QmUKGQzaaM6Gb1c6Re83QXV4WgFqf2J71S7mtUpbsiHpkt';
   const cidBytes32 = cidToBytes32(cid);
@@ -74,18 +76,47 @@ describe('Helpers', () => {
   const CALLBACK_MODULE = '0xB82008565FdC7e44609fA118A4a681E92581e680';
   const HTTP_REQUEST_MODULE = '0x2a810409872AfC346F9B5b26571Fd6eC42EA4849';
 
-  let sampleRequest = {
+  const requestStructMock: sinon.SinonStubbedInstance<IOracle.RequestStruct> = {
+    nonce: sinon.stub(),
+    requester: sinon.stub(),
+    requestModule: sinon.stub(),
+    responseModule: sinon.stub(),
+    disputeModule: sinon.stub(),
+    resolutionModule: sinon.stub(),
+    finalityModule: sinon.stub(),
+    requestModuleData: sinon.stub(),
+    responseModuleData: sinon.stub(),
+    disputeModuleData: sinon.stub(),
+    resolutionModuleData: sinon.stub(),
+    finalityModuleData: sinon.stub(),
+  };
+
+  const responseStructMock: sinon.SinonStubbedInstance<IOracle.ResponseStruct> = {
+    proposer: sinon.stub(),
+    requestId: sinon.stub(),
+    response: sinon.stub(),
+  };
+
+  const disputeStructMock: sinon.SinonStubbedInstance<IOracle.DisputeStruct> = {
+    disputer: sinon.stub(),
+    proposer: sinon.stub(),
+    responseId: sinon.stub(),
+    requestId: sinon.stub(),
+  };
+
+  let sampleRequest: IOracle.RequestStruct = {
     requestModuleData: ethers.encodeBytes32String('requestModuleData'),
     responseModuleData: ethers.encodeBytes32String('responseModuleData'),
     disputeModuleData: ethers.encodeBytes32String('disputeModuleData'),
     resolutionModuleData: ethers.encodeBytes32String('resolutionModuleData'),
     finalityModuleData: ethers.encodeBytes32String('finalityModuleData'),
-    ipfsHash: ethers.encodeBytes32String('ipfsHash'),
     requestModule: HTTP_REQUEST_MODULE,
     responseModule: BONDED_RESPONSE_MODULE,
     disputeModule: BONDED_DISPUTE_MODULE,
     resolutionModule: ARBITRATOR_MODULE,
     finalityModule: CALLBACK_MODULE,
+    nonce: 1,
+    requester: '0x102EEA73631BaB024C55540B048FEA1e43271962',
   };
 
   let sampleRequestMetadata = {
@@ -98,32 +129,49 @@ describe('Helpers', () => {
     },
   };
 
+  const queryFilterMapMock = {
+    map: () => {
+      return queryFilterFindMock;
+    },
+  };
+  const queryFilterFindMockResult = ['request1', 'request2'];
+  const queryFilterFindMock = {
+    find: () => {
+      return queryFilterFindMockResult;
+    },
+  };
   const oracleMock = {
     createRequest: createRequestStub.resolves(createRequestResult),
     getRequest: getRequestStub.resolves(getRequestResult),
-    ['proposeResponse(bytes32,bytes)']: proposeResponseStub.resolves(proposeResponseResult),
-    ['proposeResponse(address,bytes32,bytes)']: proposeResponseStub.resolves(proposeResponseResult),
+    proposeResponse: proposeResponseStub.resolves(proposeResponseResult),
     getResponse: getResponseStub.resolves(getResponseResult),
     getResponseIds: getResponseIdsStub.resolves(getResponseIdsResult),
     getFinalizedResponse: getFinalizedResponseStub.resolves(getFinalizedResponseResult),
-    listRequests: listRequestStub.resolves(listRequestsResult),
+    queryFilter: queryFilterStub.resolves(queryFilterMapMock),
+    filters: {
+      RequestCreated: 'RequestCreated',
+      ResponseProposed: 'ResponseProposed',
+      ResponseDisputed: 'ResponseDisputed',
+    },
     disputeResponse: disputeResponseStub.resolves(disputeResponseResult),
     createRequests: createRequestsStub.resolves(createRequestsResult),
     allowedModule: allowedModuleStub.resolves(allowedModuleResult),
     getDispute: getDisputeStub.resolves(getDisputeResult),
     getFullRequest: getFullRequestStub.resolves(getFullRequestResult),
     disputeOf: disputeOfStub.resolves(disputeOfResult),
-    escalateDispute: escalationDisputeStub.resolves(escalationDisputeResult),
+    escalateDispute: escalateDisputeStub.resolves(escalateDisputeResult),
     resolveDispute: resolveDisputeStub.resolves(resolveDisputeResult),
     listRequestIds: listRequestIdsStub.resolves(listRequestIdsResult),
-    ['finalize(bytes32,bytes32)']: finalizeStub.resolves(finalizeResult),
-    ['finalize(bytes32)']: finalizeWithoutResponseStub.resolves(finalizeResultWithoutResponse),
+    finalize: finalizeStub.resolves(finalizeResult),
     totalRequestCount: totalRequestCountStub.resolves(totalRequestCountResult),
     deleteResponse: deleteResponseStub.resolves(deleteResponseResult),
     getFinalizedResponseId: getFinalizedResponseIdStub.resolves(getFinalizedResponseIdResult),
     getRequestByNonce: getRequestByNonceStub.resolves(getRequestByNonceResult),
     getRequestId: getRequestIdsStub.resolves(getRequestIdResult),
     isParticipant: isParticipantStub.resolves(isParticipantResult),
+    createdAt: createdAtStub.resolves(createdAtResult),
+    updateDisputeStatus: updateStatusStub.resolves(updateDisputeStatusResult),
+    finalizedAt: finalizedAtStub.resolves(finalizedAtResult),
   };
 
   const mockIpfsApi = {
@@ -149,19 +197,11 @@ describe('Helpers', () => {
     helpers = new Helpers(oracleMock as unknown as IOracle, mockIpfsApi as IpfsApi, mockModules as unknown as Modules);
   });
 
-  describe('createRequestWithoutMetadata', () => {
-    it('call to createRequest', async () => {
-      const result = await helpers.createRequestWithoutMetadata(sampleRequest);
-      expect(result).to.equal(createRequestResult);
-      expect(createRequestStub.calledWith(sampleRequest)).to.be.true;
-    });
-  });
-
   describe('createRequest', () => {
     it('call to createRequest', async () => {
       const result = await helpers.createRequest(sampleRequest, sampleRequestMetadata);
       expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
-      expect(createRequestStub.calledWith(sampleRequest)).to.be.true;
+      expect(createRequestStub.calledWith(sampleRequest, cidBytes32)).to.be.true;
       expect(result).to.equal(createRequestResult);
     });
 
@@ -183,12 +223,20 @@ describe('Helpers', () => {
       }
     });
 
+    it('throws error if ipfs hash and request metadata are not provided', async () => {
+      try {
+        await helpers.createRequest(sampleRequest);
+      } catch (e) {
+        expect(e.message).to.equal('Request metadata or ipfs hash must be provided');
+      }
+    });
+
     it("throws error if it doesn't have the decodeRequest return types", async () => {
       const mockModules = {
         knownModules: {
           [ARBITRATOR_MODULE]: [],
           [BONDED_DISPUTE_MODULE]: [],
-          // [BONDED_RESPONSE_MODULE]: [], // Commented out to test the error
+          [BONDED_RESPONSE_MODULE]: [],
           [CALLBACK_MODULE]: [],
           [HTTP_REQUEST_MODULE]: [],
         },
@@ -242,27 +290,11 @@ describe('Helpers', () => {
     });
   });
 
-  describe('getRequest', () => {
-    it('call to getRequest', async () => {
-      const result = await helpers.getRequest('1');
-      expect(getRequestStub.calledWith('1')).to.be.true;
-      expect(result).to.equal(getRequestResult);
-    });
-  });
-
   describe('proposeResponse', () => {
     it('call to proposeResponse', async () => {
-      const result = await helpers.proposeResponse('1', 'responseData');
-      expect(proposeResponseStub.calledWith('1', 'responseData')).to.be.true;
+      const result = await helpers.proposeResponse(requestStructMock, responseStructMock);
+      expect(proposeResponseStub.calledWith(requestStructMock, responseStructMock)).to.be.true;
       expect(result).to.equal(proposeResponseResult);
-    });
-  });
-
-  describe('getResponse', () => {
-    it('call to getResponse', async () => {
-      const result = await helpers.getResponse('1');
-      expect(getResponseStub.calledWith('1')).to.be.true;
-      expect(result).to.equal(getResponseResult);
     });
   });
 
@@ -274,27 +306,35 @@ describe('Helpers', () => {
     });
   });
 
-  describe('getFinalizedResponse', () => {
-    it('call to getFinalizedResponse', async () => {
-      const result = await helpers.getFinalizedResponse('1');
-      expect(getFinalizedResponseStub.calledWith('1')).to.be.true;
-      expect(result).to.be.equal(getFinalizedResponseResult);
+  describe('getFinalizedResponseId', () => {
+    it('call to getFinalizedResponseId', async () => {
+      const result = await helpers.getFinalizedResponseId('1');
+      expect(getFinalizedResponseIdStub.calledWith('1')).to.be.true;
+      expect(result).to.be.equal(getFinalizedResponseIdResult);
     });
   });
 
   describe('listRequests', () => {
     it('call to listRequests', async () => {
       const result = await helpers.listRequests(0, 10);
-      expect(listRequestStub.calledWith(0, 10)).to.be.true;
-      expect(result).to.be.equal(listRequestsResult);
+      expect(queryFilterStub.calledWith('RequestCreated', 0, 10)).to.be.true;
+      expect(result).to.be.equal(queryFilterFindMock);
     });
   });
 
   describe('disputeResponse', () => {
     it('call to disputeResponse', async () => {
-      const result = await helpers.disputeResponse('1', '2');
-      expect(disputeResponseStub.calledWith('1', '2')).to.be.true;
+      const result = await helpers.disputeResponse(requestStructMock, responseStructMock, disputeStructMock);
+      expect(disputeResponseStub.calledWith(requestStructMock, responseStructMock, disputeStructMock)).to.be.true;
       expect(result).to.be.equal(disputeResponseResult);
+    });
+  });
+
+  describe('disputeStatus', () => {
+    it('call to disputeStatus', async () => {
+      const result = await helpers.disputeOf(sampleBytes32);
+      expect(disputeOfStub.calledWith(sampleBytes32));
+      expect(result).to.be.equal(disputeOfResult);
     });
   });
 
@@ -302,7 +342,7 @@ describe('Helpers', () => {
     it('call to createRequests', async () => {
       const result = await helpers.createRequests([sampleRequest], [sampleRequestMetadata]);
       expect(uploadMetadataStub.calledWith(sampleRequestMetadata)).to.be.true;
-      expect(createRequestsStub.calledWith([sampleRequest])).to.be.true;
+      expect(createRequestsStub.calledWith([sampleRequest], [cidBytes32])).to.be.true;
       expect(result).to.equal(createRequestsResult);
     });
 
@@ -323,19 +363,19 @@ describe('Helpers', () => {
     });
   });
 
-  describe('getDispute', () => {
-    it('calls to getDispute', async () => {
-      const result = await helpers.getDispute(sampleBytes32);
-      expect(getDisputeStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(getDisputeResult);
+  describe('createdAt', () => {
+    it('calls to createdAt', async () => {
+      const result = await helpers.createdAt(sampleBytes32);
+      expect(createdAtStub.calledWith(sampleBytes32)).to.be.true;
+      expect(result).to.equal(createdAtResult);
     });
   });
 
-  describe('getFullRequest', () => {
-    it('calls to getFullRequest', async () => {
-      const result = await helpers.getFullRequest(sampleBytes32);
-      expect(getFullRequestStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(getFullRequestResult);
+  describe('finalizedAt', () => {
+    it('calls to finalizedAt', async () => {
+      const result = await helpers.finalizedAt(sampleBytes32);
+      expect(finalizedAtStub.calledWith(sampleBytes32)).to.be.true;
+      expect(result).to.equal(finalizedAtResult);
     });
   });
 
@@ -349,17 +389,25 @@ describe('Helpers', () => {
 
   describe('escalateDispute', () => {
     it('calls to escalateDispute', async () => {
-      const result = await helpers.escalateDispute(sampleBytes32);
-      expect(escalationDisputeStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(escalationDisputeResult);
+      const result = await helpers.escalateDispute(requestStructMock, responseStructMock, disputeStructMock);
+      expect(escalateDisputeStub.calledWith(requestStructMock, responseStructMock, disputeStructMock)).to.be.true;
+      expect(result).to.equal(escalateDisputeResult);
     });
   });
 
   describe('resolveDispute', () => {
     it('calls to resolveDispute', async () => {
-      const result = await helpers.resolveDispute(sampleBytes32);
-      expect(resolveDisputeStub.calledWith(sampleBytes32)).to.be.true;
+      const result = await helpers.resolveDispute(requestStructMock, responseStructMock, disputeStructMock);
+      expect(resolveDisputeStub.calledWith(requestStructMock, responseStructMock, disputeStructMock)).to.be.true;
       expect(result).to.equal(resolveDisputeResult);
+    });
+  });
+
+  describe('updateDisputeStatus', () => {
+    it('calls to updateDisputeStatus', async () => {
+      const result = await helpers.updateDisputeStatus(requestStructMock, responseStructMock, disputeStructMock, 1);
+      expect(updateStatusStub.calledWith(requestStructMock, responseStructMock, disputeStructMock, 1)).to.be.true;
+      expect(result).to.equal(updateDisputeStatusResult);
     });
   });
 
@@ -373,22 +421,36 @@ describe('Helpers', () => {
 
   describe('finalize', () => {
     it('calls to finalize', async () => {
-      const result = await helpers.finalize(
-        sampleBytes32,
-        '0xc5ff0acb4895c1b00daf9ec45a04d4d0192d5d0000de47e266767a8e20ea5fd7'
-      );
-      expect(
-        finalizeStub.calledWith(sampleBytes32, '0xc5ff0acb4895c1b00daf9ec45a04d4d0192d5d0000de47e266767a8e20ea5fd7')
-      ).to.be.true;
+      const result = await helpers.finalize(requestStructMock, responseStructMock);
+      expect(finalizeStub.calledWith(requestStructMock, responseStructMock)).to.be.true;
       expect(result).to.equal(finalizeResult);
     });
   });
 
-  describe('finalizeWithoutResponse', () => {
-    it('calls to finalize without response', async () => {
-      const result = await helpers.finalize(sampleBytes32);
-      expect(finalizeWithoutResponseStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(finalizeResultWithoutResponse);
+  describe('getRequest', () => {
+    it('calls to createdAt and calls to queryFilter', async () => {
+      const result = await helpers.getRequest(sampleBytes32);
+      expect(createdAtStub.calledWith(sampleBytes32)).to.be.true;
+      expect(queryFilterStub.calledWith('RequestCreated', createdAtResult, createdAtResult + 1)).to.be.true;
+      expect(result).to.equal(queryFilterFindMockResult);
+    });
+  });
+
+  describe('getResponse', () => {
+    it('calls to createdAt and calls to queryFilter', async () => {
+      const result = await helpers.getResponse(sampleBytes32);
+      expect(createdAtStub.calledWith(sampleBytes32)).to.be.true;
+      expect(queryFilterStub.calledWith('ResponseProposed', createdAtResult, createdAtResult + 1)).to.be.true;
+      expect(result).to.equal(queryFilterFindMockResult);
+    });
+  });
+
+  describe('getDispute', () => {
+    it('calls to createdAt and calls to queryFilter', async () => {
+      const result = await helpers.getDispute(sampleBytes32);
+      expect(createdAtStub.calledWith(sampleBytes32)).to.be.true;
+      expect(queryFilterStub.calledWith('ResponseDisputed', createdAtResult, createdAtResult + 1)).to.be.true;
+      expect(result).to.equal(queryFilterFindMockResult);
     });
   });
 
@@ -402,22 +464,22 @@ describe('Helpers', () => {
 
   describe('getFullRequestWithMetadata', () => {
     it('calls to getFullRequest and getRequestMetadata', async () => {
-      const fullRequestSample = { ipfsHash: cidBytes32 }; // we just care about ipfs hash here
+      const requestSample = { ipfsHash: cidBytes32 }; // we just care about ipfs hash here
       const requestMetadataSample = { responseType: 'uint', description: 'uint' };
 
-      const helpersGetFullRequestStub = sinon.stub(helpers, 'getFullRequest');
-      helpersGetFullRequestStub.withArgs(sampleBytes32).resolves(fullRequestSample);
+      const getRequestStub = sinon.stub(helpers, 'getRequest');
+      getRequestStub.withArgs(sampleBytes32).resolves(requestSample);
 
-      const helpersGetRequestMetadataStub = sinon.stub(helpers, 'getRequestMetadata');
-      helpersGetRequestMetadataStub.withArgs(cidBytes32).resolves(requestMetadataSample);
+      const getRequestMetadataStub = sinon.stub(helpers, 'getRequestMetadata');
+      getRequestMetadataStub.withArgs(cidBytes32).resolves(requestMetadataSample);
 
-      const result = await helpers.getFullRequestWithMetadata(sampleBytes32);
+      const result = await helpers.getRequestWithMetadata(sampleBytes32);
 
-      expect(helpersGetFullRequestStub.calledWith(sampleBytes32)).to.be.true;
-      expect(helpersGetRequestMetadataStub.calledWith(cidBytes32)).to.be.true;
+      expect(getRequestStub.calledWith(sampleBytes32)).to.be.true;
+      expect(getRequestMetadataStub.calledWith(cidBytes32)).to.be.true;
 
       expect(result).to.deep.equal({
-        fullRequest: fullRequestSample,
+        request: requestSample,
         metadata: requestMetadataSample,
       });
     });
@@ -431,14 +493,6 @@ describe('Helpers', () => {
     });
   });
 
-  describe('deleteResponse', () => {
-    it('calls to deleteResponse', async () => {
-      const result = await helpers.deleteResponse(sampleBytes32);
-      expect(deleteResponseStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(deleteResponseResult);
-    });
-  });
-
   describe('call static methods', () => {
     // Just defined some of the methods to test the callStatic method
     const oracleMock = {
@@ -446,7 +500,7 @@ describe('Helpers', () => {
       ['proposeResponse(bytes32,bytes)']: { staticCall: proposeResponseStub.resolves(proposeResponseResult) },
       disputeResponse: { staticCall: disputeResponseStub.resolves(disputeResponseResult) },
       createRequests: { staticCall: createRequestsStub.resolves(createRequestsResult) },
-      escalateDispute: { staticCall: escalationDisputeStub.resolves(escalationDisputeResult) },
+      escalateDispute: { staticCall: escalateDisputeStub.resolves(escalateDisputeResult) },
       resolveDispute: { staticCall: resolveDisputeStub.resolves(resolveDisputeResult) },
       ['finalize(bytes32,bytes32)']: { staticCall: finalizeStub.resolves(finalizeResult) },
       totalRequestCount: { staticCall: totalRequestCountStub.resolves(totalRequestCountResult) },
@@ -487,8 +541,8 @@ describe('Helpers', () => {
 
     it('calls to escalateDispute static call', async () => {
       const result = await helpers.callStatic('escalateDispute', sampleBytes32);
-      expect(escalationDisputeStub.calledWith(sampleBytes32)).to.be.true;
-      expect(result).to.equal(escalationDisputeResult);
+      expect(escalateDisputeStub.calledWith(sampleBytes32)).to.be.true;
+      expect(result).to.equal(escalateDisputeResult);
     });
 
     it('calls to resolveDispute static call', async () => {
@@ -527,22 +581,6 @@ describe('Helpers', () => {
       const result = await helpers.getFinalizedResponseId(sampleBytes32);
       expect(getFinalizedResponseIdStub.calledWith(sampleBytes32)).to.be.true;
       expect(result).to.equal(getFinalizedResponseIdResult);
-    });
-  });
-
-  describe('getRequestByNonce', () => {
-    it('calls to getRequestByNonce', async () => {
-      const result = await helpers.getRequestByNonce(1);
-      expect(getRequestByNonceStub.calledWith(1)).to.be.true;
-      expect(result).to.equal(getRequestByNonceResult);
-    });
-  });
-
-  describe('getRequestId', () => {
-    it('calls to getRequestId', async () => {
-      const result = await helpers.getRequestId(1);
-      expect(getRequestIdsStub.calledWith(1)).to.be.true;
-      expect(result).to.equal(getRequestIdResult);
     });
   });
 

@@ -5,7 +5,7 @@
   "repository": "git@github.com:defi-wonderland/prophet-sdk-private.git",
   "license": "MIT",
   "author": "Wonderland",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "files": [
     "dist",
     "README.md"
@@ -15,7 +15,7 @@
     "lint:check": "prettier --check './**' && eslint ./src",
     "lint:fix": "sort-package-json && prettier --write './**' && eslint ./src --fix",
     "prepare": "husky install && wonderland-crypto-husky-checks install",
-    "test": "cross-env mocha 'test/**/*.spec.ts' --timeout 10000",
+    "test": "cross-env mocha 'test/unit/**/*.spec.ts' --timeout 30000",
     "test:coverage": "nyc --reporter=lcov --reporter=text mocha 'test/**/*.spec.ts'",
     "typechain": "typechain --target ethers-v6 --out-dir src/types/typechain './node_modules/@defi-wonderland/prophet-core-abi/abi/*.json'"
   },
@@ -31,9 +31,13 @@
     ],
     "package.json": "sort-package-json"
   },
+  "resolutions": {
+    "@defi-wonderland/prophet-sdk/ethers": "6.7.0",
+    "@nomiclabs/hardhat-ethers/ethers": "5.7.2"
+  },
   "dependencies": {
-    "@defi-wonderland/prophet-batching-abi": "0.0.0-421b4b24",
-    "@defi-wonderland/prophet-core-abi": "0.0.0-bb56cdd7",
+    "@defi-wonderland/prophet-batching-abi": "0.0.0-68d6c330",
+    "@defi-wonderland/prophet-core-abi": "0.0.0-5fbc6720",
     "@pinata/sdk": "2.1.0",
     "axios": "1.4.0",
     "cids": "1.1.9",
@@ -46,7 +50,8 @@
     "@commitlint/cli": "17.6.5",
     "@commitlint/config-conventional": "17.6.5",
     "@defi-wonderland/crypto-husky-checks": "0.0.0-29a10090",
-    "@defi-wonderland/prophet-modules-abi": "0.0.0-172c4052",
+    "@defi-wonderland/prophet-modules-abi": "0.0.0-bc50a2b6",
+    "@nomiclabs/hardhat-ethers": "2.2.1",
     "@typechain/ethers-v6": "0.4.3",
     "@types/chai": "4.3.5",
     "@types/chai-as-promised": "7.1.5",
@@ -58,6 +63,7 @@
     "chai-as-promised": "7.1.1",
     "cross-env": "7.0.3",
     "eslint": "8.40.0",
+    "hardhat": "2.16.0",
     "husky": "8.0.3",
     "lint-staged": "10",
     "mocha": "10.2.0",

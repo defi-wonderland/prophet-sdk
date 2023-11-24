@@ -1,6 +1,7 @@
 import { ContractRunner } from 'ethers';
 import { AbiCoder, BytesLike } from 'ethers';
 import { bytecode } from '@defi-wonderland/prophet-batching-abi/abi/BatchResponsesData.json';
+import { ResponseData } from '../types';
 
 /**
  * Represents the data returned from the BatchResponsesData contract
@@ -8,24 +9,14 @@ import { bytecode } from '@defi-wonderland/prophet-batching-abi/abi/BatchRespons
 const responseAbi: any[] = [
   {
     components: [
+      { name: 'responseId', type: 'bytes32' },
       { name: 'createdAt', type: 'uint256' },
-      { name: 'proposer', type: 'address' },
-      { name: 'requestId', type: 'bytes32' },
       { name: 'disputeId', type: 'bytes32' },
-      { name: 'response', type: 'bytes' },
     ],
-    name: 'Response',
+    name: 'ResponseData',
     type: 'tuple[]',
   },
 ];
-
-export interface ResponseData {
-  createdAt: number;
-  proposer: string;
-  requestId: string;
-  disputeId: string;
-  response: string;
-}
 
 /**
  * Gets responses for a given request id

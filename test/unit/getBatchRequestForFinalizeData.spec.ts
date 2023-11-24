@@ -2,10 +2,10 @@ import { getBatchRequestForFinalizeData } from '../../src/batching/getBatchReque
 import { expect } from 'chai';
 import config from '../../src/config/config';
 import { ethers } from 'ethers';
-import { address } from './utils/constants';
+import { address } from '../constants';
 
-const FIRST_REQUEST_ID = '0xbda69502828fcd5b0b95d851ee5405efd2b2be720ce546efa55f79b4d9f6da68';
-const FIRST_RESPONSE_ID = '0x6578e5ad13c830c19276c6b7d30ae65d9b2c8cb986e5fcb718d1c11d3f61b51b';
+const FIRST_REQUEST_ID = '0x346329bee294d95bc868a025646651867e2e6262d0ddbe2e3b36557494040b99';
+const FIRST_RESPONSE_ID = '0x5cbffa6ede43c835518c98c5c1b8f040a817c824d3da6db79ecc6d788e5f809f';
 
 describe('getBatchRequestData', () => {
   const provider = new ethers.JsonRpcProvider(config.RPC_URL);
@@ -18,6 +18,6 @@ describe('getBatchRequestData', () => {
   it('returns the ids of the responses', async () => {
     const result = await getBatchRequestForFinalizeData(provider, address.deployed.ORACLE, 10, 1);
 
-    expect(result[0].responses[0]).to.equal(FIRST_RESPONSE_ID);
+    expect(result[0].responsesIds[0]).to.equal(FIRST_RESPONSE_ID);
   });
 });

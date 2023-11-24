@@ -1,3 +1,4 @@
+import { BytesLike } from 'ethers';
 import { Module } from '../module';
 import { IModule } from '../types/typechain/IModule';
 
@@ -16,10 +17,10 @@ export interface IModuleBase extends IModule {
   moduleContract: IModule;
 
   /**
-   * Returns the decoded data for the given requestId, this can return multiple vars compared to requestData
-   * @param requestId - The requestId to get the data for
+   * Returns the decoded request for the given data, this can return multiple vars compared to requestData
+   * @param requestData - The request data Bytes
    */
-  decodeRequestData<T>(requestId: string): Promise<T>;
+  decodeRequestData<T>(requestData: BytesLike): Promise<T>;
 }
 
 /**
