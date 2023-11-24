@@ -350,6 +350,11 @@ export class Helpers {
     return this.oracle[method].staticCall(...parameters);
   }
 
+  /**
+   * Validates that the given response type is valid
+   * @param responseType - the response type to validate
+   * @returns true or false depending on if the response type is valid
+   */
   private validateResponseType(responseType: string): boolean {
     const validResponseTypes: string[] = [
       ...CONSTANTS.SOLIDITY_TYPES,
@@ -358,6 +363,11 @@ export class Helpers {
     return validResponseTypes.includes(responseType);
   }
 
+  /**
+   * Uploads the metadata to IPFS and returns the CID as bytes32
+   * @param requestMetadata - Contains the request response type and description
+   * @returns the CID as bytes32
+   */
   private async uploadMetadata(requestMetadata: RequestMetadata): Promise<BytesLike> {
     // If the user didn't set the known modules we throw an error
     requestMetadata.returnedTypes = {};
@@ -376,6 +386,10 @@ export class Helpers {
     return ipfsHash;
   }
 
+  /**
+   * Ensures that the decoded return types for the given request exist in the known modules
+   * @param request - the request struct
+   */
   private decodedReturnTypesForModuleExists(request: IOracle.RequestStruct) {
     if (!this.modules?.knownModules) throw new Error('Known modules not set');
     const knownModules = this.modules.knownModules;
@@ -397,24 +411,39 @@ export class Helpers {
     });
   }
 
-  private mapEventArgsToRequestWithId(event: any[]): RequestWithId {
+  /**
+   * Maps the event args to a RequestWithId object
+   * @param eventArgs - the RequestCreated event args
+   * @returns - the RequestWithId object
+   */
+  private mapEventArgsToRequestWithId(eventArgs: any[]): RequestWithId {
     return {
-      requestId: event[0],
-      request: event[1],
-      ipfsHash: event[2],
-      blockNumber: event[3],
+      requestId: eventArgs[0],
+      request: eventArgs[1],
+      ipfsHash: eventArgs[2],
+      blockNumber: eventArgs[3],
     };
   }
 
-  private mapEventArgsToResponseWithId(event: any[]): ResponseWithId {
+  /**
+   * Maps the event args to a ResponseWithId object
+   * @param eventArgs - the ResponseProposed event args
+   * @returns the ResponseWithId object
+   */
+  private mapEventArgsToResponseWithId(eventArgs: any[]): ResponseWithId {
     return {
-      requestId: event[0],
-      responseId: event[1],
-      response: event[2],
-      blockNumber: event[3],
+      requestId: eventArgs[0],
+      responseId: eventArgs[1],
+      response: eventArgs[2],
+      blockNumber: eventArgs[3],
     };
   }
 
+  /**
+   * Maps the event args to a DisputeWithId object
+   * @param event - the ResponseDisputed event args
+   * @returns the DisputeWithId object
+   */
   private mapEventArgsToDisputeWithId(event: any[]): DisputeWithId {
     return {
       responseId: event[0],
@@ -425,6 +454,11 @@ export class Helpers {
   }
 }
 
+/**
+ * Returns the return types of the decodeRequestData function return types using the abi
+ * @param abi - the abi of the module
+ * @returns the return types of the decodeRequestData function
+ */
 export const getDecodeRequestDataFunctionReturnTypes = (abi: any[]) => {
   const decodeRequestDataFunction = abi.find((item) => item.name === 'decodeRequestData').outputs;
   return decodeRequestDataFunction;

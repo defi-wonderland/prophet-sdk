@@ -1,10 +1,17 @@
 import { BytesLike } from 'ethers';
 import { IOracle } from '../types/typechain';
 import { getBatchRequestData } from './getBatchRequestData';
-import { DisputeData, getBatchDisputeData } from './getBatchDisputeData';
-import { RequestForFinalizeData, getBatchRequestForFinalizeData } from './getBatchRequestForFinalizeData';
+import { getBatchDisputeData } from './getBatchDisputeData';
+import { getBatchRequestForFinalizeData } from './getBatchRequestForFinalizeData';
 import { Helpers } from '../helpers';
-import { FullResponse, RequestWithId, ResponseWithId } from '../types/types';
+import {
+  DisputeData,
+  FullResponse,
+  RequestForFinalizeData,
+  RequestFullData,
+  RequestWithId,
+  ResponseWithId,
+} from '../types/types';
 import { getBatchModuleNameData } from './getBatchModuleNameData';
 
 /**
@@ -115,16 +122,4 @@ export class Batching {
     );
     return result;
   }
-}
-
-export interface RequestFullData {
-  requestWithId: RequestWithId;
-  responses: FullResponse[];
-  finalizedResponse: FullResponse;
-  disputeStatus: number;
-  requestModuleName: string;
-  responseModuleName: string;
-  disputeModuleName: string;
-  resolutionModuleName: string;
-  finalityModuleName: string;
 }

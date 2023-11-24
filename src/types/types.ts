@@ -46,3 +46,45 @@ export interface RequestWithMetadata {
   request: RequestWithId;
   metadata: RequestMetadata;
 }
+
+export interface RequestFullData {
+  requestWithId: RequestWithId;
+  responses: FullResponse[];
+  finalizedResponse: FullResponse;
+  disputeStatus: number;
+  requestModuleName: string;
+  responseModuleName: string;
+  disputeModuleName: string;
+  resolutionModuleName: string;
+  finalityModuleName: string;
+}
+
+// Batching contracts
+export interface DisputeData {
+  requestId: BytesLike;
+  isFinalized: boolean;
+  disputes: {
+    disputeId: BytesLike;
+    createdAt: number;
+    responseId: BytesLike;
+    status: number;
+  }[];
+}
+export interface RequestData {
+  requestId: BytesLike;
+  responses: ResponseData[];
+  finalizedResponseId: BytesLike;
+  disputeStatus: number;
+}
+
+export interface RequestForFinalizeData {
+  requestId: BytesLike;
+  finalizedAt: number;
+  responsesIds: BytesLike[];
+}
+
+export interface ResponseData {
+  responseId: BytesLike;
+  createdAt: number;
+  disputeId: BytesLike;
+}

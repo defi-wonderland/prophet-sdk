@@ -1,5 +1,6 @@
 import { bytecode } from '@defi-wonderland/prophet-batching-abi/abi/BatchRequestsForFinalizeData.json';
-import { AbiCoder, BytesLike, ContractRunner } from 'ethers';
+import { AbiCoder, ContractRunner } from 'ethers';
+import { RequestForFinalizeData } from '../types';
 
 /**
  * Represents the data returned from the BatchRequestsForFinalizeData contract
@@ -15,15 +16,6 @@ const requestDataAbi: any[] = [
     type: 'tuple[]',
   },
 ];
-
-/**
- * TS Interface for the returned data from the BatchRequestsForFinalizeData contract
- */
-export interface RequestForFinalizeData {
-  requestId: BytesLike;
-  finalizedAt: number;
-  responsesIds: BytesLike[];
-}
 
 /**
  * Gets request data for a given oracle address, startFrom and amount

@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { HardhatUserConfig } from 'hardhat/config';
 
 dotenv.config({ path: './.env' });
-const ALCHEMY_ID = typeof process !== 'undefined' ? process.env.ALCHEMY_ID : '';
+const GOERLI_RPC = typeof process !== 'undefined' ? process.env.GOERLI_RPC : '';
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 const config: HardhatUserConfig = {
@@ -19,13 +19,13 @@ const config: HardhatUserConfig = {
     },
     local: {
       chainId: 31337,
-      url: process.env.CUSTOM_LOCAL_RPC || '',
+      url: process.env.LOCAL_RPC || '',
       gas: 20000000,
     },
     // Staging
     optimismGoerli: {
       chainId: 420,
-      url: `https://opt-goerli.g.alchemy.com/v2/${ALCHEMY_ID}` || '',
+      url: GOERLI_RPC || '',
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
       gas: 20000000,
       gasPrice: 35000000000,

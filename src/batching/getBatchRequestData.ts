@@ -1,6 +1,6 @@
 import { bytecode } from '@defi-wonderland/prophet-batching-abi/abi/BatchRequestsData.json';
-import { AbiCoder, BytesLike, ContractRunner } from 'ethers';
-import { ResponseData } from './getBatchResponseData';
+import { AbiCoder, ContractRunner } from 'ethers';
+import { RequestData } from '../types';
 
 /**
  * Represents the data returned from the BatchRequestsData contract
@@ -28,13 +28,6 @@ const requestDataAbi: any[] = [
     type: 'tuple[]',
   },
 ];
-
-export interface RequestData {
-  requestId: BytesLike;
-  responses: ResponseData[];
-  finalizedResponseId: BytesLike;
-  disputeStatus: number;
-}
 
 /**
  * Gets request data for a given oracle address, startFrom and amount

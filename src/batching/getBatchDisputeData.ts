@@ -1,5 +1,6 @@
 import { bytecode } from '@defi-wonderland/prophet-batching-abi/abi/BatchDisputesData.json';
-import { AbiCoder, BytesLike, ContractRunner } from 'ethers';
+import { AbiCoder, ContractRunner } from 'ethers';
+import { DisputeData } from '../types';
 
 const disputeDataAbi: any[] = [
   {
@@ -21,17 +22,6 @@ const disputeDataAbi: any[] = [
     ],
   },
 ];
-
-export interface DisputeData {
-  requestId: BytesLike;
-  isFinalized: boolean;
-  disputes: {
-    disputeId: BytesLike;
-    createdAt: number;
-    responseId: BytesLike;
-    status: number;
-  }[];
-}
 
 /**
  * Gets the dispute data for all the requests in the given range
