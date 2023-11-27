@@ -18,6 +18,6 @@ describe('getBatchRequestData', () => {
   it('returns the ids of the responses', async () => {
     const result = await getBatchRequestForFinalizeData(provider, address.deployed.ORACLE, 10, 1);
 
-    expect(result[0].responsesIds[0]).to.equal(FIRST_RESPONSE_ID);
+    expect(result[0].responses[0].responseId).to.equal(FIRST_RESPONSE_ID);
   });
 });

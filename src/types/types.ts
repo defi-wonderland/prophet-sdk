@@ -62,11 +62,13 @@ export interface RequestFullData {
 // Batching contracts
 export interface DisputeData {
   requestId: BytesLike;
+  requestCreatedAt: number;
   isFinalized: boolean;
   disputes: {
     disputeId: BytesLike;
-    createdAt: number;
     responseId: BytesLike;
+    disputeCreatedAt: number;
+    responseCreatedAt: number;
     status: number;
   }[];
 }
@@ -79,8 +81,12 @@ export interface RequestData {
 
 export interface RequestForFinalizeData {
   requestId: BytesLike;
+  requestCreatedAt: number;
   finalizedAt: number;
-  responsesIds: BytesLike[];
+  responses: {
+    responseId: BytesLike;
+    responseCreatedAt: number;
+  }[];
 }
 
 export interface ResponseData {
