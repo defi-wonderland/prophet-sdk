@@ -36,7 +36,7 @@
     "@nomiclabs/hardhat-ethers/ethers": "5.7.2"
   },
   "dependencies": {
-    "@defi-wonderland/prophet-batching-abi": "0.0.0-68d6c330",
+    "@defi-wonderland/prophet-batching-abi": "0.0.0-ee57f860",
     "@defi-wonderland/prophet-core-abi": "0.0.0-5fbc6720",
     "@pinata/sdk": "2.1.0",
     "axios": "1.4.0",

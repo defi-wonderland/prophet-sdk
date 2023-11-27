@@ -512,10 +512,10 @@
   resolved "https://registry.yarnpkg.com/@defi-wonderland/crypto-husky-checks/-/crypto-husky-checks-0.0.0-29a10090.tgz#367f3b1b194a8b80e1f52b97bf2a99932cab8603"
   integrity sha512-IZP/zTO1cN9Xcg1p0LPmWMg6A7rmTx0iLc2s3isrl7LUzUHypnoEx9jp2g6GnuSBypctkp3bDaGDTsT2Qvc7Lg==
 
-"@defi-wonderland/prophet-batching-abi@0.0.0-68d6c330":
-  version "0.0.0-68d6c330"
-  resolved "https://registry.yarnpkg.com/@defi-wonderland/prophet-batching-abi/-/prophet-batching-abi-0.0.0-68d6c330.tgz#574cf23d950ba19abceec45ec20daf075cd3089b"
-  integrity sha512-pP2tvZqcFV83yPZY+PmH1Pl5rD50biqxl2Xsf37m4k3kxKha058ClrEiO3GNJvzkOgeTIiMwGiYdTcyTaX3BGA==
+"@defi-wonderland/prophet-batching-abi@0.0.0-ee57f860":
+  version "0.0.0-ee57f860"
+  resolved "https://registry.yarnpkg.com/@defi-wonderland/prophet-batching-abi/-/prophet-batching-abi-0.0.0-ee57f860.tgz#60b4345a223213ee9e840a4676992edf26d887ba"
+  integrity sha512-ZG5rZ1SBYMzDcvraLhNrtnysaEgUqBK/DrugKjUgdjQJsMIkIt7pWWnzYk0v4xSfzFn46oFYPpzZMwayclY65A==
 
 "@defi-wonderland/prophet-core-abi@0.0.0-5fbc6720":
   version "0.0.0-5fbc6720"

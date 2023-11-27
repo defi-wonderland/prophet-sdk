@@ -56,13 +56,15 @@ describe('Batching', () => {
   it('should return the correct disputes for listDisputes', async () => {
     const expectedFirstRowResult = [
       '0x92beec1f9d484cc8e13bed2473cbcb3869ec427dea4375c243589258646e6154',
+      BigInt(111060538),
       false,
       [
         [
           '0x24308546202aa6d44d2acd58609a7631f8815297f8986dd7cbe41d3e6acb6743',
-          BigInt(111060540),
           '0xbea40f0c42f70c41f7dd7f5ae42f73137df596c61fdd4e3d52ad971de8ad05b9',
-          BigInt(84),
+          BigInt(111060540),
+          BigInt(111060539),
+          BigInt(1),
         ],
       ],
     ];
