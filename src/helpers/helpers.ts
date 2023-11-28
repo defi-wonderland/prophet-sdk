@@ -419,7 +419,20 @@ export class Helpers {
   private mapEventArgsToRequestWithId(eventArgs: any[]): RequestWithId {
     return {
       requestId: eventArgs[0],
-      request: eventArgs[1],
+      request: {
+        nonce: eventArgs[1][0],
+        requester: eventArgs[1][1],
+        requestModule: eventArgs[1][2],
+        responseModule: eventArgs[1][3],
+        disputeModule: eventArgs[1][4],
+        resolutionModule: eventArgs[1][5],
+        finalityModule: eventArgs[1][6],
+        requestModuleData: eventArgs[1][7],
+        responseModuleData: eventArgs[1][8],
+        disputeModuleData: eventArgs[1][9],
+        resolutionModuleData: eventArgs[1][10],
+        finalityModuleData: eventArgs[1][11],
+      },
       ipfsHash: eventArgs[2],
       blockNumber: eventArgs[3],
     };
@@ -434,7 +447,11 @@ export class Helpers {
     return {
       requestId: eventArgs[0],
       responseId: eventArgs[1],
-      response: eventArgs[2],
+      response: {
+        proposer: eventArgs[2][0],
+        requestId: eventArgs[2][1],
+        response: eventArgs[2][2],
+      },
       blockNumber: eventArgs[3],
     };
   }
@@ -448,7 +465,12 @@ export class Helpers {
     return {
       responseId: event[0],
       disputeId: event[1],
-      dispute: event[2],
+      dispute: {
+        disputer: event[2][0],
+        proposer: event[2][1],
+        responseId: event[2][2],
+        requestId: event[2][3],
+      },
       blockNumber: event[3],
     };
   }
