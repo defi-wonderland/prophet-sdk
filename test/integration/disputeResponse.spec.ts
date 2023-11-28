@@ -140,7 +140,7 @@ describe('Create Requests', () => {
       await sdk.helpers.createRequest(newRequest, requestMetadataSample);
     });
 
-    it('should propose a response', async () => {
+    it('dispute a response', async () => {
       const totalRequestCount = await sdk.helpers.totalRequestCount();
       const requestId = (await sdk.helpers.listRequestIds(Number(totalRequestCount) - 1, totalRequestCount))[0];
 

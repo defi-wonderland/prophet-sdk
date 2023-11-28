@@ -42,11 +42,11 @@ describe('Batching', () => {
     const expectedFirstRowResult = {
       requestId: '0x346329bee294d95bc868a025646651867e2e6262d0ddbe2e3b36557494040b99',
       responseId: '0x5cbffa6ede43c835518c98c5c1b8f040a817c824d3da6db79ecc6d788e5f809f',
-      response: [
-        '0x102EEA73631BaB024C55540B048FEA1e43271962',
-        '0x346329bee294d95bc868a025646651867e2e6262d0ddbe2e3b36557494040b99',
-        '0x0000000000000000000000000000000000000000000000000000000000000001',
-      ],
+      response: {
+        proposer: '0x102EEA73631BaB024C55540B048FEA1e43271962',
+        requestId: '0x346329bee294d95bc868a025646651867e2e6262d0ddbe2e3b36557494040b99',
+        response: '0x0000000000000000000000000000000000000000000000000000000000000001',
+      },
       blockNumber: BigInt(111060518),
     };
 
@@ -56,13 +56,15 @@ describe('Batching', () => {
   it('should return the correct disputes for listDisputes', async () => {
     const expectedFirstRowResult = [
       '0x92beec1f9d484cc8e13bed2473cbcb3869ec427dea4375c243589258646e6154',
+      BigInt(111060538),
       false,
       [
         [
           '0x24308546202aa6d44d2acd58609a7631f8815297f8986dd7cbe41d3e6acb6743',
-          BigInt(111060540),
           '0xbea40f0c42f70c41f7dd7f5ae42f73137df596c61fdd4e3d52ad971de8ad05b9',
-          BigInt(84),
+          BigInt(111060540),
+          BigInt(111060539),
+          BigInt(1),
         ],
       ],
     ];

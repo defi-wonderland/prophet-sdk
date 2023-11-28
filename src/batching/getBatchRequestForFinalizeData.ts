@@ -9,8 +9,16 @@ const requestDataAbi: any[] = [
   {
     components: [
       { name: 'requestId', type: 'bytes32' },
+      { name: 'requestCreatedAt', type: 'uint256' },
       { name: 'finalizedAt', type: 'uint256' },
-      { name: 'responsesIds', type: 'bytes32[]' },
+      {
+        components: [
+          { name: 'responseId', type: 'bytes32' },
+          { name: 'responseCreatedAt', type: 'uint256' },
+        ],
+        name: 'responses',
+        type: 'tuple[]',
+      },
     ],
     name: 'RequestForFinalizeData',
     type: 'tuple[]',

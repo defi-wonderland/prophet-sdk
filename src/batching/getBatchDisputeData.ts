@@ -8,14 +8,16 @@ const disputeDataAbi: any[] = [
     type: 'tuple[]',
     components: [
       { name: 'requestId', type: 'bytes32' },
+      { name: 'requestCreatedAt', type: 'uint256' },
       { name: 'isFinalized', type: 'bool' },
       {
         name: 'disputes',
         type: 'tuple[]',
         components: [
           { name: 'disputeId', type: 'bytes32' },
-          { name: 'createdAt', type: 'uint256' },
           { name: 'responseId', type: 'bytes32' },
+          { name: 'disputeCreatedAt', type: 'uint256' },
+          { name: 'responseCreatedAt', type: 'uint256' },
           { name: 'status', type: 'uint8' },
         ],
       },
