@@ -1,5 +1,6 @@
 # Prophet SDK
 
+[![Version](https://img.shields.io/npm/v/@defi-wonderland/prophet-sdk?label=Version&tag=latest)](https://www.npmjs.com/package/@defi-wonderland/prophet-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/defi-wonderland/prophet-sdk/blob/main/LICENSE)
 [![Tests](https://github.com/defi-wonderland/prophet-sdk/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/defi-wonderland/prophet-sdk/actions/workflows/tests.yml)
 
